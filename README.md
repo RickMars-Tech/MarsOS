@@ -35,11 +35,10 @@ sudo chmod +x setup
 Other configurations that I have learned a lot from.
 
 **[Tyler Kelley ]**
-
 **[Liassica]**
-
 **[Ryan Yin]**
 <br>
+
 <!----------------------------------{ Thanks }--------------------------------->
 [Tyler Kelley ]: https://gitlab.com/Zaney/zaneyos
 [Liassica]: https://codeberg.org/Liassica/nixos-config
