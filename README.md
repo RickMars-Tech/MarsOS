@@ -16,11 +16,13 @@ Run this command to ensure Git are installed:
 ```bash
 nix-shell -p git
 ```
+
 Clone the Repo:
 ```bash
 git clone https://github.com/RickMars-Tech/MarsOS.git
 cd MarsOS
 ```
+
 Give permissions to the script and Run it:
 ```bash
 sudo chmod +x setup
