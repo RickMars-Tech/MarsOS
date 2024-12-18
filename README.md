@@ -13,6 +13,7 @@
 
 # Guide
 <br>
+
 Run this command to ensure Git are installed:
 ```bash
 nix-shell -p git
