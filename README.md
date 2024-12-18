@@ -1,4 +1,6 @@
-# NIXOS MARS
+<div align="center">
+## MarsOS❄️
+</div>
 
 #  IMPORTANT
 -I recommend editing the configuration files to your liking since they contain a specific configuration for my hardware so you can improve your customization and also avoid errors.
