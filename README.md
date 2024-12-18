@@ -1,7 +1,7 @@
 <div align = center>
 <br>
 
-  # MarsOS❄️
+# MarsOS❄️
 
 <br>
 </div>
