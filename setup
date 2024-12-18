@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Get the directory path where the script is located
+script_dir=$(dirname "$(realpath "$0")")
+system_dir="$script_dir/system"
+
+# File path on system and destination
+source_file="/etc/nixos/hardware-configuration.nix"
+target_file="$system_dir/hardware-configuration.nix"
+
+# Check if the file exists and if its content differs
+if [ ! -f "$target_file" ] || ! diff -q "$source_file" "$target_file" &>/dev/null; then
+    echo "Differences detected or non-existent file. Overriding 'hardware-configuration.nix'..."
+    cp "$source_file" "$target_file"
+    echo "File updated successfully.."
+fi
+
+echo "Select an option:"
+echo "1) Clear (Remove old waste)"
+echo "2) Rebuild System"
+echo "3) Rebuild with less RAM (It takes longer)"
+echo "4) Exit"
+read -p "Enter the number of your choice: " choice
+
+case $choice in
+    1)
+        echo "Running 'sudo nix-collect-garbage --delete-old'..."
+        sudo nix-collect-garbage --delete-old
+        ;;
+    2)
+        echo "Rebuilding the system..."
+        sudo nixos-rebuild boot --flake .
+        ;;
+    3)
+        echo "Rebuilding the system..."
+        sudo nixos-rebuild boot --flake . --cores 1 -j 1
+        ;;
+    4)
+        echo "Bye..."
+        exit 0
+        ;;
+    *)
+        echo "Invalid option. try again."
+        ;;
+esac
+
