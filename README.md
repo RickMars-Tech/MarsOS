@@ -3,6 +3,7 @@
 
 # MarsOS❄️
 <br>
+ MarsOS is a simple way to replicate my setup on any NixOS system via a Flake. 
 </div>
 
 # To Take into Account.
