@@ -28,8 +28,8 @@ display_menu() {
     echo "Select an option:"
     echo "1) Clear (Remove old generations)"
     echo "2) Delete Historical Versions older than 7 Days"
-    echo "3) Rebuild System"
-    echo "4) Rebuild System with less RAM (It takes longer)"
+    echo "3) Rebuild and Refresh System"
+    echo "4) Rebuild System on Boot"
     echo "5) Exit"
     read -p "Enter the number of your choice: " choice
 }
@@ -37,11 +37,15 @@ display_menu() {
 # Main script execution
 generate_hardware_config
 
+clear
+echo "Welcome to the NixOS Setup Script!"
+
 while true; do
     display_menu
     case $choice in
         1)
             echo "Running 'sudo nix-collect-garbage --delete-old'..."
+            clear
             sudo nix-collect-garbage --delete-old || echo "Error: Failed to clear old generations."
             ;;
         2)
@@ -49,25 +53,32 @@ while true; do
             if ! sudo nix profile wipe-history --older-than 7d --profile /nix/var/nix/profiles/system; then
                 echo "Error: Failed to delete historical versions."
             fi
+            clear
             ;;
         3)
-            echo "Rebuilding the system..."
-            if ! sudo nixos-rebuild boot --flake .; then
+            echo "Rebuilding the system and refreshing..."
+            if ! sudo nixos-rebuild switch --flake .; then
                 echo "Error: Failed to rebuild the system."
             fi
+            clear
             ;;
         4)
-            echo "Rebuilding the system with less RAM..."
+            echo "Rebuilding the system on Boot..."
             if ! sudo nixos-rebuild boot --flake . --cores 1 -j 1; then
                 echo "Error: Failed to rebuild the system with limited resources."
             fi
+            clear
             ;;
         5)
+            clear
             echo "Exiting. Bye!"
+            sleep 1
+            clear
             exit 0
             ;;
         *)
             echo "Invalid option. Please try again."
+            clear
             ;;
     esac
 done
