@@ -128,7 +128,7 @@
         bat
         eza
         fzf
-        fastfetch
+        nerdfetch
         git
         gitoxide
         bottom
