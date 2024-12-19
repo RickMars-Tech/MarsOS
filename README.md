@@ -57,16 +57,14 @@ sudo chmod +x setup
 
 
 # References
-<p align="center">
-Other configurations that I have learned a lot from:
 
+Other configurations that I have learned a lot from:
 
 **[Tyler Kelley ]**
 
 **[Liassica]**
 
 **[Ryan Yin]**
-<p/>
 
 <!----------------------------------{ Thanks }--------------------------------->
 [Tyler Kelley ]: https://gitlab.com/Zaney/zaneyos
