@@ -7,6 +7,27 @@
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 </div>
 
+
+## Components
+
+|                             | NixOS(Wayland)                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Window Manager**          | [Niri][Niri]                                                                                                        |
+| **Terminal Emulator**       | [Zellij][Zellij] + [Foot][Foot]                                                                                     |
+| **Bar**                     | [Waybar][Waybar]                                                                                                    |
+| **Application Launcher**    | [Fuzzel][Fuzzel]                                                                                                    |
+| **Notification Daemon**     | [Dunst][Funst]                                                                                                      |
+| **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
+| **network management tool** | [iwgtk][iwgtk]                                                                                                      |
+| **System resource monitor** | [Bottom][Bottom]                                                                                                    |
+| **File Manager**            | [Yazi][Yazi] + [Nautilus][Nautilus]                                                                                 |
+| **Shell**                   | [Nushell][Nushell] + [Oh-My-Posh][Oh-My-Posh]                                                                       |
+| **Media Player**            | [mpv][mpv]                                                                                                          |
+| **Text Editor**             | [Neovim][Neovim]                                                                                                    |
+| **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
+| **Image Viewer**            | [imv][imv]                                                                                                          |
+
+
 # Guide to Setup
 <br>
 
@@ -54,3 +75,20 @@ Other configurations that I have learned a lot from:
 [Liassica]: https://codeberg.org/Liassica/nixos-config
 [Ryan Yin]: https://github.com/ryan4yin/nixos-and-flakes-book
 
+<!--------------------------------{ Components }------------------------------->
+[Niri]: https://github.com/YaLTeR/niri
+[Foot]: https://codeberg.org/dnkl/foot
+[Waybar]: https://github.com/Alexays/Waybar
+[Fuzzel]: https://codeberg.org/dnkl/fuzzel
+[Dunst]: https://github.com/dunst-project/dunst
+[GreetD]: https://sr.ht/~kennylevinsen/greetd/
+[TuiGreet]: https://github.com/apognu/tuigreet
+[iwgtk]: https://github.com/J-Lentz/iwgtk
+[Bottom]: https://github.com/ClementTsang/bottom
+[Yazi]: https://github.com/sxyazi/yazi
+[Nautilus]: https://github.com/GNOME/nautilus
+[Nushell]: https://github.com/nushell/nushell
+[Oh-My-Posh]: https://github.com/jandedobbeleer/oh-my-posh
+[mpv]: https://github.com/mpv-player/mpv
+[Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
+[imv]: https://sr.ht/~exec64/imv/
