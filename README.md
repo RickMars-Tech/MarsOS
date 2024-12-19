@@ -36,7 +36,8 @@ sudo chmod +x setup
 
 # Special Thanks
 <br>
-Other configurations that I have learned a lot from.
+Other configurations that I have learned a lot from:
+
 
 **[Tyler Kelley ]**
 
