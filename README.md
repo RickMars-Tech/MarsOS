@@ -77,6 +77,7 @@ Other configurations that I have learned a lot from:
 
 <!--------------------------------{ Components }------------------------------->
 [Niri]: https://github.com/YaLTeR/niri
+[Zellij]: https://github.com/zellij-org/zellij
 [Foot]: https://codeberg.org/dnkl/foot
 [Waybar]: https://github.com/Alexays/Waybar
 [Fuzzel]: https://codeberg.org/dnkl/fuzzel
