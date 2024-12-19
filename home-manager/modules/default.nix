@@ -3,7 +3,7 @@
     imports = [
         ./dri/default.nix
         ./dunst/default.nix
-        ./fastfetch/default.nix
+        #./fastfetch/default.nix
         ./fuzzel/default.nix
         ./firefox/default.nix
         ./foot/default.nix
