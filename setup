@@ -1,46 +1,73 @@
-#!/bin/bash
+#!/bin/sh
 
 # Get the directory path where the script is located
 script_dir=$(dirname "$(realpath "$0")")
 system_dir="$script_dir/system"
+target_file="$system_dir/hardware.nix"
 
-# File path on system and destination
-source_file="/etc/nixos/hardware-configuration.nix"
-target_file="$system_dir/hardware-configuration.nix"
+# Ensure the system directory exists
+mkdir -p "$system_dir"
 
-# Check if the file exists and if its content differs
-if [ ! -f "$target_file" ] || ! diff -q "$source_file" "$target_file" &>/dev/null; then
-    echo "Differences detected or non-existent file. Overriding 'hardware-configuration.nix'..."
-    cp "$source_file" "$target_file"
-    echo "File updated successfully.."
-fi
+# Function to generate hardware configuration
+generate_hardware_config() {
+    if [ ! -f "$target_file" ]; then
+        echo "File 'hardware.nix' not found. Generating hardware configuration..."
+        if nixos-generate-config --show-hardware-config > "$target_file"; then
+            echo "'hardware.nix' has been generated successfully."
+        else
+            echo "Error: Failed to generate 'hardware.nix'."
+            exit 1
+        fi
+    else
+        echo "File 'hardware.nix' already exists. No action taken."
+    fi
+}
 
-echo "Select an option:"
-echo "1) Clear (Remove old waste)"
-echo "2) Rebuild System"
-echo "3) Rebuild with less RAM (It takes longer)"
-echo "4) Exit"
-read -p "Enter the number of your choice: " choice
+# Function to display menu options
+display_menu() {
+    echo "Select an option:"
+    echo "1) Clear (Remove old generations)"
+    echo "2) Delete Historical Versions older than 7 Days"
+    echo "3) Rebuild System"
+    echo "4) Rebuild System with less RAM (It takes longer)"
+    echo "5) Exit"
+    read -p "Enter the number of your choice: " choice
+}
 
-case $choice in
-    1)
-        echo "Running 'sudo nix-collect-garbage --delete-old'..."
-        sudo nix-collect-garbage --delete-old
-        ;;
-    2)
-        echo "Rebuilding the system..."
-        sudo nixos-rebuild boot --flake .
-        ;;
-    3)
-        echo "Rebuilding the system..."
-        sudo nixos-rebuild boot --flake . --cores 1 -j 1
-        ;;
-    4)
-        echo "Bye..."
-        exit 0
-        ;;
-    *)
-        echo "Invalid option. try again."
-        ;;
-esac
+# Main script execution
+generate_hardware_config
 
+while true; do
+    display_menu
+    case $choice in
+        1)
+            echo "Running 'sudo nix-collect-garbage --delete-old'..."
+            sudo nix-collect-garbage --delete-old || echo "Error: Failed to clear old generations."
+            ;;
+        2)
+            echo "Deleting all historical versions older than 7 days..."
+            if ! sudo nix profile wipe-history --older-than 7d --profile /nix/var/nix/profiles/system; then
+                echo "Error: Failed to delete historical versions."
+            fi
+            ;;
+        3)
+            echo "Rebuilding the system..."
+            if ! sudo nixos-rebuild boot --flake .; then
+                echo "Error: Failed to rebuild the system."
+            fi
+            ;;
+        4)
+            echo "Rebuilding the system with less RAM..."
+            if ! sudo nixos-rebuild boot --flake . --cores 1 -j 1; then
+                echo "Error: Failed to rebuild the system with limited resources."
+            fi
+            ;;
+        5)
+            echo "Exiting. Bye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid option. Please try again."
+            ;;
+    esac
+done
