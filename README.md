@@ -57,7 +57,7 @@ sudo chmod +x setup
 
 
 # References
-<br align="center">
+<p align="center">
 Other configurations that I have learned a lot from:
 
 
@@ -66,7 +66,7 @@ Other configurations that I have learned a lot from:
 **[Liassica]**
 
 **[Ryan Yin]**
-<br>
+<p/>
 
 <!----------------------------------{ Thanks }--------------------------------->
 [Tyler Kelley ]: https://gitlab.com/Zaney/zaneyos
