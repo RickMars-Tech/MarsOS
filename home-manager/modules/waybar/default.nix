@@ -5,12 +5,12 @@
         settings = {
             mainBar = {
                 layer = "top";
-                position = "top"; #"bottom";
+                position = "bottom"; #"top";
                 exclusive = true;
 
                 "modules-left" = [ "custom/nix" "niri/workspaces" "niri/window" ];
-                "modules-center" = [ "clock" ];
-                "modules-right" = [ "gamemode" "tray" "cpu" "memory" "battery" "temperature" "backlight" "wireplumber" "network" ];
+                "modules-center" = [];
+                "modules-right" = [ "gamemode" "tray" "cpu" "memory" "battery" "temperature" "backlight" "wireplumber" "network" "clock" ];
 
                 ##--------------------------
                 ## Workspaces
@@ -127,8 +127,8 @@
                 ## Clock
                 ##--------------------------
                 "clock" = {
-                    "format" = " {:%I:%M}";
-                    "format-alt" = " {:%d/%m/%y}";
+                    "format" = "{:%I:%M} ";
+                    "format-alt" = "{:%d/%m/%y} ";
                     "tooltip" = "true";
                     "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
                 };

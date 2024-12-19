@@ -12,7 +12,7 @@
         ./nushell/default.nix
         ./nvim/default.nix
         ./oh-my-posh/default.nix
-        ./rofi/default.nix
+        #./rofi/default.nix
         ./steam/default.nix
         ./waybar/default.nix
         ./wireplumber/default.nix

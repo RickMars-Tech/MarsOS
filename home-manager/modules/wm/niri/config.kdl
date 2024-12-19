@@ -124,10 +124,10 @@ output "LVDS-1" {
     position x=1280 y=0
 }
 
-/- switch-events {
-    // lid-close { spawn "hyprlock"; }
-    lid-close { spawn "bash" "-c" "niri msg output \"LVDS-1\" off" "&&" "hyprlock"; }
-    lid-open { spawn "bash" "-c" "niri msg output \"LVDS-1\" on"; }
+switch-events {
+    lid-close { spawn "hyprlock"; }
+    // lid-close { spawn "bash" "-c" "niri msg output \"LVDS-1\" off" "&&" "hyprlock"; }
+    // lid-open { spawn "bash" "-c" "niri msg output \"LVDS-1\" on"; }
 }
 
 // Settings that influence how windows are positioned and sized.

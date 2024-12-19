@@ -20,6 +20,8 @@
             #AMD_VULKAN_ICD = "RADV"; # Force radv
             #AMDVLK_ENABLE_DEVELOPING_EXT = "all";
             #RADV_PERFTEST = "aco"; # Force aco
+        #=> Intel Graphics
+            LIBVA_DRIVER_NAME = "i965";
         #=> Load Shared Objects Immediately
             LD_BIND_NOW = "1";
         #=> Steam

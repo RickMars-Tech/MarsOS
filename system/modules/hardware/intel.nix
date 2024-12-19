@@ -3,7 +3,7 @@
 #=> OpenGL, Drivers and more... 
 
     nixpkgs.config.packageOverrides = pkgs: {
-      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+      intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
     };
 
     hardware = {
@@ -12,14 +12,14 @@
             extraPackages = with pkgs; [
                 intel-vaapi-driver
                 libdrm
+                libvdpau-va-gl
                 mesa.drivers
+                vpl-gpu-rt
             ];
             enable32Bit = true;
             extraPackages32 = with pkgs.driversi686Linux; [
                 intel-vaapi-driver
                 mesa.drivers
-                vaapiIntel
-                vaapiVdpau
                 libvdpau-va-gl
             ];
         };

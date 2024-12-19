@@ -46,7 +46,7 @@
 
 window#waybar {
     background: @bar-back;
-    border-radius: 0px 0px 15px 15px;
+    border-radius: 15px 15px 0px 0px;
     padding: 3px;
 }
 
@@ -100,7 +100,6 @@ tooltip {
 
 #gamemode,
 #window,
-#clock,
 #battery,
 #pulseaudio,
 #network,
@@ -129,7 +128,8 @@ tooltip {
 }
 
 #clock {
-    color: @blue;
+    color: @flamingo;
+    margin-right: 1rem;
 }
 
 
@@ -160,7 +160,6 @@ tooltip {
 }
 #network {
     color: @pink;
-    margin-right: 1rem;
 }
 
 
