@@ -1,6 +1,7 @@
 <h3 align="center">:snowflake: MarsOS :snowflake:</h3>
 <p align="center"> 
- MarsOS is a simple way to replicate my setup on any NixOS system via a Flake. 
+ MarsOS is a simple way to replicate my setup on any NixOS system via a Flake.
+
  [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 <p/>
 
