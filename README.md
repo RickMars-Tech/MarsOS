@@ -1,4 +1,4 @@
-<h2 align="center">:snowflake: MarsOS :snowflake:</h2>
+<h3 align="center">:snowflake: MarsOS :snowflake:</h3>
 
  MarsOS is a simple way to replicate my setup on any NixOS system via a Flake. 
  
