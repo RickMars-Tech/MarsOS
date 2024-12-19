@@ -56,8 +56,8 @@ sudo chmod +x setup
 3. Preferably Install a Minimal environment without DE.
 
 
-# Special Thanks
-<br>
+# References
+<br align="center">
 Other configurations that I have learned a lot from:
 
 
