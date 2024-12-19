@@ -16,7 +16,7 @@
 | **Terminal Emulator**       | [Zellij][Zellij] + [Foot][Foot]                                                                                     |
 | **Bar**                     | [Waybar][Waybar]                                                                                                    |
 | **Application Launcher**    | [Fuzzel][Fuzzel]                                                                                                    |
-| **Notification Daemon**     | [Dunst][Funst]                                                                                                      |
+| **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
 | **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
 | **network management tool** | [iwgtk][iwgtk]                                                                                                      |
 | **System resource monitor** | [Bottom][Bottom]                                                                                                    |
@@ -91,5 +91,6 @@ Other configurations that I have learned a lot from:
 [Nushell]: https://github.com/nushell/nushell
 [Oh-My-Posh]: https://github.com/jandedobbeleer/oh-my-posh
 [mpv]: https://github.com/mpv-player/mpv
+[Neovim]: https://github.com/neovim/neovim
 [Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
 [imv]: https://sr.ht/~exec64/imv/
