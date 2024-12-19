@@ -2,7 +2,7 @@
 <p align="center">
  MarsOS is a simple way to replicate my setup on any NixOS system via a Flake. 
  
-[![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
+ [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 <p/>
 
 </div>
