@@ -46,7 +46,7 @@
                         }
                     }
                 }
-                fastfetch
+                nerdfetch
                 start_zellij
             '';
         };
