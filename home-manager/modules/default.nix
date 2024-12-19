@@ -7,7 +7,6 @@
         ./fuzzel/default.nix
         ./firefox/default.nix
         ./foot/default.nix
-        ./hyprland/default.nix
         ./mpv/default.nix
         ./nushell/default.nix
         ./nvim/default.nix
