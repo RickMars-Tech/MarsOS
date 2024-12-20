@@ -27,6 +27,11 @@
 | **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
 | **Image Viewer**            | [imv][imv]                                                                                                          |
 
+## Niri + Yazi
+
+![](./img/desktop-2.png)
+
+![](./img/firefox.png)
 
 # Guide to Setup
 <br>
