@@ -7,7 +7,7 @@
         ./firefox/default.nix
         ./foot/default.nix
         ./hypr/default.nix
-        .-kanshi/default.nix
+        #./kanshi/default.nix
         ./mpv/default.nix
         ./nushell/default.nix
         ./nvim/default.nix

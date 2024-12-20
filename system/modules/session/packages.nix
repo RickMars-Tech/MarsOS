@@ -124,7 +124,6 @@
         pyright
     #= Cli Utilities
         any-nix-shell
-        babelfish
         bat
         eza
         fzf
@@ -136,8 +135,8 @@
         macchanger
         ripgrep
         skim
-        uutils-coreutils-noprefix
-        busybox
+        #uutils-coreutils-noprefix
+        #busybox
         woeusb
     #= Fish Plugins
         #fishPlugins.done
