@@ -208,17 +208,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1734344598,
-        "narHash": "sha256-wNX3hsScqDdqKWOO87wETUEi7a/QlPVgpC/Lh5rFOuA=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "83ecd50915a09dca928971139d3a102377a8d242",
-        "type": "github"
+        "lastModified": 1734944412,
+        "narHash": "sha256-36QfCAl8V6nMIRUCgiC79VriJPUXXkHuR8zQA1vAtSU=",
+        "rev": "8264bfe3a064d704c57df91e34b795b6ac7bad9e",
+        "revCount": 3942,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/nix-community/home-manager/0.1.3942%2Brev-8264bfe3a064d704c57df91e34b795b6ac7bad9e/0193f499-694e-7aa7-9dbc-1891455b849c/source.tar.gz"
       },
       "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://flakehub.com/f/nix-community/home-manager/0.1.0.tar.gz"
       }
     },
     "libgit2": {
@@ -314,7 +313,9 @@
     "nix_2": {
       "inputs": {
         "nix": "nix_3",
-        "nixpkgs": "nixpkgs_4"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1733248733,
@@ -326,7 +327,7 @@
       },
       "original": {
         "type": "tarball",
-        "url": "https://flakehub.com/f/DeterminateSystems/nix/2.0"
+        "url": "https://flakehub.com/f/DeterminateSystems/nix/2.%2A"
       }
     },
     "nix_3": {
@@ -418,12 +419,12 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1734202038,
-        "narHash": "sha256-LwcGIkORU8zfQ/8jAgptgPY8Zf9lGKB0vtNdQyEkaN8=",
-        "rev": "bcba2fbf6963bf6bed3a749f9f4cf5bff4adb96d",
-        "revCount": 637309,
+        "lastModified": 1734835170,
+        "narHash": "sha256-JG6n9tQET7ZLjvwjH9BdYE6pES/Alcduxv2FDXliuBM=",
+        "rev": "6df924734e1b626efd70925545de844b1c25246f",
+        "revCount": 637358,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2405.637309%2Brev-bcba2fbf6963bf6bed3a749f9f4cf5bff4adb96d/0193cca3-8c7f-7c8d-8bdd-3293bd93c753/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2405.637358%2Brev-6df924734e1b626efd70925545de844b1c25246f/0193f30f-5ca8-72e9-8dad-dd8515c22050/source.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -462,26 +463,12 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1733120037,
-        "narHash": "sha256-En+gSoVJ3iQKPDU1FHrR6zIxSLXKjzKY+pnh9tt+Yts=",
-        "rev": "f9f0d5c5380be0a599b1fb54641fa99af8281539",
-        "revCount": 710194,
+        "lastModified": 1734649271,
+        "narHash": "sha256-4EVBRhOjMDuGtMaofAIqzJbg4Ql7Ai0PSeuVZTHjyKQ=",
+        "rev": "d70bd19e0a38ad4790d3913bf08fcbfc9eeca507",
+        "revCount": 724962,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2411.710194%2Brev-f9f0d5c5380be0a599b1fb54641fa99af8281539/01938be8-64ce-75c6-94d4-dbc2e4d547fe/source.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/NixOS/nixpkgs/%2A"
-      }
-    },
-    "nixpkgs_5": {
-      "locked": {
-        "lastModified": 1734119587,
-        "narHash": "sha256-AKU6qqskl0yf2+JdRdD0cfxX4b9x3KKV5RqA6wijmPM=",
-        "rev": "3566ab7246670a43abd2ffa913cc62dad9cdf7d5",
-        "revCount": 721821,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.721821%2Brev-3566ab7246670a43abd2ffa913cc62dad9cdf7d5/0193cb18-1103-723d-8c38-29b3e808b002/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.724962%2Brev-d70bd19e0a38ad4790d3913bf08fcbfc9eeca507/0193ec4a-02cd-7c6d-bad8-825029076205/source.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -531,7 +518,7 @@
         "magic-nix-cache": "magic-nix-cache",
         "nix": "nix_2",
         "nix-flatpak": "nix-flatpak",
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_4",
         "nixpkgs-stable": "nixpkgs-stable"
       }
     },

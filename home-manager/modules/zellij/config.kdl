@@ -39,7 +39,7 @@ on_force_close "detach"
 default_layout "work_everforest"
 
 // Mouse
-mouse_mode true
+mouse_mode false
 scroll_buffer_size 12000
 
 copy_clipboard "system"  // Default

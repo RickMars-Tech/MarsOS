@@ -8,32 +8,20 @@
         withPython3 = true;
         package = pkgs.neovim-unwrapped;
         extraPackages = with pkgs; [
-            rust-analyzer
-            nixd
             nil
-            nixfmt-rfc-style
-            pyright
         ];
         extraPython3Packages = pyPkgs: with pyPkgs; [
-            #pylsp-mypy
-            pyls-isort
-            python-lsp-server
             pytest
             pylint
-            # python-lsp-ruff
-            # pyls-flake8
-            # pylsp-rope
-            # yapf
-            # autopep8
         ];
         plugins = with pkgs.vimPlugins; [
             indent-blankline-nvim
             nvim-lspconfig
             #oxocarbon-nvim
+            otter-nvim
             supermaven-nvim
             vim-airline
             vim-nix
-            #vim-just
         ];
         extraLuaConfig = ''
             vim.cmd('syntax on')
@@ -104,61 +92,7 @@
             })
 
             -- LSP Config
-            require("lspconfig").rust_analyzer.setup {
-                cmd = { "rust-analyzer" },
-                filetypes = { "rust" },
-                single_file_support = true,
-                settings = {
-                    ['rust-analyzer'] = {
-                        diagnostics = {
-                            enable = true,
-                        }
-                    },
-                },
-            }
-            require("lspconfig").nixd.setup({
-                cmd = { "nixd" },
-                filetypes = { "nix" },
-                single_file_support = true,
-                settings = {
-                    nixd = {
-                        nixpkgs = {
-                            expr = "import <nixpkgs> { }",
-                        },
-                        formatting = {
-                            command = { "nixfmt" },
-                        },
-                        options = {
-                            nixos = {
-                                expr = '(builtins.getFlake ("git+file://" + toString ./.)).nixosConfigurations.nixos.options',
-                            },
-                            home_manager = {
-                                expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations."rick".options',
-                            },
-                        },
-                    },
-                },
-            })
-            require("lspconfig").pyright.setup {
-                cmd = { "pyright-langserver", "--stdio" },
-                filetypes = { "python" },
-                single_file_support = true,
-                settings = {
-                    python = {
-                        analysis = {
-                            autoSearchPaths = true,
-                            diagnosticMode = "workspace",
-                            useLibraryCodeForTypes = true,
-                        },
-                        formatting = {
-                            provider = "black",
-                            black_args = {
-                                "--line-length=120",
-                            },
-                        },
-                    }
-                },
-            };
+            require("otter").activate({ "python", "rust", "nix" }, true, true, true, nil)
         '';
     };
 

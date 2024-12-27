@@ -25,7 +25,11 @@
             "kfence.sample_interval=100"
             "pti=on"
         # GPU
-            "i915.enable_rc6=7"
+            "i915.enable_rc6=1"
+            "i915.semaphores=1"
+            "pcie_aspm=force"
+        # Remove /dev/mem access restrictions
+            "iomem=relaxed"
         ## Reduce attack surface
         # Disable debugfs
             "debugfs=off"
@@ -63,6 +67,16 @@
             "kernel.oops_limit" = 100;
             "kernel.warn_limit" = 100;
         ## Network
+            "net.ipv4.tcp_timestamps" = 1;
+            "net.ipv4.tcp_sack" = 1;
+            "net.ipv4.tcp_window_scaling" = 1;
+            "net.core.rmem_default" = 16777216;
+            "net.core.wmem_default" = 16777216;
+            "net.ipv4.tcp_rmem" = "4096 87380 16777216";
+            "net.ipv4.tcp_wmem" = "4096 65536 16777216";
+            "net.ipv4.tcp_low_latency" = 1;
+            "net.ipv4.tcp_slow_start_after_idle" = 0;
+            "net.ipv4.tcp_congestion_control" = "bbr";
         # Help pretect against syn floods
             "net.ipv4.tcp_syncookies" = 1;
         # Do source validation of packets
@@ -106,6 +120,9 @@
         # - https://madaidans-insecurities.github.io/guides/linux-hardening.html
         # - https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/profiles/hardened.nix
         blacklistedKernelModules = [
+        # Not used by the system
+            "ath3k"
+            "nouveau"
         # Obscure network protocols
             "af_802154"
             "decnet"
@@ -116,7 +133,6 @@
             "psnap"
             "sctp"
         # Old, rare, or insufficiently audited filesystems
-            "f2fs"
             "hfs"
             "hfsplus"
             "jfs"

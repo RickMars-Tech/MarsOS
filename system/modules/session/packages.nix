@@ -11,21 +11,6 @@
 
 #=> Packages Installed in System Profile.
     environment.systemPackages = with pkgs; [
-    #= Gnome
-        /*
-        gnome-extension-manager
-        gnomeExtensions.appindicator
-        gnomeExtensions.dash-to-dock
-        gnomeExtensions.blur-my-shell
-        gnomeExtensions.gamemode-indicator-in-system-settings
-        gnomeExtensions.vitals
-        gnomeExtensions.xwayland-indicator
-        gnome.gnome-tweaks
-        gnome.gnome-calculator
-        gnome.dconf-editor
-        gnome.eog
-        */
-        nautilus
     #= Main
         aml
         alsa-lib
@@ -33,6 +18,7 @@
         alsa-utils
         cacert
         libsForQt5.ark
+        nautilus
         staruml
         # geogebra6
         #webcord
@@ -126,6 +112,7 @@
         any-nix-shell
         bat
         eza
+        flashrom
         fzf
         nerdfetch
         git
@@ -133,6 +120,7 @@
         bottom
         lynx
         macchanger
+        pciutils
         ripgrep
         skim
         #uutils-coreutils-noprefix
@@ -216,19 +204,37 @@
     # JPEG
         libjpeg
     # FFMPEG
-        #ffmpeg-full
-        #ffmpeg-headless
-        #ffmpegthumbnailer
-    #= Media Player
-        #(pkgs.mpv-unwrapped.wrapper {
-        #    mpv = pkgs.mpv-unwrapped.override {
-        #        ffmpeg = pkgs.ffmpeg-full;
-        #        waylandSupport = true;
-        #    };
-        #})
+        ffmpeg
     #= Wine
         bottles
     ];
+
+#= Terminal FileManager
+    programs.yazi = {
+        enable = true;
+        package = pkgs.yazi;#pkgs-stable.yazi;
+        settings.yazi = {
+            manager = {
+                sort_by = "natural";
+                show_hidden = true;
+                show_symlink = true;
+            };
+            preview = {
+                image_filter = "lanczos3";
+                image_quality = 60;
+                max_width = 600;
+                max_height = 900;
+                ueberzug_scale = 1;
+                ueberzug_offset = [0 0 0 0];
+            };
+            tasks = {
+                micro_workers = 5;
+                macro_workers = 10;
+                bizarre_retry = 5;
+            };
+            keymap = "la-latin1";
+        };
+    };
 
 #= Java =#
     programs.java = {
