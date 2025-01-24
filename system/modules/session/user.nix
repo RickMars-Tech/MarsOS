@@ -23,7 +23,7 @@
             "qemu"
             "input"
         ];
-        shell = pkgs.nushell; #pkgs.fish;
+        shell = pkgs.nushell;
     };
 
 }

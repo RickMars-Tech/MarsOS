@@ -6,7 +6,7 @@
 #= Permitted Insecure Packages
     nixpkgs.config.permittedInsecurePackages = [ ];
 
-#= Fenix 
+#= Fenix (Rust).
     nixpkgs.overlays = [ inputs.fenix.overlays.default ];
 
 #=> Packages Installed in System Profile.
@@ -112,8 +112,11 @@
         any-nix-shell
         bat
         eza
-        flashrom
+        curl
+        wget
+        flashprog
         fzf
+        trash-cli
         nerdfetch
         git
         gitoxide
@@ -123,6 +126,7 @@
         pciutils
         ripgrep
         skim
+        zoxide
         #uutils-coreutils-noprefix
         #busybox
         woeusb

@@ -9,7 +9,7 @@
             splash_offset = 2.0;
 
             preload =
-                [ "~/wal/alone.png" ];
+                [ "~/wal/arcane.png" "~/wal/spaceman.png" "~/wal/alone.png" ];
             wallpaper = 
                 [ ",~/wal/alone.png" ];
         };

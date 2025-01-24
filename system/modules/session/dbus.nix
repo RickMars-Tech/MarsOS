@@ -2,11 +2,10 @@
 
     services.dbus = {
         enable = true;
-        implementation = "dbus"; 
+        implementation = "broker"; 
         packages = with pkgs; [ 
             dunst
             flatpak
-            niri
             greetd.greetd
             greetd.tuigreet
         ];

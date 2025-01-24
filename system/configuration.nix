@@ -1,61 +1,56 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-___  ___                   _____  _____ 
-|  \/  |                  |  _  |/  ___|
-| .  . |  __ _  _ __  ___ | | | |\ `--. 
-| |\/| | / _` || '__|/ __|| | | | `--. \
-| |  | || (_| || |   \__ \\ \_/ //\__/ /
-\_|  |_/ \__,_||_|   |___/ \___/ \____/ 
+/*~~~~~~~~~~~~~~~~~~~
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+███╗   ██╗██╗██╗  ██╗
+████╗  ██║██║╚██╗██╔╝
+██╔██╗ ██║██║ ╚███╔╝ 
+██║╚██╗██║██║ ██╔██╗ 
+██║ ╚████║██║██╔╝ ██╗
+╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
+
+~~~~~~~~~~~~~~~~~~~~~*/
 
 { pkgs, ... }: {
 
-    imports = [ # Include the results of the hardware scan.
-        ./hardware.nix
-        ./modules/default.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware.nix
+    ./modules/default.nix
+  ];
 
 #=> Fonts Config
-    fonts = {
-        packages = with pkgs; [
-            noto-fonts
-            montserrat
-            nerd-fonts.daddy-time-mono
-            nerd-fonts.meslo-lg
-            nerd-fonts.jetbrains-mono
-            nerd-fonts.ubuntu-mono
-            source-han-sans
-            jost
-            material-design-icons
-            material-icons
-            material-symbols
-        ];
-        fontconfig = {
-            enable = true;
-            defaultFonts = {
-                monospace = [ "DaddyTimeMono Nerf Font Propo" ];
-                serif = [ "Noto Serif" "Source Han Serif" ];
-                sansSerif = [ "Noto Sans" "Source Han Sans" ];
-            };
-        };
+  fonts = {
+    packages = with pkgs; [
+      montserrat
+      nerd-fonts.noto
+      nerd-fonts.fira-code
+      nerd-fonts.hasklug
+      nerd-fonts.jetbrains-mono
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "FiraCode Nerd Font Mono" ];
+        serif = [ "NotoSerif NF" ];
+        sansSerif = [ "NotoSans NFP" ];
+      };
     };
+  };
 
-    # Set your time zone.
-    time.timeZone = "America/Chihuahua";
+  # Set your time zone.
+  time.timeZone = "America/Chihuahua";
 
-    # Select internationalisation properties.
-    i18n.defaultLocale = "es_MX.UTF-8";
-    i18n.extraLocaleSettings = {
-        LC_ADDRESS = "es_MX.UTF-8";
-        LC_IDENTIFICATION = "es_MX.UTF-8";
-        LC_MEASUREMENT = "es_MX.UTF-8";
-        LC_MONETARY = "es_MX.UTF-8";
-        LC_NAME = "es_MX.UTF-8";
-        LC_NUMERIC = "es_MX.UTF-8";
-        LC_PAPER = "es_MX.UTF-8";
-        LC_TELEPHONE = "es_MX.UTF-8";
-        LC_TIME = "es_MX.UTF-8";
-    };
+  # Select internationalisation properties.
+  i18n.defaultLocale = "es_MX.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "es_MX.UTF-8";
+    LC_IDENTIFICATION = "es_MX.UTF-8";
+    LC_MEASUREMENT = "es_MX.UTF-8";
+    LC_MONETARY = "es_MX.UTF-8";
+    LC_NAME = "es_MX.UTF-8";
+    LC_NUMERIC = "es_MX.UTF-8";
+    LC_PAPER = "es_MX.UTF-8";
+    LC_TELEPHONE = "es_MX.UTF-8";
+    LC_TIME = "es_MX.UTF-8";
+  };
 
 
   # This value determines the NixOS release from which the default

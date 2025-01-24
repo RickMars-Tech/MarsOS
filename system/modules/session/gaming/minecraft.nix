@@ -4,6 +4,7 @@
         glfw3-minecraft
         (prismlauncher.override {
             jdks = [ #= Java Versions
+                jdk
                 jdk17
                 jdk8
             ];

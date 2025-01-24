@@ -1,8 +1,8 @@
-{ config, ... }: {
+{ ... }: {
     
     boot = {
         kernelModules = [
-            "tp_smapi"
+            #"tp_smapi" <--- Doesn't Work with Coreboot
         ];
         # Security kernel parameters from:
         # - https://madaidans-insecurities.github.io/guides/linux-hardening.html
@@ -15,7 +15,6 @@
             "quiet"
         # Enable IOMMU
             "iommu=force"
-            #"amd_iommu=force_isolation"
         # Randomize page allocator freelists
             "page_alloc.shuffle=1"
         # CPU vulnerability mitigations
@@ -28,7 +27,7 @@
             "i915.enable_rc6=1"
             "i915.semaphores=1"
             "pcie_aspm=force"
-        # Remove /dev/mem access restrictions
+        # Remove /dev/mem access restrictions(Needed for Upgrade Coreboot/Libreboot from internal).
             "iomem=relaxed"
         ## Reduce attack surface
         # Disable debugfs
@@ -149,7 +148,7 @@
             "vivid"
         ];
 
-        extraModulePackages = with config.boot.kernelPackages; [ tp_smapi ];
+        #extraModulePackages = with config.boot.kernelPackages; [ tp_smapi ];  <--- Doesn't Work with Coreboot 
 
         extraModprobeConfig = "
             options snd_hda_intel power_save=1

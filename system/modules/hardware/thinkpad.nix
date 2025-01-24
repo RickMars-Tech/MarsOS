@@ -1,4 +1,4 @@
-{ config, lib, ... }: {
+{ config, pkgs, lib, ... }: {
 
     services.throttled = {
         enable = true;
@@ -9,5 +9,9 @@
         enable = lib.mkDefault true;
         emulateWheel = lib.mkDefault config.hardware.trackpoint.enable;
     };
+
+    environment.systemPackages = with pkgs; [
+        tpacpi-bat
+    ];
 
 }

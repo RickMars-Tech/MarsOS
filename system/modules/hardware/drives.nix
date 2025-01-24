@@ -7,19 +7,19 @@
         options = [ "size=8G" ];
     };
 
-#= SmartD
+#= SmartD.
     services.smartd = {
         enable = true;
         autodetect = true;
     };
 
-#= Enable Trim Needed for SSD's
+#= Enable Trim (Needed for SSD's).
     services.fstrim = {
-        enable = false;
+        enable = true;
         interval = "weekly";
     };
 
-#= ZRAM
+#= ZRAM.
     zramSwap = {
         enable = true;
         priority = 10;
@@ -28,7 +28,7 @@
         swapDevices = 2;
     };
 
-#= USB
+#= USB.
     services.gvfs.enable = true;
     services.udisks2.enable = true;
 

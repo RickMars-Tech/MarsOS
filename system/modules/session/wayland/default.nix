@@ -2,13 +2,19 @@
 
     imports = [
         #./cosmic.nix
-        #./hyprland.nix
+        ./hyprland.nix
         ./pipewire.nix
-        ./niri.nix
+        ./packages.nix
         ./waybar.nix
     ];
     services.xserver.enable = false;
-    programs.xwayland.enable = false;
+
+#= UWSM
+  programs.uwsm = {
+    enable = true;
+    waylandCompositors = {};
+  };
+
 
 #= XDG
     xdg = {

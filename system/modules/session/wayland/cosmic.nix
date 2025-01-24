@@ -1,7 +1,8 @@
-{  lib, ... }: {
+{ ... }:
 
-    services = {
-        desktopManager.cosmic.enable = true;
-        displayManager.cosmic-greeter.enable = lib.mkDefault true;
-    };
+{
+
+    services.desktopManager.cosmic.enable = true;
+    services.displayManager.cosmic-greeter.enable = true;
+
 }

@@ -1,4 +1,4 @@
-@define-color bar-back rgba( 14, 14, 23, 0.90);
+@define-color bar-back rgba( 14, 14, 23, 0.95);
 @define-color color #AAAAAA;
 @define-color borders #0E0E0E;
 @define-color inactives rgba(204, 204, 204, 0.3);
@@ -37,7 +37,7 @@
  * ----------------------------------------------------- */
 
 * {
-    font-family: "DaddyTimeMono", Mono;
+    font-family: "FiraCode", Mono;
     font-weight: Bold;
     font-size: 15px;
     border: none;
@@ -45,7 +45,8 @@
 }
 
 window#waybar {
-    background: @bar-back;
+    background: shade(@base, 0.9);
+    border: 2px solid alpha(@crust, 0.3);
     border-radius: 15px 15px 0px 0px;
     padding: 3px;
 }
@@ -56,30 +57,34 @@ window#waybar {
  * ----------------------------------------------------- */
 
 #workspaces {
-    padding: 0px;
-    color: @inactives;
+    border-radius: 1rem;
+    margin: 5px;
+    background-color: @surface0;
 }
 
 #workspaces button {
-    color: @inactives;
-    padding: 4px 8px;
+    color: @lavender;
+    border-radius: 1rem;
+    padding: 0.4rem;
 }
 
 #workspaces button.active {
     color: @sky;
-    transition: all 0.3s ease-in-out;
+    border-radius: 1rem;
 }
 
 #workspaces button:hover {
     color: @sapphire;
+    border-radius: 1rem;
     animation: ws_hover 20s ease-in-out 1;
     transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
 #custom-nix {
     color: @blue;
-    font-size: 16px;
+    border-radius: 0rem 1rem 1rem 0rem;
     margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 /* -----------------------------------------------------
@@ -89,8 +94,6 @@ window#waybar {
 tooltip {
     background: @bar-back;
     color: @lavender;
-    border-radius: 7px;
-    border-width: 0px;
 }
 
 
@@ -99,7 +102,6 @@ tooltip {
  * ----------------------------------------------------- */
 
 #gamemode,
-#window,
 #battery,
 #pulseaudio,
 #network,
@@ -110,12 +112,15 @@ tooltip {
 #battery,
 #temperature,
 #cpu,
+#clock,
 #memory,
 #gamemode,
 #tray {
-    color: @surface0;
-    border: 1px solid rgba (0, 0, 0, 0);
-    padding: 0px 10px;
+    background-color: @surface0;
+	padding: 0rem 0.5rem;
+	/*margin-left: 0.09rem;
+	margin-right: 0.09rem;*/
+	margin: 0.5rem 0;
 }
 
 
@@ -123,15 +128,18 @@ tooltip {
  * Window and Clock
  * ----------------------------------------------------- */
 
-#window {
-    color: @inactives;
-}
-
 #clock {
     color: @flamingo;
     margin-right: 1rem;
+	margin-left: 1rem;
+	border-radius: 1rem;
 }
 
+#window {
+    color: @inactives;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
 
 /* -----------------------------------------------------
  * Gamemode
@@ -139,6 +147,7 @@ tooltip {
 
 #gamemode {
     color: @lavender;
+	border-radius: 1rem;
 }
 
 /* -----------------------------------------------------
@@ -147,6 +156,8 @@ tooltip {
 
 #tray {
     color: @lavender;
+    margin-right: 1rem;
+    border-radius: 1rem;
 }
 
 
@@ -160,6 +171,8 @@ tooltip {
 }
 #network {
     color: @pink;
+	margin-right: 1rem;
+	border-radius: 0rem 1rem 1rem 0rem;
 }
 
 
@@ -167,7 +180,11 @@ tooltip {
  * Cpu and Ram
  * ----------------------------------------------------- */
 
-#cpu,
+#cpu {
+    color: @blue;
+    border-radius: 1rem 0rem 0rem 1rem;
+}
+
 #memory {
     color: @blue;
 }
@@ -177,15 +194,15 @@ tooltip {
  * ----------------------------------------------------- */
 
 #battery {
-    color: @blue;
+  color: @green;
 }
 
 #battery.charging {
-    color: @green;
+  color: @green;
 }
 
 #battery.warning:not(.charging) {
-    color: @red;
+  color: @red;
 }
 
 #temperature {

@@ -30,6 +30,7 @@
         firmware = with pkgs; [
             linux-firmware
         ];
+        firmwareCompression = "zstd";
     };
 
 }

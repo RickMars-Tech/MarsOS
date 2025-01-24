@@ -3,13 +3,12 @@
 
     inputs = {
 
-        #nix.url = "https://flakehub.com/f/DeterminateSystems/nix/2.*";
         nix = {
             url = "https://flakehub.com/f/DeterminateSystems/nix/2.*";
             inputs.nixpkgs.follows = "nixpkgs";
         };
         nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.0.tar.gz";
-        nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2405.636292.tar.gz";
+        #nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2405.636292.tar.gz";
 
         nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
         
@@ -25,6 +24,8 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        hyprland.url = "github:hyprwm/Hyprland";
+
     };
 
     outputs = inputs@{
@@ -33,14 +34,14 @@
         home-manager,
         nix,
         nixpkgs,
-        nixpkgs-stable,
+        #nixpkgs-stable,
         self,
         ...
     }: let 
 
         system = "x86_64-linux";
         pkgs = nixpkgs.legacyPackages.${system};
-        pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+        #pkgs-stable = nixpkgs-stable.legacyPackages.${system};
         lib = nixpkgs.lib;
         username = "rick";
         name = "Rick";
@@ -77,7 +78,7 @@
             ];
             specialArgs = {
                 inherit inputs;
-                inherit pkgs-stable;
+                #inherit pkgs-stable;
                 inherit username;
                 inherit name;
                 inherit self;

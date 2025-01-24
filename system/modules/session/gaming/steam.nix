@@ -23,9 +23,10 @@
                 ];
         };
     };
-    #= Enable/Disable Steam Hardware Udev Rules
+    #= Enable/Disable Steam Hardware Udev Rules.
     hardware.steam-hardware.enable = lib.mkDefault false;
 
+    #= GTK Theme for Steam.
     environment.systemPackages = with pkgs; [
         adwsteamgtk
     ];

@@ -8,27 +8,39 @@
                 position = "bottom"; #"top";
                 exclusive = true;
 
-                "modules-left" = [ "custom/nix" "niri/workspaces" "niri/window" ];
+                "modules-left" = [ "clock" "hyprland/workspaces" "hyprland/window" ];
                 "modules-center" = [];
-                "modules-right" = [ "gamemode" "tray" "cpu" "memory" "battery" "temperature" "backlight" "wireplumber" "network" "clock" ];
+                "modules-right" = [ "gamemode" "tray" "cpu" "memory" "battery" "temperature" "backlight" "wireplumber" "network" ];
 
                 ##--------------------------
                 ## Workspaces
                 ##--------------------------
-                "niri/workspaces" = {
-                    "format" = "{}";
+                "hyprland/workspaces" = {
+                    "format" = "{icon}";
                     "format-icons" = {
-                        "active" = "󰮯";
-                        "default" = "󰊠";
+		                "active" = "󰮯";
+		                "default" = "";
+                    };
+                    "persistent-workspaces" = {
+                      "1" = [];
+                      "2" = [];
+                      "3" = [];
+                      "4" = [];
+                      "5" = [];
                     };
                 };
 
-                "niri/window" = {
+                "hyprland/window" = {
                     "format" = "{}";
+                    "rewrite" = {
+                        "(.*) — Mozilla Firefox" = " $1";
+                        "(.*) - Steam" = " $1";
+                        "(.*) - Zellij" = " [$1]";
+                    };  
                 };
 
                 "custom/nix" = {
-                    "format" = " ";
+                    "format" = "  ";
                     "tooltip" = false;
                 };
 
@@ -36,8 +48,8 @@
                 ## Wireplumber
                 ##--------------------------
                 "wireplumber" = {
-                    "format" = "{volume}% {icon}";
-                    "format-icons" = [ "" "" ""];
+                    "format" = "{icon} {volume}%";
+                    "format-icons" = [ "" "" "" ];
                     "on-click" = "wpctl";
                 };
 
@@ -45,8 +57,8 @@
                 ## Brightnessctl
                 ##--------------------------
                 "backlight" = {
-                    "format" = "{percent}% {icon}";
-                    "format-icons" = ["󰃛" "󰃜" "󰃝" "󰃞" "󰃟" "󰃠"];
+                    "format" = "{icon} {percent}%";
+                    "format-icons" = [ "󰃚" "󰃛" "󰃜" "󰃝" "󰃞" "󰃟" "󰃠" ];
                     "on-click" = "brightnessctl";
                 };
 
@@ -56,7 +68,7 @@
                 "gamemode" = {
                     "format" = "{glyph}";
                     "format-alt" = "{glyph} {count}";
-                    "glyph" = "";
+                    "glyph" = "󰊴";
                     "hide-not-running" = true;
                     "use-icon" = true;
                     "icon" = "nf-fa-gamepad";
@@ -78,8 +90,8 @@
                 "cpu" = {
                     "interval" = 5;
                     "tooltip" = false;
-                    "format" = "{usage}% ";
-                    "format-alt" = "{load} ";
+                    "format" = " {usage}%";
+                    "format-alt" = " {load}";
                     "states" = {
                         "warning" = 70;
                         "critical" = 90;
@@ -91,8 +103,8 @@
                 ##--------------------------
                 "memory" = {
                     "interval" = 5;
-                    "format" = "{}%  ";
-                    "format-alt" = "{used:0.1f}/{total:0.1f}G  ";
+                    "format" = " {}%";
+                    "format-alt" = " {used:0.1f}/{total:0.1f}G";
                     "states" = {
                         "warning" = 70;
                         "critical" = 90;
@@ -105,21 +117,28 @@
                 ##--------------------------
                 "network" = {
                     "interval" = 5;
-                    "format-wifi" = "Connected 󰤨 ";
-                    "format-ethernet" = "{essid} 󰈀";
-                    "format-disconnected" = "󰤮";
-                    "format-alt" = "{bandwidthTotalBytes} 󰈀";
+                    "format-wifi" = "{icon}Conectado";
+                    "format-ethernet" = " 󰈀 ";
+                    "format-disconnected" = " 󰤮 ";
+                    "format-alt" = "󰈀 {bandwidthTotalBytes}";
+                    "format-icons" = [
+                      "󰤯 "
+                      "󰤟 "
+                      "󰤢 "
+                      "󰤥 "
+                      "󰤨 "
+                    ];
                     "tooltip" = false;
                 };
 
                 "bluetooth" = {
-                    "format" = " {status}";
-                    "format-connected" = " {device_alias}";
-                    "format-connected-battery" = " {device_alias} {device_battery_percentage}%";
+                    "format" = "{status}";
+                    "format-connected" = "{device_alias}";
+                    "format-connected-battery" = "{device_alias} {device_battery_percentage}%";
                     "format-device-preference" = [ "device1" "device2" ]; # preference list deciding the displayed device
                     "tooltip-format" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
                     "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
-	                "tooltip-format-enumerate-connected" = "{device_alias}\t{device_address}";
+                    "tooltip-format-enumerate-connected" = "{device_alias}\t{device_address}";
                     "tooltip-format-enumerate-connected-battery" = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
                 };
 
@@ -127,8 +146,8 @@
                 ## Clock
                 ##--------------------------
                 "clock" = {
-                    "format" = "{:%I:%M} ";
-                    "format-alt" = "{:%d/%m/%y} ";
+                    "format" = "  {:%I:%M}";
+                    "format-alt" = "  {:%d/%m/%y}";
                     "tooltip" = "true";
                     "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
                 };
@@ -139,7 +158,7 @@
                 "temperature" = {
                     "critical-threshold" = 90;
                     "interval" = 5;
-                    "format" = "{temperatureC}° {icon}";
+                    "format" = "{icon}{temperatureC}°";
                     "format-icons" = [
                         ""
                         ""
@@ -160,9 +179,9 @@
                         "warning" = 30;
                         "critical" = 15;
                     };
-                    "format" = "{icon}  {capacity}%";
-                    "format-charging" = "󰂄 {capacity}%";
-                    "format-plugged" = " {capacity}%";
+                    "format" = "{icon} {capacity}%";
+                    "format-charging" = " 󰂄 {capacity}%";
+                    "format-plugged" = "  {capacity}%";
                     "format-alt" = "{icon} ({time}Hrs)";
                     "format-icons" = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
                 };
