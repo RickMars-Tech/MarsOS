@@ -126,7 +126,6 @@
       "psnap"
       "sctp"
     # Old, rare, or insufficiently audited filesystems
-      "f2fs"
       "hfs"
       "hfsplus"
       "jfs"
