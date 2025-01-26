@@ -74,7 +74,7 @@
       require("ibl").setup { indent = { highlight = highlight } }
 
       -- Colorscheme
-      vim.cmd.colorscheme "iceberg"
+      -- vim.cmd.colorscheme "iceberg"
 
       -- LSP Config
       local lspconfig = require('lspconfig')

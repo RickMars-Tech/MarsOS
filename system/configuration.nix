@@ -25,14 +25,14 @@
       nerd-fonts.hasklug
       nerd-fonts.jetbrains-mono
     ];
-    fontconfig = {
+    /*fontconfig = {
       enable = true;
       defaultFonts = {
         monospace = [ "FiraCode Nerd Font Mono" ];
         serif = [ "NotoSerif NF" ];
         sansSerif = [ "NotoSans NFP" ];
       };
-    };
+    };*/
   };
 
   # Set your time zone.

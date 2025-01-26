@@ -15,22 +15,22 @@ plugins {
 on_force_close "quit"
 
 // Theme's
-theme "darkmars"
-themes {
-    darkmars {
-        bg "#0E0E17"
-	    black "#0B0C17"
-	    blue "#C69E5B"
-	    cyan "#5E95DD"
-	    fg "#c4c5e6"
-	    green "#71bf98"
-	    magenta "#445CAD"
-	    orange "#8D6FAE"
-	    red "#9c9db8"
-	    white "#c4c5e6"
-	    yellow "#5F5B9D"
-	}
-}
+//theme "darkmars"
+//themes {
+//    darkmars {
+//       bg "#0E0E17"
+//	    black "#0B0C17"
+//	    blue "#C69E5B"
+//	    cyan "#5E95DD"
+//	    fg "#c4c5e6"
+//	    green "#71bf98"
+//	    magenta "#445CAD"
+//	    orange "#8D6FAE"
+//	    red "#9c9db8"
+//	    white "#c4c5e6"
+//	    yellow "#5F5B9D"
+//	}
+//}
 
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 on_force_close "detach"

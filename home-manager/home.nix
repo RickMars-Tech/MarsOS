@@ -33,6 +33,8 @@
         recursive = true;
     };
 
+/* Now Defined on Stylix
+
 #= DCONF
     dconf = {
         enable = true;
@@ -42,7 +44,7 @@
 #= CURSOR
     home.pointerCursor = {
         gtk.enable = true;
-        #x11.enable = true;
+        x11.enable = true;
         package = pkgs.apple-cursor;#pkgs.bibata-cursors;
         name = "macOS";#"Bibata-Original-Classic";
         size = 24;
@@ -50,7 +52,7 @@
 
 #= GTK
     gtk = {
-        enable = true;
+        enable = false;
         theme = {
             package = pkgs.whitesur-gtk-theme; #pkgs.material-black-colors;
             name = "WhiteSur-Dark"; #"Material-Black-Blueberry";
@@ -63,11 +65,12 @@
 
 #= QT
     qt = {
-        enable = true;
+        enable = false;
         platformTheme.name = "gtk";
         style = {
             package = pkgs.adwaita-qt;
             name = "adwaita-dark";
         };
-    };
+        };
+*/
 }

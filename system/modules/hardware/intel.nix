@@ -12,15 +12,13 @@
             extraPackages = with pkgs; [
                 intel-vaapi-driver
                 libdrm
-                libvdpau-va-gl
                 mesa.drivers
-                vpl-gpu-rt
+                #vpl-gpu-rt
             ];
             enable32Bit = true;
             extraPackages32 = with pkgs.driversi686Linux; [
                 intel-vaapi-driver
                 mesa.drivers
-                libvdpau-va-gl
             ];
         };
         intel-gpu-tools.enable = true;

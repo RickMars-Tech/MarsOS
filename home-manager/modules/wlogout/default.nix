@@ -49,13 +49,9 @@
         }
 
         /** ********** Main Window ********** **/
-        window {
-            background-color: rgba( 14, 14, 23, 0.70); /* #1E1E2E; */
-        }
 
         /** ********** Buttons ********** **/
         button {
-            background-color: rgba( 14, 14, 23, 0.80); /* #242434; */
             color: #FFFFFF;
             border: 2px solid #282838;
             border-radius: 20px;
@@ -67,7 +63,7 @@
         button:focus, button:active, button:hover {
             animation: gradient_f 20s ease-in infinite;
             transition: all 0.3s cubic-bezier(.55,0.0,.28,1.682);
-            background-color: rgba(270, 155, 255, 0.80); /* #89B4FA; */
+            /*background-color: rgba(270, 155, 255, 0.80); */
             outline-style: none;
         }
 

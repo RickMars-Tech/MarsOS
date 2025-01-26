@@ -9,7 +9,7 @@
                 hide_cursor = true;
             };
             background = {
-                path = "~/wal/alone.png";
+                #path = "~/wal/alone.png";
                 blur_size = 4;
                 blur_passes = 3;
                 noise = 0.0117;
@@ -18,6 +18,7 @@
                 vibrancy = 0.21000;
                 vibrancy_darkness = 0.0;
             };
+            /* Now Defined by Stilyx
             input-field = [
                 {
                     monitor = "";
@@ -39,13 +40,14 @@
                     position = "0, -200";
                     haling = "bottom";
                     valing = "center";
+                    
                 }
-            ];
+            ];*/
             label = [
                 {
                     monitor = "";
                     text = ''cmd[update:1000] echo "<b><big> $(date +"%H:%M:%S") </big></b>"'';
-                    color = "rgb(cba6f7)";
+                    #color = "rgb(cba6f7)";
                     font_size = 64;
                     font_family = "DaddyTimeMono";
                     position = "0, 100";
@@ -56,7 +58,7 @@
                 {
                     monitor = "";
                     text = "Type to unlock!";
-                    color = "rgb(cdd6f4)";
+                    #color = "rgb(cdd6f4)";
                     font_size = 16;
                     font_family = "DaddyTimeMono";
                     position = "0, 30";

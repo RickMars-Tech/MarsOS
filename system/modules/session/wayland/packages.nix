@@ -8,10 +8,10 @@
         foot
         zellij
         # Hyprland
-        #hyprland-protocols
-        #hyprcursor # The hyprland cursor format, library and utilitie
-        #hyprpicker # Wlroots-compatible Wayland color picker that does not suck
-        #hyprpolkitagent
+        hyprland-protocols
+        hyprcursor # The hyprland cursor format, library and utilitie
+        hyprpicker # Wlroots-compatible Wayland color picker that does not suck
+        hyprpolkitagent
         # Notification Deamon
         dunst
         libnotify

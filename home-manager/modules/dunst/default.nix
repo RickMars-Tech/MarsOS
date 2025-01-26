@@ -8,8 +8,8 @@
         };
         settings = {
             global = {
-                frame_color = "#89b4fa";
-                separator_color = "frame";
+                #frame_color = "#89b4fa";
+                #separator_color = "frame";
                 markup = "full";
                 format = "<span foreground='#f3f4f5'><b>%s %p</b></span>\n%b";
                 alignment = "left";
@@ -34,21 +34,21 @@
             };
             
             urgency_low = {
-                background = "#1e1e2e";
-                foreground = "#cdd6f4";
+                #background = "#1e1e2e";
+                #foreground = "#cdd6f4";
                 timeout = 10;
             };
 
             urgency_normal = {
-                background = "#1e1e2e";
-                foreground = "#cdd6f4";
+                #background = "#1e1e2e";
+                #foreground = "#cdd6f4";
                 timeout = 10;
             };
 
             urgency_critical = {
-                background = "#1e1e2e";
-                foreground = "#cdd6f4";
-                frame_color = "#fab387";
+                #background = "#1e1e2e";
+                #foreground = "#cdd6f4";
+                #frame_color = "#fab387";
                 timeout = 0;
             };
         };

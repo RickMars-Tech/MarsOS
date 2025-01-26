@@ -10,6 +10,7 @@
         ./network.nix
         ./packages.nix
         ./printing.nix
+        ./stylix.nix
         ./user.nix
     ];
 }
