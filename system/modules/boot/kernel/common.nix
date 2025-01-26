@@ -11,9 +11,9 @@
     # - https://tails.net/contribute/design/kernel_hardening/
     # - https://github.com/a13xp0p0v/kernel-hardening-checker/
     kernelParams = [
+    ## Readhead profiling
+      "profile"
     ## Kernel self-protection
-    # Hide kernel log during boot
-      "quiet"
     # Randomize page allocator freelists
       #"page_alloc.shuffle=1"
     # CPU vulnerability mitigations
