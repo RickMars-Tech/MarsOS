@@ -11,7 +11,7 @@
     #nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2405.636292.tar.gz";
 
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
-        
+
     magic-nix-cache.url = "https://flakehub.com/f/DeterminateSystems/magic-nix-cache/*.tar.gz";
 
     fenix = {
@@ -30,65 +30,68 @@
 
   };
 
-  outputs = inputs@{
-    fenix,
-    nix-flatpak,
-    home-manager,
-    nix,
-    nixpkgs,
-    #nixpkgs-stable,
-    stylix,
-    self,
-    ...
-  }: let 
+  outputs =
+    inputs@{
+      fenix,
+      nix-flatpak,
+      home-manager,
+      nix,
+      nixpkgs,
+      #nixpkgs-stable,
+      stylix,
+      self,
+      ...
+    }:
+    let
 
-  system = "x86_64-linux";
-  pkgs = nixpkgs.legacyPackages.${system};
-  #pkgs-stable = nixpkgs-stable.legacyPackages.${system};
-  lib = nixpkgs.lib;
-  username = "rick";
-  name = "Rick";
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      #pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+      lib = nixpkgs.lib;
+      username = "rick";
+      name = "Rick";
 
-in {
+    in
+    {
 
-  packages.x86_64-linux.default = fenix.packages.x86_64-linux.minimal.toolchain;
-  nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-    inherit system;
-    inherit lib;
-    modules = [
+      packages.x86_64-linux.default = fenix.packages.x86_64-linux.minimal.toolchain;
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
+        inherit lib;
+        modules = [
 
-      #==> Nix <==#
-      ./system/configuration.nix
-      nix.nixosModules.default
+          #==> Nix <==#
+          ./system/configuration.nix
+          nix.nixosModules.default
 
-      #==> Flatpak <==#
-      nix-flatpak.nixosModules.nix-flatpak
+          #==> Flatpak <==#
+          nix-flatpak.nixosModules.nix-flatpak
 
-      #==> Stylix <==#
-      stylix.nixosModules.stylix
+          #==> Stylix <==#
+          stylix.nixosModules.stylix
 
-      #==> Home-Manager <==#
-      home-manager.nixosModules.home-manager
-      {
-          nixpkgs.config.allowUnfree = true;
-          _module.args = { inherit inputs; };
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.${username} = import ./home-manager/home.nix;
-          home-manager.extraSpecialArgs = {
-            inherit username;
-            inherit inputs;
-            inherit self;
-          };
-        }
-      ];
-      specialArgs = {
-        inherit inputs;
-        #inherit pkgs-stable;
-        inherit username;
-        inherit name;
-        inherit self;
+          #==> Home-Manager <==#
+          home-manager.nixosModules.home-manager
+          {
+            nixpkgs.config.allowUnfree = true;
+            _module.args = { inherit inputs; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.${username} = import ./home-manager/home.nix;
+            home-manager.extraSpecialArgs = {
+              inherit username;
+              inherit inputs;
+              inherit self;
+            };
+          }
+        ];
+        specialArgs = {
+          inherit inputs;
+          #inherit pkgs-stable;
+          inherit username;
+          inherit name;
+          inherit self;
+        };
       };
     };
-  };
 }

@@ -1,8 +1,10 @@
-{ config, pkgs, ... }: let
+{ config, pkgs, ... }:
+let
 
   cfg = config.stylix;
 
-in {
+in
+{
 
   imports = [
     ./hypridle.nix
@@ -20,26 +22,26 @@ in {
       ];
 
       env = [
-      #= Hyprland
+        #= Hyprland
         "XDG_CURRENT_DESKTOP, Hyprland"
         "XDG_SESSION_TYPE, wayland"
         "XDG_SESSION_DESKTOP, Hyprland"
         "HYPRLAND_TRACE, 0"
         "HYPRLAND_NO_RT, 0"
         "HYPRLAND_NO_SD_NOTIFY, 1"
-      #= Toolkit Backend Variables 
+        #= Toolkit Backend Variables
         "GDK_BACKEND,wayland,x11,*"
         "QT_QPA_PLATFORM,wayland;xcb"
         "SDL_VIDEODRIVER,wayland"
         "CLUTTER_BACKEND,wayland"
-      #= XWayland
+        #= XWayland
         "GDK_SCALE, 1"
         "XCURSOR_SIZE, 24"
-      #= Qt
+        #= Qt
         "QT_AUTO_SCREEN_SCALE_FACTOR, 1"
         "QT_QPA_PLATFORM, wayland;xcb"
         "QT_WAYLAND_DISABLE_WINDOWDECORATION, 1"
-      #= Hyprcursor
+        #= Hyprcursor
         "HYPRCURSOR_THEME,${cfg.cursor.name}"
         "HYPRCURSOR_SIZE,${toString cfg.cursor.size}"
       ];
@@ -51,7 +53,7 @@ in {
         "wl-clipboard-history -t"
         "wl-paste --type text --watch cliphist store"
         "wl-paste --type image --watch cliphist store"
-      #"$POLKIT_BIN"
+        "$POLKIT_BIN"
         "systemctl --user enable --now hyprpolkitagent.service"
         "systemctl --user import-environment PATH && systemctl --user restart xdg-desktop-portal.service"
       ];
@@ -84,10 +86,10 @@ in {
       };
 
       input = {
-        kb_model = ""; #"pc104";
-        kb_layout = "us"; #"latam";
+        kb_model = ""; # "pc104";
+        kb_layout = "us"; # "latam";
         kb_variant = "";
-        kb_options = ""; #"terminate:ctrl_alt_bksp";
+        kb_options = ""; # "terminate:ctrl_alt_bksp";
         numlock_by_default = true;
         accel_profile = "flat";
         follow_mouse = 1;
@@ -104,7 +106,7 @@ in {
 
       general = {
         "$mainMod" = "SUPER";
-        layout = "master"; #"dwindle";
+        layout = "master"; # "dwindle";
         gaps_in = 2;
         gaps_out = 4;
         border_size = 2;
@@ -158,12 +160,12 @@ in {
           "easeinoutsine, 0.37, 0, 0.63, 1"
         ];
         animation = [
-        # Windows
+          # Windows
           "windowsIn, 1, 3, easeOutCubic, popin 30%" # window open
           "windowsOut, 1, 3, fluent_decel, popin 70%" # window close.
           "windowsMove, 1, 2, easeinoutsine, slide" # everything in between, moving, dragging, resizing.
 
-        # Fade
+          # Fade
           "fadeIn, 1, 3, easeOutCubic" # fade in (open) -> layers and windows
           "fadeOut, 1, 2, easeOutCubic" # fade out (close) -> layers and windows
           "fadeSwitch, 0, 1, easeOutCirc" # fade on changing activewindow and its opacity
@@ -173,7 +175,7 @@ in {
           "borderangle, 1, 30, fluent_decel, once" # for animating the border's gradient angle - styles: once (default), loop
           "workspaces, 1, 4, easeOutCubic, fade" # styles: slide, slidevert, fade, slidefade, slidefadevert
         ];
-               
+
       };
 
       gestures = {
@@ -189,24 +191,24 @@ in {
       };
 
       bind = [
-      # Screenshot
+        # Screenshot
         ", Print, exec, grimblast --notify copysave output"
         "SHIFT, Print, exec, grimblast --notify --cursor copysave area"
-      # LaunchApps
+        # LaunchApps
         "SUPER, T, exec, alacritty"
         "SUPER, B, exec, firefox"
         "CTRL SHIFT, E, exec, nautilus"
         "SUPER SHIFT, W, exec, waybar &"
         "SUPER, E, exec, alacritty -e yazi"
         "SUPER, S, swapsplit, # dwindle"
-        "SUPER, R, exec, fuzzel"
+        ''SUPER, R, exec, pkill rofi || rofi -show drun -run-command "uwsm app -- {cmd}" -show-icons''
         "SUPER SHIFT, H, exec, hyprpicker -r -a"
 
-      # Brightnes
+        # Brightnes
         ",XF86MonBrightnessUp, exec, brightnessctl set +5%"
         ",XF86MonBrightnessDown, exec, brightnessctl set 5%-"
 
-      # Windows
+        # Windows
         "SUPER, S, swapnext,"
         "SUPER, V, togglefloating"
 
@@ -217,13 +219,13 @@ in {
         "SUPER, up, movefocus, u"
         "SUPER, down, movefocus, d"
 
-      # Close Windows
+        # Close Windows
         "SUPER, Q, killactive,"
 
-      # Lock System
+        # Lock System
         "SUPER, L, exec, hyprlock"
 
-      # Off
+        # Off
         "SUPER, M, exec, wlogout"
 
         "SUPER, mouse_down, workspace, e+1"
@@ -252,76 +254,76 @@ in {
       ];
 
       bindm = [
-      # Manage Workspaces
+        # Manage Workspaces
         "SUPER, mouse:272, movewindow"
         "SUPER, Control_L, movewindow"
         "SUPER, mouse:273, resizewindow"
       ];
 
       bindl = [
-      # You can view your switches in hyprctl devices.
+        # You can view your switches in hyprctl devices.
         ",switch:Lid Switch,exec,${pkgs.hyprlock}/bin/hyprlock"
         #",switch:on:Lid Switch,exec,hyprctl keyword monitor '', disable''"
         #",switch:off:Lid Switch,exec,hyprctl keyword monitor '',highres,auto,1''"
 
-      # Audio
+        # Audio
         ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
         ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
         ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
 
-      # Multimedia
+        # Multimedia
         ",XF86AudioPlay, exec, playerctl play-pause"
         ",XF86AudioPause, exec, playerctl play-pause"
       ];
 
       windowrulev2 = [
-      # QBittorrent
+        # QBittorrent
         "float,class:^(org.qbittorrent.qBittorrent)$"
 
-      # Disk/Files
+        # Disk/Files
         "float, class:^(org.gnome.Nautilus)$"
         "float, class:^(org.gnome.baobab)$"
         "float, class:^(gnome-disks)$"
 
-      # IWGTK
+        # IWGTK
         "float,title:^(iwgtk)$"
         "float,class:^(iwgtk)$"
         "float,class:^(org.twosheds.iwgtk)$"
-                
-      # Pipewire (Pwvucontrol).
+
+        # Pipewire (Pwvucontrol).
         "float,title:^(Pipewire Volume Control)$"
 
-      # PulseAudio (Pavucontrol).
+        # PulseAudio (Pavucontrol).
         "float,class:^(pavucontrol)$"
 
-      # Firefox
+        # Firefox
         "float, title:^(Library)$,class:^(firefox)$"
         "float,title:^(Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox)$,class:^(firefox)$"
         "nomaxsize,title:^(Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox)$,class:^(firefox)$"
 
-      # Waydroid
+        # Waydroid
         "float, class:^(Waydroid)$"
 
-      # Steam
+        # Steam
         "stayfocused, title:^()$,class:^(steam)$"
         "minsize 1 1, title:^()$,class:^(steam)$"
         "noblur, class:^(steam)$"
         "float, title:^(Configuraciones de Steam)$"
         "float, class:^(steamwebhelper)$"
-      # ProtonUp-Qt
+        # ProtonUp-Qt
         "nomaxsize, class:^(net.davidotek.pupgui2)$"
         "float, class:^(net.davidotek.pupgui2)$"
         "float,title:^(ProtonUp-Qt)$"
 
-      # Alacritty
+        # Alacritty
         "size 950 550, class:^(Alacritty)$"
         "float, class: ^(Alacritty)$"
 
-      # Lutris
+        # Lutris
         "float,class:^(lutris)$"
 
-      # Workspaces
+        # Workspaces
         "workspace 1, class: ^(Alacritty)$"
         "workspace 1, class: ^(foot)$"
         "workspace 2 silent, class: ^(steam)$"
@@ -335,7 +337,7 @@ in {
         "idleinhibit focus,class:^(steam)"
         "idleinhibit focus,class:^(firefox)$"
 
-      # xwaylandvideobridge
+        # xwaylandvideobridge
         "opacity 0.0 override 0.0 override,class:^(xwaylandvideobridge)$"
         "noanim,class:^(xwaylandvideobridge)$"
         "noinitialfocus,class:^(xwaylandvideobridge)$"

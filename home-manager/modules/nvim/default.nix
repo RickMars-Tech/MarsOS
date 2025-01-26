@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
 
   programs.neovim = {
     enable = true;
@@ -10,7 +11,7 @@
     plugins = with pkgs.vimPlugins; [
       avante-nvim
       twilight-nvim
-      iceberg-vim
+      render-markdown-nvim
       nvim-fzf
       nvim-lspconfig
       nvim-cmp
@@ -26,12 +27,25 @@
       nerdcommenter
       rainbow
       vim-nix
+      telescope-nvim
+      gitsigns-nvim
+      vim-fugitive
+      nvim-dap
+      nvim-dap-ui
     ];
 
-    extraPython3Packages = pyPkgs: with pyPkgs; [
-      pytest
-      pylint
+    extraPackages = with pkgs; [
+      nixd
+      nixfmt-rfc-style
+      nodePackages.typescript-language-server
+      nodePackages.eslint
     ];
+
+    extraPython3Packages =
+      pyPkgs: with pyPkgs; [
+        pytest
+        pylint
+      ];
 
     extraLuaConfig = ''
       -- General Settings
@@ -53,6 +67,7 @@
       vim.o.smartcase = true
       vim.o.ignorecase = true
       vim.o.completeopt = 'menuone,noinsert,noselect'
+      vim.opt.laststatus = 3
 
       vim.api.nvim_create_autocmd({'BufWinEnter'}, {
         desc = 'return cursor to where it was last time closing the file',
@@ -73,9 +88,6 @@
       end)
       require("ibl").setup { indent = { highlight = highlight } }
 
-      -- Colorscheme
-      -- vim.cmd.colorscheme "iceberg"
-
       -- LSP Config
       local lspconfig = require('lspconfig')
       local cmp = require'cmp'
@@ -85,6 +97,8 @@
       lspconfig.pyright.setup{ capabilities = capabilities }
       lspconfig.rust_analyzer.setup{ capabilities = capabilities }
       lspconfig.nixd.setup{ capabilities = capabilities }
+      lspconfig.ts_ls.setup{ capabilities = capabilities }
+      lspconfig.eslint.setup{ capabilities = capabilities }
 
       -- Autocompletion with nvim-cmp
       cmp.setup({
@@ -102,6 +116,14 @@
             { name = 'path' },
             { name = 'cmdline' },
           }
+      })
+
+      -- Formateo automático al guardar
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = '*',
+        callback = function()
+          vim.lsp.buf.format()
+        end,
       })
 
       -- File Explorer (nvim-tree)
@@ -136,6 +158,11 @@
       -- NvimTree -- Ctrl+j
       vim.api.nvim_set_keymap("n", "<C-j>", "<cmd>NvimTreeToggle<CR>", { noremap = true, silent = true })
 
+      -- Telescope -- Ctrl+p
+      vim.api.nvim_set_keymap("n", "<C-p>", "<cmd>Telescope find_files<CR>", { noremap = true, silent = true })
+
+      -- Terminal flotante -- Ctrl+t
+      vim.api.nvim_set_keymap("n", "<C-t>", "<cmd>ToggleTerm<CR>", { noremap = true, silent = true })
     '';
   };
 }

@@ -1,18 +1,20 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, inputs, ... }:
 
-    programs.hyprland = {
-        enable = true;
-        package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-        portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-        withUWSM = true;
-        systemd.setPath.enable = true;
-        xwayland.enable = true;
-    };
+{
 
-    #= Hyprlock
-    programs.hyprlock.enable = true;
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage =
+      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    withUWSM = true;
+    xwayland.enable = true;
+  };
 
-    #= Hypridle
-    services.hypridle.enable = true;
+  #= Hyprlock
+  programs.hyprlock.enable = true;
+
+  #= Hypridle
+  services.hypridle.enable = true;
 
 }

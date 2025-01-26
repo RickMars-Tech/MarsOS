@@ -18,6 +18,8 @@
       #"page_alloc.shuffle=1"
     # CPU vulnerability mitigations
       "mitigations=auto"
+    # Set transparent_hugepage to Always
+      "transparent_hugepage=always"
     # GPU
       "i915.enable_rc6=7"
       "i915.semaphores=1"
@@ -55,10 +57,13 @@
     # Enable TCP Fast Open
       "net.ipv4.tcp_fastopen" = 3;
     # VFS Cache, controls the tendency of the kernel to reclaim memory
-      "vm.swappiness" = 10;
+      "vm.swappiness" = 100;
       "vm.vfs_cache_pressure" = 50;
-      "vm.dirty_ratio" = 10;
-      "vm.dirty_background_ratio" = 10;
+      "vm.dirty_bytes" = 268435456;
+      "vm.dirty_background_bytes" = 67108864;
+      "vm.page-cluster" = 0;
+    # Disable NMI Watchdog
+      "kernel.nmi" = 0;
     # Enable IP Spoofing protection, turn on source route verification
       "net.ipv4.conf.all.rp_filter" = 1;
       "net.ipv4.conf.default.rp_filter" = 1;
@@ -159,7 +164,12 @@
     ];
 
     #extraModulePackages = with config.boot.kernelPackages; [ #tp_smapi ]; #<--- Doesn't Work with Coreboot
-  
+
+    extraModprobeConfig = "
+      blacklist iTCO_wdt
+    ";
+
   };
+
 }
 
