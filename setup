@@ -64,7 +64,7 @@ while true; do
             ;;
         4)
             echo "Rebuilding the system on Boot..."
-            if ! sudo nixos-rebuild boot --flake . --cores 1 -j 1; then
+            if ! sudo nixos-rebuild boot --upgrade-all --flake .; then
                 echo "Error: Failed to rebuild the system with limited resources."
             fi
             clear
