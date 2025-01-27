@@ -39,7 +39,7 @@
 # Guide to Setup
 <br>
 
-Run this command to ensure Git are installed:
+Install git with Nix-shell:
 ```bash
 nix-shell -p git
 ```
