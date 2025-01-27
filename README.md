@@ -22,7 +22,7 @@
 | **Window Manager**          | [Hyprland][Hyprland]                                                                                                        |
 | **Terminal Emulator**       | [Zellij][Zellij] + [Alacritty][Alacritty]                                                                                     |
 | **Bar**                     | [Waybar][Waybar]                                                                                                    |
-| **Application Launcher**    | [Fuzzel][Fuzzel]                                                                                                    |
+| **Application Launcher**    | [Rofi][Rofi]                                                                                                    |
 | **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
 | **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
 | **network management tool** | [Iwgtk][Iwgtk]                                                                                                      |
@@ -82,7 +82,7 @@ Other configurations that I have learned a lot from:
 [Zellij]: https://github.com/zellij-org/zellij
 [Alacritty]: https://alacritty.org/
 [Waybar]: https://github.com/Alexays/Waybar
-[Fuzzel]: https://codeberg.org/dnkl/fuzzel
+[Rofi]: https://github.com/lbonn/rofi
 [Dunst]: https://github.com/dunst-project/dunst
 [GreetD]: https://sr.ht/~kennylevinsen/greetd/
 [TuiGreet]: https://github.com/apognu/tuigreet
