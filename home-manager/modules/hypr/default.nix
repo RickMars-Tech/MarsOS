@@ -17,7 +17,6 @@ in
     settings = {
 
       monitor = [
-        #", preferred, auto, 1"
         ", highres, auto, 1"
       ];
 
@@ -50,6 +49,7 @@ in
         "dbus-update-activation-environment --systemd --all WAYLAND DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user restart pipewire # Restart pipewire to avoid bugs"
         "xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2"
+        "systemctl --user enable --now xwayland-satellite"
         "wl-clipboard-history -t"
         "wl-paste --type text --watch cliphist store"
         "wl-paste --type image --watch cliphist store"
@@ -192,8 +192,8 @@ in
 
       bind = [
         # Screenshot
-        ", Print, exec, grimblast --notify copysave output"
-        "SHIFT, Print, exec, grimblast --notify --cursor copysave area"
+        "SHIFT, F12, exec, grimblast --notify copysave output"
+        "CTRL SHIFT, F12, exec, grimblast --notify --cursor copysave area"
         # LaunchApps
         "SUPER, T, exec, alacritty"
         "SUPER, B, exec, firefox"

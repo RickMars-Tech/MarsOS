@@ -7,30 +7,32 @@
 
 </div>
 
-![](./img/desktop-2.png)
+![](./img/hypr-nix.png)
 
-![](./img/firefox-2.png)
+![](./img/rofi.png)
 
-![](./img/neovim.png)
+![](./img/nvim.png)
+
+![](./img/bottom.png)
 
 ## Components
 
 |                             | NixOS(Wayland)                                                                                                      |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Window Manager**          | [Niri][Niri]                                                                                                        |
-| **Terminal Emulator**       | [Zellij][Zellij] + [Foot][Foot]                                                                                     |
+| **Window Manager**          | [Hyprland][Hyprland]                                                                                                        |
+| **Terminal Emulator**       | [Zellij][Zellij] + [Alacritty][Alacritty]                                                                                     |
 | **Bar**                     | [Waybar][Waybar]                                                                                                    |
 | **Application Launcher**    | [Fuzzel][Fuzzel]                                                                                                    |
 | **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
 | **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
-| **network management tool** | [iwgtk][iwgtk]                                                                                                      |
+| **network management tool** | [Iwgtk][Iwgtk]                                                                                                      |
 | **System resource monitor** | [Bottom][Bottom]                                                                                                    |
-| **File Manager**            | [Yazi][Yazi] + [Nautilus][Nautilus]                                                                                 |
+| **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]                                                                                 |
 | **Shell**                   | [Nushell][Nushell] + [Oh-My-Posh][Oh-My-Posh]                                                                       |
-| **Media Player**            | [mpv][mpv]                                                                                                          |
+| **Media Player**            | [MPV][MPV]                                                                                                          |
 | **Text Editor**             | [Neovim][Neovim]                                                                                                    |
 | **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
-| **Image Viewer**            | [imv][imv]                                                                                                          |
+| **Image Viewer**            | [IMV][IMV]                                                                                                          |
 
 # Guide to Setup
 <br>
@@ -76,21 +78,21 @@ Other configurations that I have learned a lot from:
 [Ryan Yin]: https://github.com/ryan4yin/nixos-and-flakes-book
 
 <!--------------------------------{ Components }------------------------------->
-[Niri]: https://github.com/YaLTeR/niri
+[Hyprland]: https://github.com/hyprwm/Hyprland
 [Zellij]: https://github.com/zellij-org/zellij
-[Foot]: https://codeberg.org/dnkl/foot
+[Alacritty]: https://alacritty.org/
 [Waybar]: https://github.com/Alexays/Waybar
 [Fuzzel]: https://codeberg.org/dnkl/fuzzel
 [Dunst]: https://github.com/dunst-project/dunst
 [GreetD]: https://sr.ht/~kennylevinsen/greetd/
 [TuiGreet]: https://github.com/apognu/tuigreet
-[iwgtk]: https://github.com/J-Lentz/iwgtk
+[Iwgtk]: https://github.com/J-Lentz/iwgtk
 [Bottom]: https://github.com/ClementTsang/bottom
 [Yazi]: https://github.com/sxyazi/yazi
 [Nautilus]: https://github.com/GNOME/nautilus
 [Nushell]: https://github.com/nushell/nushell
 [Oh-My-Posh]: https://github.com/jandedobbeleer/oh-my-posh
-[mpv]: https://github.com/mpv-player/mpv
+[MPV]: https://github.com/mpv-player/mpv
 [Neovim]: https://github.com/neovim/neovim
 [Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
-[imv]: https://sr.ht/~exec64/imv/
+[IMV]: https://sr.ht/~exec64/imv/

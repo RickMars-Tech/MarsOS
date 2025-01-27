@@ -1,16 +1,31 @@
-{ ... }: {
+{ ... }:
+{
 
   programs.waybar = {
     enable = true;
     settings = {
       mainBar = {
         layer = "top";
-        position = "bottom"; #"top";
+        position = "bottom"; # "top";
         exclusive = true;
 
-        "modules-left" = [ "clock" "hyprland/workspaces" "hyprland/window" ];
-        "modules-center" = [];
-        "modules-right" = [ "gamemode" "tray" "cpu" "memory" "battery" "temperature" "backlight" "wireplumber" "network" ];
+        "modules-left" = [
+          "clock"
+          "hyprland/workspaces"
+          "hyprland/window"
+        ];
+        "modules-center" = [ ];
+        "modules-right" = [
+          "gamemode"
+          "tray"
+          "cpu"
+          "memory"
+          "battery"
+          "temperature"
+          "backlight"
+          "wireplumber"
+          "network"
+        ];
 
         ##--------------------------
         ## Workspaces
@@ -22,11 +37,11 @@
             "default" = "";
           };
           "persistent-workspaces" = {
-            "1" = [];
-            "2" = [];
-            "3" = [];
-            "4" = [];
-            "5" = [];
+            "1" = [ ];
+            "2" = [ ];
+            "3" = [ ];
+            "4" = [ ];
+            "5" = [ ];
           };
         };
 
@@ -35,8 +50,8 @@
           "rewrite" = {
             "(.*) — Mozilla Firefox" = " $1";
             "(.*) - Steam" = " $1";
-            "(.*) - Alacritty" = " [$1]";
-          };  
+            "(.*) - Zellij" = " [$1]";
+          };
         };
 
         "custom/nix" = {
@@ -49,7 +64,11 @@
         ##--------------------------
         "wireplumber" = {
           "format" = "{icon} {volume}%";
-          "format-icons" = [ "" "" "" ];
+          "format-icons" = [
+            ""
+            ""
+            ""
+          ];
           "on-click" = "wpctl";
         };
 
@@ -58,7 +77,15 @@
         ##--------------------------
         "backlight" = {
           "format" = "{icon} {percent}%";
-          "format-icons" = [ "󰃚" "󰃛" "󰃜" "󰃝" "󰃞" "󰃟" "󰃠" ];
+          "format-icons" = [
+            "󰃚"
+            "󰃛"
+            "󰃜"
+            "󰃝"
+            "󰃞"
+            "󰃟"
+            "󰃠"
+          ];
           "on-click" = "brightnessctl";
         };
 
@@ -80,6 +107,7 @@
         ## Tray
         ##--------------------------
         "tray" = {
+          "show-passive-items" = false;
           "icon-size" = 20;
           "spacing" = 10;
         };
@@ -135,11 +163,16 @@
           "format" = "{status}";
           "format-connected" = "{device_alias}";
           "format-connected-battery" = "{device_alias} {device_battery_percentage}%";
-          "format-device-preference" = [ "device1" "device2" ]; # preference list deciding the displayed device
+          "format-device-preference" = [
+            "device1"
+            "device2"
+          ]; # preference list deciding the displayed device
           "tooltip-format" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
-          "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
+          "tooltip-format-connected" =
+            "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
           "tooltip-format-enumerate-connected" = "{device_alias}\t{device_address}";
-          "tooltip-format-enumerate-connected-battery" = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
+          "tooltip-format-enumerate-connected-battery" =
+            "{device_alias}\t{device_address}\t{device_battery_percentage}%";
         };
 
         ##--------------------------
@@ -183,7 +216,19 @@
           "format-charging" = " 󰂄 {capacity}%";
           "format-plugged" = "  {capacity}%";
           "format-alt" = "{icon} ({time}Hrs)";
-          "format-icons" = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
+          "format-icons" = [
+            "󰂎"
+            "󰁺"
+            "󰁻"
+            "󰁼"
+            "󰁽"
+            "󰁾"
+            "󰁿"
+            "󰂀"
+            "󰂁"
+            "󰂂"
+            "󰁹"
+          ];
         };
       };
     };
