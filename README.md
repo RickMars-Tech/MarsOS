@@ -25,7 +25,7 @@
 | **Application Launcher**    | [Rofi][Rofi]                                                                                                        |
 | **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
 | **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
-| **network management tool** | [Iwgtk][Iwgtk]                                                                                                      |
+| **Network Management Tool** | [Iwgtk][Iwgtk]                                                                                                      |
 | **System resource monitor** | [Bottom][Bottom]                                                                                                    |
 | **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]                                                                                 |
 | **Shell**                   | [Nushell][Nushell] + [Oh-My-Posh][Oh-My-Posh]                                                                       |
