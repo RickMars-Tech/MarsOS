@@ -96,6 +96,6 @@ Other configurations that I have learned a lot from:
 [Oh-My-Posh]: https://github.com/jandedobbeleer/oh-my-posh
 [MPV]: https://github.com/mpv-player/mpv
 [Neovim]: https://github.com/neovim/neovim
-[Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
+[Nerd fonts]: https://www.nerdfonts.com/
 [IMV]: https://sr.ht/~exec64/imv/
 [Nix-ArtWork]: https://github.com/NixOS/nixos-artwork
