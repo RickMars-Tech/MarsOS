@@ -19,10 +19,10 @@
 
 |                             | NixOS(Wayland)                                                                                                      |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Window Manager**          | [Hyprland][Hyprland]                                                                                                        |
-| **Terminal Emulator**       | [Zellij][Zellij] + [Alacritty][Alacritty]                                                                                     |
+| **Window Manager**          | [Hyprland][Hyprland]                                                                                                |
+| **Terminal Emulator**       | [Zellij][Zellij] + [Alacritty][Alacritty]                                                                           |
 | **Bar**                     | [Waybar][Waybar]                                                                                                    |
-| **Application Launcher**    | [Rofi][Rofi]                                                                                                    |
+| **Application Launcher**    | [Rofi][Rofi]                                                                                                        |
 | **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
 | **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
 | **network management tool** | [Iwgtk][Iwgtk]                                                                                                      |
@@ -33,6 +33,8 @@
 | **Text Editor**             | [Neovim][Neovim]                                                                                                    |
 | **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
 | **Image Viewer**            | [IMV][IMV]                                                                                                          |
+| **Wallpaper**               | [Nix-ArtWork][Nix-ArtWork]                                                                                          |
+
 
 # Guide to Setup
 <br>
@@ -96,3 +98,4 @@ Other configurations that I have learned a lot from:
 [Neovim]: https://github.com/neovim/neovim
 [Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
 [IMV]: https://sr.ht/~exec64/imv/
+[Nix-ArtWork]: https://github.com/NixOS/nixos-artwork
