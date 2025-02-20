@@ -1,11 +1,9 @@
-{ ... }: {
-
-    imports = [
-        ./boot.nix
-        ./kernel/default.nix
-        ./security.nix
-        ./systemd.nix
-        ./udev.nix
-    ];
-
+_: {
+  imports = [
+    ./boot.nix
+    ./kernel/default.nix
+    ./security.nix
+    ./systemd.nix
+    ./udev.nix
+  ];
 }

@@ -2,9 +2,7 @@
   config,
   username,
   ...
-}:
-{
-
+}: {
   imports = [
     ./modules/default.nix
     ./hm-stylix.nix
@@ -38,46 +36,4 @@
     source = ./wal;
     recursive = true;
   };
-
-  /*
-    Now Defined on Stylix
-
-    #= DCONF
-        dconf = {
-            enable = true;
-            settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
-        };
-
-    #= CURSOR
-        home.pointerCursor = {
-            gtk.enable = true;
-            x11.enable = true;
-            package = pkgs.apple-cursor;#pkgs.bibata-cursors;
-            name = "macOS";#"Bibata-Original-Classic";
-            size = 24;
-        };
-
-    #= GTK
-        gtk = {
-            enable = false;
-            theme = {
-                package = pkgs.whitesur-gtk-theme; #pkgs.material-black-colors;
-                name = "WhiteSur-Dark"; #"Material-Black-Blueberry";
-            };
-            iconTheme = {
-                package = pkgs.cosmic-icons; #pkgs.flat-remix-icon-theme;
-                name = "Cosmic"; #"Flat-Remix-Blue-Dark";
-            };
-        };
-
-    #= QT
-        qt = {
-            enable = false;
-            platformTheme.name = "gtk";
-            style = {
-                package = pkgs.adwaita-qt;
-                name = "adwaita-dark";
-            };
-            };
-  */
 }

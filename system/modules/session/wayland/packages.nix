@@ -1,23 +1,22 @@
-{ pkgs, ... }:
-
-{
-
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     # Terminal
-    alacritty
-    foot
-    zellij
+    #ghostty # <-- already defined on Home-Manager hm/mdls/ghostty
+    #alacritty
     # Hyprland
     hyprland-protocols
     hyprcursor # The hyprland cursor format, library and utilitie
     hyprpicker # Wlroots-compatible Wayland color picker that does not suck
     hyprpolkitagent
+    hyprpaper
+    hyprland-qt-support
+    hyprland-qtutils
+    # Status Bar
+    waybar
     # Notification Deamon
     dunst
     libnotify
     notify
-    # Wallpaper
-    hyprpaper
     # App-Launcher
     fuzzel
     rofi-wayland-unwrapped
@@ -34,7 +33,8 @@
     swappy # Editing
     #= Polkit
     polkit
-    polkit_gnome
+    soteria
+    #polkit_gnome
     # Image Viewer
     imv
     # XWayland/Wayland
@@ -45,6 +45,7 @@
     xwayland
     #xwayland-run
     xwayland-satellite
+    xcb-util-cursor
+    xorg.libxcb
   ];
-
 }

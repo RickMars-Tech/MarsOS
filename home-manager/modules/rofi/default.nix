@@ -1,7 +1,4 @@
-{ pkgs, ... }:
-
-{
-
+{pkgs, ...}: {
   programs.rofi = {
     enable = true;
     cycle = true;
@@ -16,7 +13,7 @@
     extraConfig = {
       modi = "drun,calc,window,emoji,run";
       sidebar-mode = true;
-      terminal = "footclient";
+      terminal = "alacritty";
       show-icons = true;
       kb-remove-char-back = "BackSpace";
       kb-accept-entry = "Control+m,Return,KP_Enter";

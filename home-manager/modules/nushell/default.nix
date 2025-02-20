@@ -1,9 +1,8 @@
-{ ... }:
-{
-
+_: {
   programs.nushell = {
     enable = true;
     shellAliases = {
+      clc = "clear";
       git = "gix";
       grep = "rg --color=auto";
       cat = "bat --style=plain --paging=never";
@@ -13,7 +12,7 @@
       lt = "ls -t";
       ld = "ls -D";
       cd = "z";
-      search = "zi";
+      search = "fzf";
       rm = "trash-put";
       hw = "hwinfo --short";
       changemac = "macchanger -r";
@@ -57,37 +56,50 @@
           use_ls_colors: true
         }
         edit_mode: vi
-        
+
         cursor_shape: {
           vi_insert: block
           vi_normal: underscore
         }
+
       }
     '';
     envFile.text = ''
+      $env.EDITOR = "nvim"
+      $env.config.buffer_editor = "vi"
       zoxide init nushell | save -f ~/.zoxide.nu
     '';
+    /*
     configFile = {
-      text = ''
-        # zellij
-        def start_zellij [] {
-          if 'ZELLIJ' not-in ($env | columns) {
-            if 'ZELLIJ_AUTO_ATTACH' in ($env | columns) and $env.ZELLIJ_AUTO_ATTACH == 'true' {
-              zellij attach -c
-            } else {
-              zellij
-            }
+    text = ''
+      # zellij
+      def start_zellij [] {
+        if 'ZELLIJ' not-in ($env | columns) {
+          if 'ZELLIJ_AUTO_ATTACH' in ($env | columns) and $env.ZELLIJ_AUTO_ATTACH == 'true' {
+            zellij attach -c
+          } else {
+            zellij
+          }
 
-            if 'ZELLIJ_AUTO_EXIT' in ($env | columns) and $env.ZELLIJ_AUTO_EXIT == 'true' {
-              exit
-            }
+          if 'ZELLIJ_AUTO_EXIT' in ($env | columns) and $env.ZELLIJ_AUTO_EXIT == 'true' {
+            exit
           }
         }
+      }
+      start_zellij
+      source ~/.zoxide.nu
+      nerdfetch
+      '';
+    */
+    configFile = {
+      text = ''
         source ~/.zoxide.nu
-        start_zellij
         nerdfetch
       '';
     };
   };
-
+  programs.thefuck = {
+    enable = true;
+    enableNushellIntegration = true;
+  };
 }

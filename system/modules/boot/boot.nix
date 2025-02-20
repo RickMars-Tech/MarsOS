@@ -1,5 +1,4 @@
-{ ... }: {
-
+_: {
   boot = {
     loader = {
       systemd-boot = {
@@ -14,11 +13,12 @@
     initrd = {
       enable = true;
       compressor = "zstd";
-      verbose = true;
+      verbose = false;
     };
     tmp = {
-      tmpfsSize = "100%";
       useTmpfs = true;
+      tmpfsSize = "75%";
+      cleanOnBoot = true;
     };
   };
 }

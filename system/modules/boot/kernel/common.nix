@@ -1,9 +1,15 @@
-{ pkgs, lib, ... }:
 {
-
+  pkgs,
+  lib,
+  ...
+}: {
   boot = {
     kernelModules = [
       "thinkpad-acpi"
+      "msr"
+      "coretemp"
+      "kvm-intel"
+      "binder_linux" # Comunicación Android
       #"tp_smapi" <--- Doesn't Work with Coreboot
     ];
     # Security kernel parameters from:
@@ -14,6 +20,8 @@
     kernelParams = [
       ## Readhead profiling
       "profile"
+      ## use deadline(for SSD's)
+      "elevator=deadline"
       ## Kernel self-protection
       # Randomize page allocator freelists
       #"page_alloc.shuffle=1"
@@ -26,9 +34,10 @@
       # Set transparent_hugepage to Always
       "transparent_hugepage=madvise"
       # GPU
-      "i915.enable_rc6=7"
+      "i915.enable_rc6=1" # Habilitar RC6 para ahorro energético en Intel HD 3000
+      "i915.enable_fbc=1" # Framebuffer compression para GPU
       "i915.semaphores=1"
-      "pcie_aspm=force"
+      #"pcie_aspm=force"
       # Enable Intel IOMMU
       "intel_iommu=on"
       # Synchronously invalidate IOMMU hardware TLB
@@ -41,7 +50,7 @@
       "iomem=relaxed"
       ## Reduce attack surface
       # Disable TSX
-      "tsx=off"
+      #"tsx=off"
       # Disable vsyscalls
       "vsyscall=none"
       # Disallow writing to mounted block devices
@@ -59,6 +68,9 @@
     # - - - https://wiki.archlinux.org/title/Sysctl
     # - - - https://wiki.archlinux.org/title/Core_dump
     kernel.sysctl = lib.mkDefault {
+      # platformOptimizations
+      "kernel.sched_cfs_bandwidth_slice_us" = 3000;
+      "net.ipv4.tcp_fin_timeout" = 5;
       # Enable TCP Fast Open
       "net.ipv4.tcp_fastopen" = 3;
       # VFS Cache, controls the tendency of the kernel to reclaim memory
@@ -109,7 +121,7 @@
       ## Disable io_uring
       ## https://lore.kernel.org/lkml/20230629132711.1712536-1-matteorizzo@google.com/T/
       ## https://security.googleblog.com/2023/06/learnings-from-kctf-vrps-42-linux.html
-      "kernel.io_uring_disabled" = 2;
+      "kernel.io_uring_disabled" = 0;
       # Improve ALSR effectiveness for mmap.
       "vm.mmap_rnd_bits" = 32;
       "vm.mmap_rnd_compat_bits" = 16;
@@ -156,8 +168,8 @@
       # Vivid testing driver
       "vivid"
       # Bluetooh
-      "bluetooth"
-      "btusb"
+      #"bluetooth"
+      #"btusb"
       # Modules that are disabled in hardened but not the default kernel
       "hwpoison_inject"
       "punit_atom_debug"
@@ -172,9 +184,8 @@
     #extraModulePackages = with config.boot.kernelPackages; [ #tp_smapi ]; #<--- Doesn't Work with Coreboot
 
     extraModprobeConfig = "
-      blacklist iTCO_wdt
-    ";
-
+    blacklist iTCO_wdt
+    options thinkpad_acpi  fan_control=1
+      ";
   };
-
 }

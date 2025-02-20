@@ -1,12 +1,7 @@
-{ pkgs, ... }:
-let
-
+{pkgs, ...}: let
   tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
   #hyprland-session = "${inputs.hyprland.packages.${pkgs.system}.hyprland}/share/wayland-sessions";
-
-in
-{
-
+in {
   #= UWSM (Universal Wayland Session Manager).
   programs.uwsm = {
     enable = true;
@@ -36,7 +31,6 @@ in
   console = {
     earlySetup = true;
     keyMap = "us"; # "la-latin1";
-    packages = with pkgs; [ nerd-fonts.terminess-ttf ];
+    packages = with pkgs; [nerd-fonts.terminess-ttf];
   };
-
 }

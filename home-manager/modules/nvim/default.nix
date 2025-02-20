@@ -1,169 +1,134 @@
-{ pkgs, ... }:
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
+  cfg = config.stylix.base16Scheme;
+in {
+  imports = [inputs.nvf.homeManagerModules.default];
 
-  programs.neovim = {
+  programs.nvf = {
     enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    withPython3 = true;
-    package = pkgs.neovim-unwrapped;
-    plugins = with pkgs.vimPlugins; [
-      avante-nvim
-      twilight-nvim
-      render-markdown-nvim
-      nvim-fzf
-      nvim-lspconfig
-      nvim-cmp
-      nvim-tree-lua
-      indent-blankline-nvim
-      nvim-treesitter-textobjects
-      vim-airline
-      lspkind-nvim
-      cmp-buffer
-      cmp-nvim-lsp
-      cmp-path
-      cmp-cmdline
-      nerdcommenter
-      rainbow
-      vim-nix
-      telescope-nvim
-      gitsigns-nvim
-      vim-fugitive
-      nvim-dap
-      nvim-dap-ui
-    ];
+    settings.vim = {
+      mini = {
+        icons.enable = true;
+        statusline.enable = true;
+        notify.enable = true;
+        indentscope.enable = true;
+      };
+      theme = {
+          enable = true;
+          name = "base16";
+          base16-colors = {
+            base00 = cfg.base00;
+            base01 = cfg.base01;
+            base02 = cfg.base02;
+            base03 = cfg.base03;
+            base04 = cfg.base04;
+            base05 = cfg.base05;
+            base06 = cfg.base06;
+            base07 = cfg.base07;
+            base08 = cfg.base08;
+            base09 = cfg.base09;
+            base0A = cfg.base0A;
+            base0B = cfg.base0B;
+            base0C = cfg.base0C;
+            base0D = cfg.base0D;
+            base0E = cfg.base0E;
+            base0F = cfg.base0F;
+          };
+        };
+      useSystemClipboard = true;
+      options = {
+        #==> Space Idents
+        shiftwidth = 2;
+        softtabstop = 2;
+        tabstop = 2;
+        expandtab = true;
+        autoindent = true;
+        smartindent = true;
+        breakindent = true;
 
-    extraPackages = with pkgs; [
-      nixd
-      nixfmt-rfc-style
-      nodePackages.typescript-language-server
-      nodePackages.eslint
-    ];
-
-    extraPython3Packages =
-      pyPkgs: with pyPkgs; [
-        pytest
-        pylint
-      ];
-
-    extraLuaConfig = ''
-      -- General Settings
-      vim.o.syntax = 'on'
-      vim.o.termguicolors = true
-      vim.o.fileencoding = 'utf-8'
-      vim.o.mouse = 'a'
-      vim.o.number = true
-      vim.o.relativenumber = false
-      vim.o.clipboard = 'unnamedplus'
-      vim.o.expandtab = false
-      vim.o.smartindent = true
-      vim.o.shiftwidth = 4
-      vim.o.softtabstop = 4
-      vim.o.tabstop = 4
-      vim.o.hidden = true
-      vim.o.wrap = false
-      vim.o.termguicolors = true
-      vim.o.smartcase = true
-      vim.o.ignorecase = true
-      vim.o.completeopt = 'menuone,noinsert,noselect'
-      vim.opt.laststatus = 3
-
-      vim.api.nvim_create_autocmd({'BufWinEnter'}, {
-        desc = 'return cursor to where it was last time closing the file',
-        pattern = '*',
-        command = 'silent! normal! g`"zv',
-      })
-
-      -- Indent Blankline & Rainbow Indentation
-      local hooks = require "ibl.hooks"
-      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-          vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
-          vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
-          vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-          vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
-          vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
-          vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-          vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
-      end)
-      require("ibl").setup { indent = { highlight = highlight } }
-
-      -- LSP Config
-      local lspconfig = require('lspconfig')
-      local cmp = require'cmp'
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-      -- Enable LSP for languages
-      lspconfig.pyright.setup{ capabilities = capabilities }
-      lspconfig.rust_analyzer.setup{ capabilities = capabilities }
-      lspconfig.nixd.setup{ capabilities = capabilities }
-      lspconfig.ts_ls.setup{ capabilities = capabilities }
-      lspconfig.eslint.setup{ capabilities = capabilities }
-
-      -- Autocompletion with nvim-cmp
-      cmp.setup({
-        snippet = { expand = function(args) vim.fn["vsnip#anonymous"](args.body) end },
-          mapping = {
-            ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i', 'c'}),
-            ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
-            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
-            ['<C-e>'] = cmp.mapping({ i = cmp.mapping.close(), c = cmp.mapping.close() }),
-            ['<CR>'] = cmp.mapping.confirm({ select = true }),
-          },
-          sources = {
-            { name = 'nvim_lsp' },
-            { name = 'buffer' },
-            { name = 'path' },
-            { name = 'cmdline' },
-            { name = 'render-markdown' },
-          }
-      })
-
-      -- Formateo automático al guardar
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        pattern = '*',
-        callback = function()
-          vim.lsp.buf.format()
-        end,
-      })
-
-      -- File Explorer (nvim-tree)
-      require'nvim-tree'.setup({
-        disable_netrw = true,
-        hijack_netrw = true,
-        open_on_tab = false,
-        hijack_cursor = true,
-        update_cwd = true,
-        update_focused_file = {
-          enable = true,
-          update_cwd = false,
-        }
-      })
-
-      -- Airline Status Bar
-      vim.g.airline_theme = 'dark'
-      vim.g.airline_powerline_fonts = 1
-      vim.g.airline_left_sep = ''
-      vim.g.airline_right_sep = ''
-
-      -- Nvim Tree Sidebar (on the right)
-      vim.g.nvim_tree_side = 'right'
-
-      -- Enable filetype detection
-      vim.cmd('filetype plugin indent on')
-
-      -- Keymaps
-      -- Twilight -- Ctrl+h
-      vim.api.nvim_set_keymap("n", "<C-h>", "<cmd>Twilight<CR>", { noremap = true, silent = true })
-
-      -- NvimTree -- Ctrl+j
-      vim.api.nvim_set_keymap("n", "<C-j>", "<cmd>NvimTreeToggle<CR>", { noremap = true, silent = true })
-
-      -- Telescope -- Ctrl+p
-      vim.api.nvim_set_keymap("n", "<C-p>", "<cmd>Telescope find_files<CR>", { noremap = true, silent = true })
-
-      -- Terminal flotante -- Ctrl+t
-      vim.api.nvim_set_keymap("n", "<C-t>", "<cmd>ToggleTerm<CR>", { noremap = true, silent = true })
-    '';
+        #==> Misc
+        termguicolors = true;
+        cursorline = true;
+        mouse = "a";
+        wrap = false;
+      };
+      statusline.lualine.enable = true;
+      telescope.enable = false;
+      autocomplete.nvim-cmp.enable = true;
+      visuals = {
+        nvim-web-devicons.enable = true;
+        rainbow-delimiters.enable = true;
+      };
+      lsp = {
+        formatOnSave = true;
+        trouble.enable = true;
+      };
+      languages = {
+        enableExtraDiagnostics = true;
+        enableTreesitter = true;
+        nix = {
+          enable = true;
+          extraDiagnostics = {
+            enable = true;
+            types = [
+              "statix"
+              "deadnix"
+            ];
+          };
+          lsp = {
+            enable = true;
+            package = pkgs.nil;
+            server = "nil";
+          };
+          format = {
+            enable = true;
+            package = pkgs.alejandra;
+            type = "alejandra";
+          };
+          treesitter.enable = true;
+        };
+        rust = {
+          enable = true;
+          lsp.enable = true;
+          treesitter.enable = true;
+          format = {
+            enable = true;
+            package = pkgs.rustfmt;
+            type = "rustfmt";
+          };
+        };
+        clang = {
+          enable = true;
+          lsp.enable = true;
+        };
+        sql = {
+          enable = true;
+          lsp.enable = true;
+        };
+        python = {
+          enable = true;
+          dap.enable = true;
+          lsp = {
+            enable = true;
+            package = pkgs.pyright;
+            server = "pyright";
+          };
+          format = {
+            enable = true;
+            package = pkgs.black;
+            type = "black";
+          };
+          treesitter.enable = true;
+        };
+        zig = {
+          enable = true;
+          lsp.enable = true;
+        };
+      };
+    };
   };
 }

@@ -1,0 +1,38 @@
+[editor]
+program = "vi"
+
+[cursor]
+shape = 'beam'
+blinking-interval = 800
+
+[keyboard]
+hide-mouse-cursor-when-typing = true
+
+[navigation]
+mode = "TopTab"
+color-automation = [
+  # Set tab to color when NeoVim is open.
+  { program = "nvim", color = "#6C6B6F" },
+]
+
+[renderer]
+performance = "High"
+backend = "GL" # Mi old T420 dont support Vulkan :C
+disable-unfocused-render = true
+strategy = "events"
+theme = "marsbar"
+
+#==> Title Bar Content
+[title]
+content = "{{ TITLE | PROGRAM }}"
+placeholder = "▲"
+
+#==> Window Blur and Decorations
+[window]
+opacity = 0.5
+decorations = "disabled"
+blur = true
+
+[developer]
+log-level = "OFF"
+enable-log-file = false

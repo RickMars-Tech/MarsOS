@@ -1,6 +1,4 @@
-{ ... }:
-{
-
+_: {
   programs.waybar = {
     enable = true;
     settings = {
@@ -13,8 +11,10 @@
           "clock"
           "hyprland/workspaces"
           "hyprland/window"
+          "niri/workspaces"
+          "niri/window"
         ];
-        "modules-center" = [ ];
+        "modules-center" = [];
         "modules-right" = [
           "gamemode"
           "tray"
@@ -37,15 +37,39 @@
             "default" = "";
           };
           "persistent-workspaces" = {
-            "1" = [ ];
-            "2" = [ ];
-            "3" = [ ];
-            "4" = [ ];
-            "5" = [ ];
+            "1" = [];
+            "2" = [];
+            "3" = [];
+            "4" = [];
+            "5" = [];
           };
         };
 
         "hyprland/window" = {
+          "format" = "{}";
+          "rewrite" = {
+            "(.*) — Mozilla Firefox" = " $1";
+            "(.*) - Steam" = " $1";
+            "(.*) - Zellij" = " [$1]";
+          };
+        };
+
+        "niri/workspaces" = {
+          "format" = "{icon}";
+          "format-icons" = {
+            "active" = "";
+            "default" = "";
+          };
+          "persistent-workspaces" = {
+            "1" = [];
+            "2" = [];
+            "3" = [];
+            "4" = [];
+            "5" = [];
+          };
+        };
+
+        "niri/window" = {
           "format" = "{}";
           "rewrite" = {
             "(.*) — Mozilla Firefox" = " $1";
@@ -168,11 +192,9 @@
             "device2"
           ]; # preference list deciding the displayed device
           "tooltip-format" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
-          "tooltip-format-connected" =
-            "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
+          "tooltip-format-connected" = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
           "tooltip-format-enumerate-connected" = "{device_alias}\t{device_address}";
-          "tooltip-format-enumerate-connected-battery" =
-            "{device_alias}\t{device_address}\t{device_battery_percentage}%";
+          "tooltip-format-enumerate-connected-battery" = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
         };
 
         ##--------------------------
@@ -235,5 +257,4 @@
   };
 
   #xdg.configFile."waybar/style.css".source = ./style.css;
-
 }

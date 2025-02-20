@@ -1,28 +1,28 @@
-{ pkgs, ... }: {
-
-    environment.systemPackages = with pkgs; [
+{pkgs, ...}: let
+  gfnElectron = pkgs.callPackage ./geforce-now.nix {};
+in {
+  environment.systemPackages = with pkgs; [
     #= Nintendo Emulators
-        #ryujinx # Switch Emulator in C#
-        #dolphin-emu # Gamecube/Wii/Triforce emulator for x86_64
+    #dolphin-emu # Gamecube/Wii/Triforce emulator for x86_64
     #= Ocarina of Time (PC port).
-        #shipwright
+    #shipwright
     #= Super Mario 64 (PC port).
-        #sm64ex
+    #sm64ex
+    #= GeforceNow Electron
+    gfnElectron
     #= The best Game in the World
-        superTuxKart
+    superTuxKart
     #= FPS Game like Quake
-        xonotic
+    xonotic
     #= Steam Utils
-        winetricks
-        protontricks
-        protonup-qt
+    winetricks
+    protontricks
+    protonup-qt
     #= Lutris
-        lutris
+    lutris
     #= Launcher for Veloren.
-        airshipper
+    airshipper
     #= Required to run CS:Source
-        #pkgsi686Linux.gperftools
-
-    ];
-
+    #pkgsi686Linux.gperftools
+  ];
 }

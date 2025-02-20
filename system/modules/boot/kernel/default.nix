@@ -1,7 +1,5 @@
-{ pkgs, ...}: {
+{pkgs, ...}: {
+  imports = [./common.nix];
 
-    imports = [ ./common.nix ];
-
-    boot.kernelPackages = pkgs.linuxPackages_latest;
-
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 }

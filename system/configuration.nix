@@ -1,22 +1,23 @@
-/*~~~~~~~~~~~~~~~~~~~
+/*
+~~~~~~~~~~~~~~~~~~~
 
 ███╗   ██╗██╗██╗  ██╗
 ████╗  ██║██║╚██╗██╔╝
-██╔██╗ ██║██║ ╚███╔╝ 
-██║╚██╗██║██║ ██╔██╗ 
+██╔██╗ ██║██║ ╚███╔╝
+██║╚██╗██║██║ ██╔██╗
 ██║ ╚████║██║██╔╝ ██╗
 ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
-~~~~~~~~~~~~~~~~~~~~~*/
-
-{ pkgs, ... }: {
-
-  imports = [ # Include the results of the hardware scan.
+~~~~~~~~~~~~~~~~~~~~~
+*/
+{pkgs, ...}: {
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware.nix
     ./modules/default.nix
   ];
 
-#=> Fonts Config
+  #=> Fonts Config
   fonts = {
     packages = with pkgs; [
       montserrat
@@ -25,14 +26,6 @@
       nerd-fonts.hasklug
       nerd-fonts.jetbrains-mono
     ];
-    /*fontconfig = {
-      enable = true;
-      defaultFonts = {
-        monospace = [ "FiraCode Nerd Font Mono" ];
-        serif = [ "NotoSerif NF" ];
-        sansSerif = [ "NotoSans NFP" ];
-      };
-    };*/
   };
 
   # Set your time zone.
@@ -51,7 +44,6 @@
     LC_TELEPHONE = "es_MX.UTF-8";
     LC_TIME = "es_MX.UTF-8";
   };
-
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

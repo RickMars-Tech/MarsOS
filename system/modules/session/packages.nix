@@ -1,44 +1,44 @@
-{ pkgs, inputs, ... }: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
+  nixpkgs = {
+    #= Allow unfree packages
+    config.allowUnfree = true;
 
-#= Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+    #= Permitted Insecure Packages
+    config.permittedInsecurePackages = ["SDL_ttf-2.0.11"];
 
-#= Permitted Insecure Packages
-  nixpkgs.config.permittedInsecurePackages = [ ];
+    #= Fenix (Rust).
+    overlays = [inputs.rust-overlay.overlays.default]; #[inputs.fenix.overlays.default];
+  };
 
-#= Fenix (Rust).
-  nixpkgs.overlays = [ inputs.fenix.overlays.default ];
-
-#=> Packages Installed in System Profile.
+  #=> Packages Installed in System Profile.
   environment.systemPackages = with pkgs; [
-  #= Main
-    aml
-    alsa-lib
-    alsa-plugins
-    alsa-utils
+    #= Main
     cacert
     libsForQt5.ark
     nautilus
+    kexec-tools
     staruml
     # geogebra6
     #webcord
     #electron
     #jq
-    qt5.qtwayland
-    qt6.qtwayland
+    #qt5.qtwayland
+    #qt6.qtwayland
     usbutils
     wget
     libreoffice
     #yarn
-  #= FOSS Electronics Design Automation suite
+    #= FOSS Electronics Design Automation suite
     #kicad
-  #= Clamav Anti-Virus
+    #= Clamav Anti-Virus
     clamav
     clamtk
-  #= Blender
-    #blender
-  #= Code Editor
-    /*vscodium-fhs
+    #Blender
+    #= Code Editor
     (vscode-with-extensions.override {
       vscode = vscodium-fhs;
       vscodeExtensions = with vscode-extensions; [
@@ -52,58 +52,62 @@
         ms-python.flake8
         ms-python.vscode-pylance
       ];
-    })*/
-    #zed-editor
-  #= Local Lenguage Model
-    #ollama
-  #= Game Engine
-    #godot_4
-  #= Rust
-    (fenix.complete.withComponents [
+    })
+    #= Octave
+    octaveFull
+    ghostscript
+    #= Rust
+    pkgs.rust-bin.stable.latest.default
+    /*
+      (fenix.complete.withComponents [
       "cargo"
       "clippy"
       "rust-src"
       "rustc"
       "rustfmt"
     ])
-    rust-analyzer-nightly
-  #= C/C++
-    #boost
+    */
+    #rust-analyzer-nightly
+    #= C/C++
+    boost
     cmake
-    flex
     gccgo
     glib
     glibc
     glibmm
     libgcc
-    ncurses
     SDL2
     SDL2_image
     SDL2_ttf
-  #= Python
-    (python312.withPackages (ps: with ps; [
-      anyqt
-      pyqtdarktheme
-      qtawesome
-      qtpy
-      pyqt6
-      py
-      pipx
-      pydevd
-      pyls-isort
-      pylint
-      pylint-venv
-      pylint-plugin-utils
-      python-lsp-server
-      pytest
-      pygame
-    ]))
+    #= Python
+    (python3.withPackages (
+      p:
+        with p; [
+          anyqt
+          numpy
+          matplotlib
+          pyqtdarktheme
+          qtawesome
+          qtpy
+          pyqt6
+          py
+          pipx
+          pydevd
+          pyls-isort
+          pylint
+          pylint-venv
+          pylint-plugin-utils
+          python-lsp-server
+          pytest
+          pygame
+        ]
+    ))
     kdePackages.qttools
-  #= XDG
+    #= XDG
     xdg-utils
     xdg-launch
     xdg-user-dirs
-  #= Cli Utilities
+    #= Cli Utilities
     any-nix-shell
     bat
     eza
@@ -122,10 +126,8 @@
     ripgrep
     skim
     zoxide
-    #uutils-coreutils-noprefix
-    #busybox
     woeusb
-  #= Archives
+    #= Archives
     imagemagick
     zip
     unzip
@@ -133,29 +135,27 @@
     #rarcrack
     rar
     unrar-free
-  #= Drives utilities
+    #= Drives utilities
     smartmontools # Monitoring the health of ard drives.
     gnome-disk-utility # Disk Manager.
     baobab # Gui app to analyse disk usage.
     ventoy # Flash OS images for Linux and anothers Systems.
     woeusb # Flash OS images for Windows.
-  #= Flatpak
+    #= Flatpak
     libportal
     libportal-gtk3
     libportal-gtk4
     libportal-qt5
-  #= Appimages
-    #appimagekit
+    #= Appimages
     appimage-run
     gearlever
-  #= Torrent
+    #= Torrent
     qbittorrent
-  #= Image Editors
-    #krita
+    #= Image Editors
     gimp
-  #= Video/Audio Tools
+    #= Video/Audio Tools
     shotcut
-  #= Video Recorder
+    #= Video Recorder
     (pkgs.wrapOBS {
       plugins = with pkgs.obs-studio-plugins; [
         wlrobs
@@ -166,10 +166,10 @@
         obs-vaapi
       ];
     })
-  #= Multimedia Codecs & Libs
+    #= Multimedia Codecs & Libs
     # H.264 encoder/decoder plugin for mediastreamer2
     mediastreamer-openh264
-    # H264/AVC 
+    # H264/AVC
     av1an
     openh264
     x264
@@ -181,20 +181,19 @@
     libopus
     # MPEG
     lame
-    # PNG
-    libpng
-    # JPEG
-    libjpeg
     # FFMPEG
     ffmpeg
-  #= Wine
+    #= Wine
+    # support both 32- and 64-bit applications
+    wineWowPackages.staging
+    samba
     bottles
   ];
 
-#= Terminal FileManager
+  #= Terminal FileManager
   programs.yazi = {
     enable = true;
-    package = pkgs.yazi;#pkgs-stable.yazi;
+    package = pkgs.yazi; # pkgs-stable.yazi;
     settings.yazi = {
       manager = {
         sort_by = "natural";
@@ -207,7 +206,12 @@
         max_width = 600;
         max_height = 900;
         ueberzug_scale = 1;
-        ueberzug_offset = [0 0 0 0];
+        ueberzug_offset = [
+          0
+          0
+          0
+          0
+        ];
       };
       tasks = {
         micro_workers = 5;
@@ -217,16 +221,22 @@
     };
   };
 
-#= Java =#
+  #= Java =#
   programs.java = {
     enable = true;
     package = pkgs.jdk;
     binfmt = true;
   };
 
-#==> Appimages <==#
+  #==> Appimages <==#
   programs.appimage = {
     enable = true;
     binfmt = true;
+    package = pkgs.appimage-run.override {
+      extraPkgs = pkgs: [
+        pkgs.ffmpeg
+        pkgs.imagemagick
+      ];
+    };
   };
 }

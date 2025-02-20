@@ -1,15 +1,12 @@
-{ pkgs, ... }:
-
-{
-
+{pkgs, ...}: {
   imports = [
-    #./cosmic.nix
     ./hyprland.nix
-    ./pipewire.nix
+    ./niri.nix
     ./packages.nix
-    ./waybar.nix
+    ./waydroid.nix
   ];
   services.xserver.enable = false;
+  programs.xwayland.enable = false;
 
   #= XDG
   xdg = {
@@ -43,5 +40,4 @@
       };
     };
   };
-
 }

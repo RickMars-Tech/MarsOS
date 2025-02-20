@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-{
-
+{pkgs, ...}: {
   stylix = {
     enable = true;
     autoEnable = true;
@@ -8,44 +6,51 @@
       followSystem = true;
       autoImport = true;
     };
-    image = ../../../home-manager/wal/nixos-wallpaper-catppuccin-mocha.png;
+    image = ../../../home-manager/wal/nix-wallpaper-nineish-dark-gray.png;
+
+    polarity = "dark";
 
     base16Scheme = {
-      "base00" = "#15141b"; # Fondo principal, gris oscuro
-      "base01" = "#1F1D2A"; # Fondo secundario, morado oscuro
-      "base02" = "#2E2B38"; # Resaltado o selección, morado gris
-      "base03" = "#6C6B6F"; # Texto secundario, gris morado
-      "base04" = "#CDCCCE"; # Texto principal, gris claro
-      "base05" = "#EDECEE"; # Texto resaltado, gris muy claro
-      "base06" = "#A277FF"; # Morado vibrante, para acentos
-      "base07" = "#61FFCA"; # Verde azulado, para acentos
-      "base08" = "#FF6767"; # Rojo suave, para errores
-      "base09" = "#FFCA85"; # Amarillo suave, para advertencias
-      "base0A" = "#A277FF"; # Morado vibrante, para destacar
-      "base0B" = "#61FFCA"; # Verde azulado, para éxito
-      "base0C" = "#A277FF"; # Morado vibrante, para detalles
-      "base0D" = "#61FFCA"; # Verde azulado, para acentos
-      "base0E" = "#A277FF"; # Morado vibrante, para elementos UI
-      "base0F" = "#FF6767"; # Rojo suave, para acentos
+      # Base colors (Thinkpad Classic)
+      "base00" = "#0C0C0C"; # Negro carbón (como el chasis)
+      "base01" = "#1A1A1A"; # Gris oscuro (teclado)
+      "base02" = "#3D3D3D"; # Gris medio (bordes)
+      "base03" = "#5E5E5E"; # Gris claro (texto secundario)
+
+      # Text colors (High-contrast moderno)
+      "base04" = "#C0C0C0"; # Gris plata (texto principal)
+      "base05" = "#E0E0E0"; # Blanco retro (texto destacado)
+
+      # Acentos (TrackPoint Red + Modern Cyan)
+      "base06" = "#FF3030"; # Rojo Thinkpad clásico
+      "base07" = "#00CED1"; # Cian moderno (contraste)
+      "base08" = "#FF4D4D"; # Rojo error (variación)
+      "base09" = "#FFA500"; # Ámbar (advertencias)
+      "base0A" = "#32CD32"; # Verde lima (éxito)
+      "base0B" = "#20B2AA"; # Verde mar moderno
+      "base0C" = "#00BFFF"; # Azul brillante (links)
+      "base0D" = "#1E90FF"; # Azul Thinkpad (antiguo logo)
+      "base0E" = "#6A5ACD"; # Púrpura suave (UI)
+      "base0F" = "#8B0000"; # Rojo oscuro (crítico)
     };
 
     targets = {
       gnome.enable = true;
     };
 
-    polarity = "dark";
-
     cursor = {
-      package = pkgs.apple-cursor;
-      name = "macOS";
+      #package = pkgs.apple-cursor;
+      #name = "macOS";
+      package = pkgs.vanilla-dmz;
+      name = "Vanilla-DMZ";
       size = 24;
     };
 
     fonts = {
       sizes = {
         applications = 12;
-        terminal = 12;
-        desktop = 12;
+        terminal = 13;
+        desktop = 11;
         popups = 12;
       };
 
@@ -57,11 +62,15 @@
       sansSerif = {
         package = pkgs.nerd-fonts.noto;
         name = "NotoSerif NF";
+        #package = pkgs.inter;
+        #name = "Inter";
       };
 
       serif = {
         package = pkgs.nerd-fonts.noto;
         name = "NotoSerif NFP";
+        #package = pkgs.lora;
+        #name = "Lora";
       };
     };
   };
