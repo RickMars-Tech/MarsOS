@@ -66,7 +66,7 @@ sudo chmod +x setup
 
 # References
 
-Other configurations that I have learned a lot from:
+Thanks to these folks who have inspired me and taught me a lot:
 
 **[Tyler Kelley ]**
 
