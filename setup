@@ -2,7 +2,7 @@
 
 # Get the directory path where the script is located
 script_dir=$(dirname "$(realpath "$0")")
-system_dir="$script_dir/system"
+system_dir="$script_dir/modules"
 target_file="$system_dir/hardware.nix"
 
 # Ensure the system directory exists
@@ -37,7 +37,6 @@ display_menu() {
 # Main script execution
 generate_hardware_config
 
-clear
 echo "Welcome to the NixOS Setup Script!"
 
 while true; do
