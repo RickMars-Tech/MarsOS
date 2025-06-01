@@ -7,30 +7,30 @@
 
 </div>
 
-![](./img/hypr-nix.png)
+![](./img/wezterm.png)
 
-![](./img/rofi.png)
+![](./img/fuzzel.png)
 
-![](./img/nvim.png)
+![](./img/desktop.png)
 
-![](./img/bottom.png)
+![](./img/niri.png)
 
 ## Components
 
 |                             | NixOS(Wayland)                                                                                                      |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Window Manager**          | [Hyprland][Hyprland]                                                                                                |
-| **Terminal Emulator**       | [Zellij][Zellij] + [Alacritty][Alacritty]                                                                           |
+| **Window Manager**          | [Niri][Niri]                                                                                                        |
+| **Terminal Emulator**       | [Wezterm][Wezterm]                                                                                                  |
 | **Bar**                     | [Waybar][Waybar]                                                                                                    |
-| **Application Launcher**    | [Rofi][Rofi]                                                                                                        |
+| **Application Launcher**    | [Fuzzel][Fuzzel]                                                                                                    |
 | **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
 | **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
-| **Network Management Tool** | [Iwgtk][Iwgtk]                                                                                                      |
+| **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]                                                                       |
 | **System resource monitor** | [Bottom][Bottom]                                                                                                    |
 | **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]                                                                                 |
-| **Shell**                   | [Nushell][Nushell] + [Oh-My-Posh][Oh-My-Posh]                                                                       |
+| **Shell**                   | [Fish][Fish]                                                                                                        |
 | **Media Player**            | [MPV][MPV]                                                                                                          |
-| **Text Editor**             | [Neovim][Neovim]                                                                                                    |
+| **Text Editor**             | [Helix][Helix]                                                                                                      |
 | **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
 | **Image Viewer**            | [IMV][IMV]                                                                                                          |
 | **Wallpaper**               | [Nix-ArtWork][Nix-ArtWork]                                                                                          |
@@ -80,22 +80,21 @@ Thanks to these folks who have inspired me and taught me a lot:
 [Ryan Yin]: https://github.com/ryan4yin/nixos-and-flakes-book
 
 <!--------------------------------{ Components }------------------------------->
-[Hyprland]: https://github.com/hyprwm/Hyprland
-[Zellij]: https://github.com/zellij-org/zellij
-[Alacritty]: https://alacritty.org/
+[Niri]: https://github.com/YaLTeR/niri
+[Wezterm]: https://wezterm.org/
 [Waybar]: https://github.com/Alexays/Waybar
-[Rofi]: https://github.com/lbonn/rofi
+[Fuzzel]: https://codeberg.org/dnkl/fuzzel
 [Dunst]: https://github.com/dunst-project/dunst
 [GreetD]: https://sr.ht/~kennylevinsen/greetd/
 [TuiGreet]: https://github.com/apognu/tuigreet
-[Iwgtk]: https://github.com/J-Lentz/iwgtk
+[IWD]: https://git.kernel.org/pub/scm/network/wireless/iwd.git
+[NetworkManager]: https://gitlab.freedesktop.org/NetworkManager/NetworkManager
 [Bottom]: https://github.com/ClementTsang/bottom
 [Yazi]: https://github.com/sxyazi/yazi
 [Nautilus]: https://github.com/GNOME/nautilus
-[Nushell]: https://github.com/nushell/nushell
-[Oh-My-Posh]: https://github.com/jandedobbeleer/oh-my-posh
+[Fish]: https://fishshell.com/
 [MPV]: https://github.com/mpv-player/mpv
-[Neovim]: https://github.com/neovim/neovim
+[Helix]: https://helix-editor.com/
 [Nerd fonts]: https://www.nerdfonts.com/
 [IMV]: https://sr.ht/~exec64/imv/
 [Nix-ArtWork]: https://github.com/NixOS/nixos-artwork
