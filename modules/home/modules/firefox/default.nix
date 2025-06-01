@@ -240,6 +240,8 @@
         "layout.css.prefers-color-scheme.content-override" = 2;
         # Vertical Tabs
         "sidebar.verticalTabs" = true;
+        "sidebar.visibility" = "never-show";
+        "sidebar.main.tools" = "";
         # "browser.uidensity" = 1; # enable dense UI
         "general.autoScroll" = true; # enable autoscroll
         "browser.compactmode.show" = true; # enable compact mode

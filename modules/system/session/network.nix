@@ -4,8 +4,9 @@
   ...
 }: {
   #= NetworkD(Iwd).
-  systemd.network = {
-    enable = true;
+  /*
+    systemd.network = {
+    enable = false;
     networks = {
       "80-wired" = {
         matchConfig = {Name = "enp*s*";};
@@ -18,13 +19,19 @@
     };
     wait-online.enable = false;
   };
+  */
 
   #= Host & Firewall
   networking = {
     hostName = "nixos"; # Define your hostname.
     useDHCP = lib.mkForce false; # Already defined on systemd.network.networks.<name>.DHCP
     enableIPv6 = true;
-    wireless.iwd = {
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd";
+    };
+    /*
+       wireless.iwd = {
       enable = true;
       settings = {
         Network = {
@@ -38,6 +45,7 @@
         };
       };
     };
+    */
     firewall = {
       enable = true;
       allowPing = false;
@@ -68,7 +76,7 @@
       "2a07:e340::4"
     ];
   };
-  environment.systemPackages = with pkgs; [iwgtk]; # GTK Front-end for IWD
+  environment.systemPackages = with pkgs; [networkmanagerapplet]; # GTK Front-end for IWD
   services.resolved.enable = true;
 
   #= Bluetooth

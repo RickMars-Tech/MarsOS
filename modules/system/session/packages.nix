@@ -36,7 +36,7 @@ in {
     #clamav
     #clamtk
     #|==< 3D >==|#
-    blender
+    #blender
     #|==< Dev >==|#
     #==> Arduino <==#
     arduino-core

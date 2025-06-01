@@ -15,21 +15,9 @@
           Restart = "on-failure";
         };
       };
-      #|==> IWGTK <==|#
-      iwgtk = {
-        enable = true;
-        description = "Lightweight wireless networking GUI.";
-        wants = ["iwd.service"]; # Se inicia con la sesión gráfica
-        partOf = ["graphical-session.target"];
-        after = ["graphical-session.target"];
-
-        serviceConfig = {
-          ExecStart = lib.getExe pkgs.iwgtk;
-          Restart = "on-failure"; # Reiniciar si falla
-        };
-      };
       #|==> Xwayland-Satellite <==|#
-      xwayland-satellite = {
+      /*
+         xwayland-satellite = {
         enable = true;
         description = "Xwayland Satellite Service.";
         bindsTo = ["graphical-session.target"];
@@ -47,6 +35,7 @@
           Environment = "DISPLAY=:0"; # Ajusta según tu configuración de DISPLAY
         };
       };
+      */
     };
 
     services = {
