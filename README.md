@@ -33,7 +33,6 @@
 | **Text Editor**             | [Helix][Helix]                                                                                                      |
 | **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
 | **Image Viewer**            | [IMV][IMV]                                                                                                          |
-| **Wallpaper**               | [Nix-ArtWork][Nix-ArtWork]                                                                                          |
 
 
 # Guide to Setup
