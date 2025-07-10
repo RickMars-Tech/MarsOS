@@ -79,7 +79,7 @@
       inherit system;
       modules = [
         #|==< Nix >==|#
-        ./modules/configuration.nix
+        ./modules/base.nix
         nix.nixosModules.default
 
         #|==< Nyx >==|#
