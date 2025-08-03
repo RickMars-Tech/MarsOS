@@ -47,7 +47,7 @@ Clone the Repo:
 git clone https://github.com/RickMars-Tech/MarsOS.git
 ```
 
-Update the Flake:
+Update the Flake(Optional):
 ```bash
 sudo nix flake update
 ```
