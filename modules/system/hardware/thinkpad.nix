@@ -4,17 +4,20 @@
   lib,
   ...
 }: {
-  services.throttled = {
-    enable = true;
-    extraConfig = "";
-  };
+  options.mars.thinkpad.enable = lib.mkEnableOption "Thinkpad Twiks";
 
-  hardware.trackpoint = {
-    enable = lib.mkDefault true;
-    emulateWheel = lib.mkDefault config.hardware.trackpoint.enable;
-  };
+  config = lib.mkIf (config.mars.thinkpad.enable) {
+    boot.kernelModules = [
+      "thinkpad-acpi"
+    ];
 
-  environment.systemPackages = with pkgs; [
-    tpacpi-bat
-  ];
+    hardware.trackpoint = {
+      enable = lib.mkDefault true;
+      emulateWheel = lib.mkDefault config.hardware.trackpoint.enable;
+    };
+
+    environment.systemPackages = with pkgs; [
+      tpacpi-bat
+    ];
+  };
 }

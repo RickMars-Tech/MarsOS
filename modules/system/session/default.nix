@@ -1,7 +1,7 @@
 _: {
   imports = [
     ./gaming/default.nix
-    ./wayland/default.nix
+    # ./wayland/default.nix
     ./audio.nix
     ./dbus.nix
     ./env.nix

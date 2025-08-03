@@ -1,14 +1,15 @@
+# Another example from how to "Install" an Appimage on NixOS
 {
   appimageTools,
   fetchurl,
   lib,
   makeWrapper,
 }: let
-  version = "1.13.2";
+  version = "1.14.4";
   pname = "turbowarp";
   src = fetchurl {
     url = "https://github.com/TurboWarp/desktop/releases/download/v${version}/TurboWarp-linux-x86_64-${version}.AppImage";
-    sha256 = "sha256-ERjeQ0wKqp1DwxrQ3g07Mqk+zWw9bNjlSOdKdIoYSLQ=";
+    sha256 = "sha256-Ck04g/9Ehy0PNulmSJBBWnFD7LvQM54e8RyltfijVHA="; #lib.fakeSha256;
   };
   appimageContents = appimageTools.extractType2 {inherit pname version src;};
 in

@@ -6,12 +6,13 @@ _: {
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     settings = {
-      sandbox = "relaxed";
       auto-optimise-store = true;
+      download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
       experimental-features = [
         "nix-command"
         "flakes"
       ];
+      sandbox = "relaxed";
       trusted-users = ["rick"];
     };
     #= Clean Nix

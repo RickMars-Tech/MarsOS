@@ -1,8 +1,8 @@
 _: {
   boot = {
-    kernelModules = [
-      "thinkpad-acpi"
-    ];
+    # kernelModules = [
+    #   "thinkpad-acpi"
+    # ];
     kernelParams = [
       #= E/S & Memory
       "quiet"
@@ -10,13 +10,8 @@ _: {
       "rootflags=noatime" # To prevent some writes to the ssd
       "rootflags=nodiratime" # Similar to noatime but for dir's
       #"pcie_aspm=force"
-      #= IHD Graphics
-      "i915.enable_psr=0"
-      "i915.enable_rc6=7"
-      "i915.enable_fbc=1"
-      "drm.vblamkoffdelay=1"
       #= Stability
-      "acpi_osi=Linux"
+      #"acpi_osi=Linux"
       #"acpi_backlight=vendor"
       "mem_sleep_default=deep"
       #= SSD
@@ -37,6 +32,7 @@ _: {
       "udev.log_priority=3"
     ];
     kernel.sysctl = {
+      "kernel.split_lock_mitigate" = 0; # In some cases, split lock mitigate can slow down performance in some applications and games.
       "vm.swappiness" = 100;
       "vm.vfs_cache_pressure" = 50;
       "vm.dirty_bytes" = 268435456;
@@ -78,7 +74,7 @@ _: {
       "lpc_ich"
       #= Not used by the system
       "ath3k"
-      "nouveau"
+      # "nouveau"
       "fprint"
       "ide_core"
       #= Obscure network protocols

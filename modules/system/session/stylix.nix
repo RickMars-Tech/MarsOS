@@ -6,7 +6,7 @@
       followSystem = true;
       autoImport = true;
     };
-    image = ../../home/wal/berserk.png;
+    image = ../../../assets/wallpapers/bocchi-runner-2049.jpg;
 
     polarity = "dark";
 

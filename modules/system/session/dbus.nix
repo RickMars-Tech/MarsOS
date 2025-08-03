@@ -10,8 +10,8 @@
       appimage-run
       dunst
       greetd.greetd
-      #greetd.tuigreet
-      greetd.regreet
+      greetd.tuigreet
+      # greetd.regreet
       xdg-desktop-portal
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome

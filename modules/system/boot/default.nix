@@ -1,6 +1,6 @@
 _: {
   imports = [
-    ./boot.nix
+    ./bootloader.nix
     ./kernel/default.nix
     ./security.nix
     ./systemd.nix

@@ -1,18 +1,19 @@
 {
-  #inputs,
+  inputs,
   pkgs,
   lib,
   ...
 }: let
   tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
 in {
+  nixpkgs.overlays = [inputs.niri.overlays.niri];
   #|==< UWSM >==|#
   programs.uwsm = {
     enable = true;
     waylandCompositors."niri" = {
       prettyName = "Niri";
       comment = "A scrollable-tiling Wayland compositor.";
-      binPath = lib.getExe pkgs.niri;
+      binPath = lib.getExe pkgs.niri-unstable;
     };
   };
 

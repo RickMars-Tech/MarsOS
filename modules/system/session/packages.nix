@@ -6,11 +6,8 @@
   turboWrap = pkgs.callPackage ./custom-packages/turbo-wrap/default.nix {};
 in {
   nixpkgs = {
-    #= Allow unfree packages
-    config.allowUnfree = true;
-
     #= Permitted Insecure Packages
-    config.permittedInsecurePackages = ["SDL_ttf-2.0.11" "ventoy-1.1.05"];
+    #config.permittedInsecurePackages = ["SDL_ttf-2.0.11"]; #"ventoy-1.1.05"];
 
     #= Fenix(Rust)
     overlays = [
@@ -20,8 +17,6 @@ in {
 
   #=> Packages Installed in System Profile.
   environment.systemPackages = with pkgs; [
-    #= Goofy
-    neo
     #= Main
     #kexec-tools
     #geogebra6
@@ -101,52 +96,25 @@ in {
     xdg-launch
     xdg-user-dirs
     #= Cli Utilities
-    any-nix-shell
-    bat
-    eza
-    #curl
-    xcp # Extended CP
-    #wget
     flashprog
-    trash-cli
-    nerdfetch
-    git
-    gitoxide
-    bottom
-    #lynx
-    macchanger
-    nurl
     pciutils
-    ripgrep
-    skim
     usbutils
-    zoxide
-    woeusb
     #= Archives/Documents
-    nautilus
-    nautilus-open-any-terminal
+    # nautilus
+    # nautilus-open-any-terminal
+    pcmanfm
     kdePackages.ark
     imagemagick
-    zip
-    unzip
-    gnutar
-    #rarcrack
-    rar
-    unrar-free
     zathura
     #= Drives utilities
     smartmontools # Monitoring the health of ard drives.
     gnome-disk-utility # Disk Manager.
     baobab # Gui app to analyse disk usage.
-    ventoy # Flash OS images for Linux and anothers Systems.
     woeusb # Flash OS images for Windows.
-    #= Appimages
-    #appimage-run
-    #gearlever
     #= Torrent
     qbittorrent
     #= Image Editors
-    gimp
+    #gimp
     #= Video/Audio Tools
     shotcut
     #= Video Recorder
@@ -181,54 +149,15 @@ in {
     bottles
   ];
 
-  #= Declarate Programs
+  #|==> Declarate Programs <==|#
+
   programs = {
-    #= Terminal FileManager
-    yazi = {
+    #==< Git >==#
+    git = {
       enable = true;
-      package = inputs.yazi.packages.${pkgs.system}.default;
-      settings.yazi = {
-        manager = {
-          sort_by = "natural";
-          show_hidden = true;
-          show_symlink = true;
-        };
-        preview = {
-          image_filter = "triangle"; #"lanczos3";
-          image_delay = 10;
-          image_quality = 70;
-          max_width = 600;
-          max_height = 900;
-          ueberzug_scale = 1;
-          ueberzug_offset = [
-            0
-            0
-            0
-            0
-          ];
-        };
-        tasks = {
-          micro_workers = 5;
-          macro_workers = 10;
-          bizarre_retry = 5;
-        };
-      };
+      package = pkgs.gitMinimal;
     };
-
-    #= TheFuck =#
-    thefuck = {
-      enable = false;
-      alias = "fuck";
-    };
-
-    #= Java =#
-    java = {
-      enable = true;
-      package = pkgs.jdk;
-      binfmt = true;
-    };
-
-    #==> Appimages <==#
+    #==< Appimages >==#
     appimage = {
       enable = true;
       binfmt = true;

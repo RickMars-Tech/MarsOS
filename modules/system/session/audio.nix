@@ -10,7 +10,16 @@
     };
     pulse.enable = true;
     jack.enable = true;
-    wireplumber.enable = true;
+    wireplumber = {
+      enable = true;
+      extraConfig = {
+        "10-disable-camera" = {
+          "wireplumber.profiles" = {
+            main."monitor.libcamera" = "disabled";
+          };
+        };
+      };
+    };
     extraConfig = {
       pipewire."91-low-latency" = {
         context.properties = {
@@ -46,6 +55,7 @@
   services.pulseaudio.enable = false;
 
   environment.systemPackages = with pkgs; [
+    aubio
     alsa-lib
     alsa-plugins
     alsa-utils

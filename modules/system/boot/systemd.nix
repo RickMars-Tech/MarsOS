@@ -1,42 +1,6 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+_: {
   systemd = {
     enableCgroupAccounting = true;
-
-    user.services = {
-      cliphist = {
-        description = "wl-paste + cliphist service";
-        serviceConfig = {
-          Type = "simple";
-          ExecStart = "${pkgs.wl-clipboard-rs}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store";
-          Restart = "on-failure";
-        };
-      };
-      #|==> Xwayland-Satellite <==|#
-      /*
-         xwayland-satellite = {
-        enable = true;
-        description = "Xwayland Satellite Service.";
-        bindsTo = ["graphical-session.target"];
-        partOf = ["graphical-session.target"];
-        wantedBy = ["graphical-session.target"];
-        after = ["graphical-session.target"];
-        requisite = ["graphical-session.target"];
-
-        serviceConfig = {
-          Type = "notify";
-          NotifyAccess = "all";
-          ExecStart = lib.getExe pkgs.xwayland-satellite;
-          StandardOutput = "journal";
-          Restart = "on-failure"; # Reiniciar si falla
-          Environment = "DISPLAY=:0"; # Ajusta según tu configuración de DISPLAY
-        };
-      };
-      */
-    };
 
     services = {
       #|==> GreetD <==|#
