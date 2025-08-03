@@ -2,120 +2,127 @@
   description = "My NixOS Configuration";
 
   inputs = {
-    #|==< Determinate Nix >==|#
-    magic-nix-cache.url = "https://flakehub.com/f/DeterminateSystems/magic-nix-cache/*.tar.gz";
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.0.tar.gz";
-    nix = {
-      url = "https://flakehub.com/f/DeterminateSystems/nix/2.*";
+    # Core
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
+
+    # Determinate Systems
+    determinate = {
+      url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #|==< Nyx >==|#
-    chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    # Chaotic Nyx
+    chaotic = {
+      url = "https://flakehub.com/f/chaotic-cx/nyx/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    #|==< Home & Stylix >==|#
+    # Home Manager & Theming
     home-manager = {
-      url = "https://flakehub.com/f/nix-community/home-manager/0.1.0.tar.gz";
+      url = "https://flakehub.com/f/nix-community/home-manager/0.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "https://flakehub.com/f/danth/stylix/*.tar.gz";
 
-    #|==< Rust >==|#
+    # Development Tools
     fenix = {
-      url = "https://flakehub.com/f/nix-community/fenix/*.tar.gz";
+      url = "https://flakehub.com/f/nix-community/fenix/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #|==< NiriWM >==|
+    # Window Manager & Widgets
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    #|==< Wezterm >==|#
-    #wezterm.url = "github:wez/wezterm?dir=nix";
-
-    #|==< Helix >==|#
-    helix.url = "github:helix-editor/helix";
-
-    #|==< Yazi >==|#
-    yazi.url = "github:sxyazi/yazi";
+    quickshell = {
+      url = "github:quickshell-mirror/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
     extra-substituters = [
+      "https://install.determinate.systems"
       "https://nix-community.cachix.org"
       "https://chaotic-nyx.cachix.org"
-      "https://helix.cachix.org"
-      "https://yazi.cachix.org"
-      #"https://wezterm.cachix.org"
     ];
     extra-trusted-public-keys = [
+      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
-      "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
-      "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
-      #"wezterm.cachix.org-1:kAbhjYUC9qvblTE+s7S+kl5XM1zVa4skO+E/1IDWdH0="
     ];
   };
 
-  outputs = inputs @ {
-    chaotic,
-    fenix,
-    home-manager,
-    niri,
-    nix,
-    nixpkgs,
-    stylix,
-    self,
-    ...
-  }: let
+  outputs = inputs @ {nixpkgs, ...}: let
+    # Sistema y usuario globales
     system = "x86_64-linux";
     username = "rick";
     name = "Rick";
-  in {
-    packages.x86_64-linux.default = fenix.packages.x86_64-linux.minimal.toolchain;
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      inherit system;
-      modules = [
-        #|==< Nix >==|#
-        ./modules/base.nix
-        nix.nixosModules.default
 
-        #|==< Nyx >==|#
-        chaotic.nixosModules.default
+    # Función helper para crear configuraciones de hosts
+    mkHost = hostname: extraModules:
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules =
+          [
+            # Configuración específica del host
+            ./modules/hosts/${hostname}.nix
+            ./modules/system/default.nix
 
-        #|==< Stylix >==|#
-        stylix.nixosModules.stylix
+            #= NixModules
+            inputs.determinate.nixosModules.default
+            inputs.chaotic.nixosModules.default
+            inputs.stylix.nixosModules.stylix
+            inputs.home-manager.nixosModules.home-manager
 
-        #|==< Home-Manager >==|#
-        home-manager.nixosModules.home-manager
+            # Configuración común de sistema y home-manager
+            {
+              _module.args = {inherit inputs;};
+              nixpkgs.config.allowUnfree = true;
 
-        #|==< System && Home-Manager Config >==|#
-        {
-          _module.args = {inherit inputs;};
-          nixpkgs.config.allowUnfree = true;
-          #nix.settings = {
-          #};
-          home-manager = {
-            useGlobalPkgs = false; #= It could not be used together with overrides in the future.
-            useUserPackages = true;
-            users.${username} = import ./modules/home/default.nix;
+              home-manager = {
+                useGlobalPkgs = false;
+                useUserPackages = true;
+                users.${username} = import ./modules/home/default.nix;
+                extraSpecialArgs = {
+                  inherit username inputs;
+                  inherit (inputs) self;
+                };
+              };
+            }
+          ]
+          ++ extraModules;
 
-            extraSpecialArgs = {
-              inherit username;
-              inherit inputs;
-              inherit self;
-            };
-          };
-        }
-      ];
-      specialArgs = {
-        inherit inputs;
-        inherit username;
-        inherit name;
-        inherit self;
+        specialArgs = {
+          inherit inputs username name;
+          inherit (inputs) self;
+        };
       };
+
+    #= Host's
+    hosts = {
+      boltz = []; # Sin módulos adicionales
+      rift = []; # Sin módulos adicionales
+      # Ejemplo para agregar más hosts:
+      # laptop = [ ./modules/hosts/laptop-specific.nix ];
     };
+  in {
+    # Configuraciones de hosts generadas automáticamente
+    nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
+
+    # Paquetes por defecto
+    packages.${system}.default = inputs.fenix.packages.${system}.minimal.toolchain;
+
+    # DevShells opcionales para desarrollo
+    devShells.${system}.default = nixpkgs.legacyPackages.${system}.mkShell {
+      buildInputs = with nixpkgs.legacyPackages.${system}; [
+        nixos-rebuild
+        home-manager
+      ];
+    };
+
+    # Formatter para el código Nix
+    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   };
 }
