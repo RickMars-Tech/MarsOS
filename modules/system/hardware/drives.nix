@@ -38,7 +38,7 @@ in {
   };
 
   #= Fuse
-  services.envfs.enable = true;
+  services.envfs.enable = lib.mkDefault false;
 
   #= USB.
   services.gvfs.enable = true;
