@@ -10,16 +10,24 @@
           check = "clippy";
           proc-macro.enable = true;
         };
-        gpt = {
-          command = "helix-gpt";
-          args = ["--handler" "codeium"];
+        qmlls = {
+          command = "qmlls";
+          args = ["-E"];
         };
+        ruff = {
+          command = "ruff";
+          args = ["check"];
+        };
+        # gpt = {
+        #   command = "helix-gpt";
+        #   args = ["--handler" "codeium"];
+        # };
       };
       language = [
         {
           name = "nix";
           auto-format = true;
-          language-servers = ["nil" "gpt"];
+          language-servers = ["nil"];
           formatter = {
             command = lib.getExe pkgs.alejandra;
           };
@@ -27,34 +35,41 @@
         {
           name = "rust";
           auto-format = true;
-          language-servers = ["rust-analyzer" "gpt"];
+          language-servers = ["rust-analyzer"];
           formatter = {
             command = "rustfmt"; #lib.getExe pkgs.rustfmt;
           };
         }
         {
           name = "python";
+          scope = "source.python";
+          file-types = ["py" "pyi" "py3" "pyw"];
           auto-format = true;
-          language-servers = ["ruff" "gpt"];
+          language-servers = ["ruff"];
           formatter = {
             command = lib.getExe pkgs.ruff;
             args = ["-" "--quiet" "--line-length 100"];
           };
         }
         {
+          name = "qml";
+          auto-format = true;
+          language-servers = ["qmlls"];
+        }
+        {
           name = "c";
           auto-format = true;
-          language-servers = ["clangd" "gpt"];
+          language-servers = ["clangd"];
         }
         {
           name = "cpp";
           auto-format = true;
-          language-servers = ["clangd" "gpt"];
+          language-servers = ["clangd"];
         }
         {
           name = "zig";
           auto-format = true;
-          language-servers = ["zls" "gpt"];
+          language-servers = ["zls"];
           formatter = {
             command = lib.getExe pkgs.zig;
           };
@@ -62,7 +77,7 @@
         {
           name = "kdl";
           auto-format = true;
-          language-servers = ["gpt"];
+          language-servers = [];
           formatter = {
             command = lib.getExe pkgs.kdlfmt;
           };
