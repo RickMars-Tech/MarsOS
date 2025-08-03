@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  lib,
   ...
 }: {
   imports = [
@@ -12,6 +13,19 @@
     ./config/windowrules.nix
   ];
   nixpkgs.overlays = [inputs.niri.overlays.niri];
+
+  #= SetUp Niri(Unstable)
+  programs.niri = {
+    enable = true;
+    package = pkgs.niri-unstable;
+    #= Xwayland-Satellite
+    settings.xwayland-satellite = {
+      enable = true;
+      path = "${lib.getExe pkgs.xwayland-satellite-unstable}";
+    };
+  };
+
+  #= Used Packages
   home.packages = with pkgs; [
     xwayland-satellite-unstable
     # Clipboard-specific
