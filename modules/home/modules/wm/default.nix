@@ -6,7 +6,7 @@ _: {
     ./hyprlock/default.nix
     ./hyprpaper/default.nix
     ./niri/default.nix
-    ./waybar/default.nix
+    ./quickshell/default.nix
     ./wlogout/default.nix
   ];
 }

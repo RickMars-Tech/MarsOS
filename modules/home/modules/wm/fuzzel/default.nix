@@ -14,7 +14,7 @@ in {
         dpi-aware = "no";
         terminal = "${wezterm}";
         prompt = ">_";
-        launch-prefix = "uwsm app --";
+        launch-prefix = "uwsm-app --";
         icon-theme = "Cosmic";
         icons-enable = "yes";
         show-actions = "yes";
@@ -37,7 +37,7 @@ in {
         selection-text = "${color.base07}ff";
         selection-match = "${color.base07}ff";
         counter = "${color.base0C}ff";
-        border = "${color.base09}ff";
+        border = "${color.base0D}ff";
       };
     };
   };
