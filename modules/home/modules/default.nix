@@ -9,5 +9,6 @@ _: {
     ./steam/default.nix
     ./wezterm/default.nix
     ./wireplumber/default.nix
+    ./yazi/default.nix
   ];
 }
