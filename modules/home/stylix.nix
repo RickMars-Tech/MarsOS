@@ -8,27 +8,23 @@
         ];
         firefoxGnomeTheme.enable = false;
       };
-      wpaperd.enable = true;
-      swaylock.enable = true;
+      hyprlock.enable = false;
       fuzzel.enable = false;
       helix.enable = false;
-      rio.enable = false;
-      vscode.enable = false;
       fzf.enable = true;
-      qutebrowser.enable = true;
-      waybar = {
-        enable = true;
-        addCss = true;
-        #font = "monospace";
-        enableLeftBackColors = false;
-        enableRightBackColors = false;
-      };
+      wezterm.enable = false;
     };
     iconTheme = {
       enable = true;
-      package = pkgs.reversal-icon-theme;
-      dark = "Reversal";
-      light = "Reversal";
+      package = pkgs.whitesur-icon-theme.override {
+        boldPanelIcons = true;
+        alternativeIcons = true;
+      };
+      dark = "WhiteSur";
+      light = "WhiteSur";
+      # package = pkgs.reversal-icon-theme;
+      # dark = "Reversal";
+      # light = "Reversal";
     };
   };
 }
