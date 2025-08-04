@@ -32,8 +32,8 @@
 
   programs.helix = {
     package = pkgs.helix;
-    # package = inputs.helix.packages.${pkgs.system}.default;
     enable = true;
+    defaultEditor = true;
     extraPackages = with pkgs; [
       #= Helix Gpt
       helix-gpt

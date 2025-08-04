@@ -3,6 +3,7 @@ _: {
     ./wm/default.nix
     ./dri/default.nix
     ./firefox/default.nix
+    ./git/default.nix
     ./helix/default.nix
     ./mpv/default.nix
     ./shell/default.nix

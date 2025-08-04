@@ -5,15 +5,10 @@
 }: let
   turboWrap = pkgs.callPackage ./custom-packages/turbo-wrap/default.nix {};
 in {
-  nixpkgs = {
-    #= Permitted Insecure Packages
-    #config.permittedInsecurePackages = ["SDL_ttf-2.0.11"]; #"ventoy-1.1.05"];
-
-    #= Fenix(Rust)
-    overlays = [
-      inputs.fenix.overlays.default
-    ];
-  };
+  #= Fenix(Rust)
+  nixpkgs.overlays = [
+    inputs.fenix.overlays.default
+  ];
 
   #=> Packages Installed in System Profile.
   environment.systemPackages = with pkgs; [
@@ -28,8 +23,8 @@ in {
     #= FOSS Electronics Design Automation suite
     kicad-small
     #= Clamav Anti-Virus
-    #clamav
-    #clamtk
+    clamav
+    clamtk
     #|==< 3D >==|#
     #blender
     #|==< Dev >==|#
@@ -62,7 +57,7 @@ in {
     SDL2_image
     SDL2_ttf
     #= Python
-    (python3.withPackages (
+    (python313.withPackages (
       p:
         with p; [
           anyqt
@@ -92,9 +87,9 @@ in {
     #= TurboWrap(Scratch3)
     turboWrap
     #= XDG
-    xdg-utils
-    xdg-launch
-    xdg-user-dirs
+    # xdg-utils
+    # xdg-launch
+    # xdg-user-dirs
     #= Cli Utilities
     flashprog
     pciutils
@@ -108,6 +103,7 @@ in {
     zathura
     #= Drives utilities
     smartmontools # Monitoring the health of ard drives.
+    caligula # User-friendly, lightweight TUI for disk imaging
     gnome-disk-utility # Disk Manager.
     baobab # Gui app to analyse disk usage.
     woeusb # Flash OS images for Windows.
@@ -123,7 +119,7 @@ in {
         wlrobs
         obs-backgroundremoval
         obs-pipewire-audio-capture
-        #obs-vkcapture
+        obs-vkcapture
         obs-gstreamer
         obs-vaapi
       ];
@@ -149,24 +145,15 @@ in {
     bottles
   ];
 
-  #|==> Declarate Programs <==|#
-
-  programs = {
-    #==< Git >==#
-    git = {
-      enable = true;
-      package = pkgs.gitMinimal;
-    };
-    #==< Appimages >==#
-    appimage = {
-      enable = true;
-      binfmt = true;
-      package = pkgs.appimage-run.override {
-        extraPkgs = pkgs: [
-          pkgs.ffmpeg
-          pkgs.imagemagick
-        ];
-      };
+  #==< Appimages >==#
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+    package = pkgs.appimage-run.override {
+      extraPkgs = pkgs: [
+        pkgs.ffmpeg
+        pkgs.imagemagick
+      ];
     };
   };
 }
