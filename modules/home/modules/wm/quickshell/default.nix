@@ -3,25 +3,23 @@
   inputs,
   ...
 }: let
-  quickshellDir = ./qml;
+  quickshellDir = ./config;
 in {
-  imports = [
-    ./theme.nix
-  ];
+  programs.quickshell = {
+    enable = true;
+    package = inputs.quickshell.packages.${pkgs.system}.default;
+    systemd.enable = true;
+  };
 
-  #|==< Packages >==|#
+  #|==< Config Files >==|#
+  home.file.".config/quickshell" = {
+    enable = true;
+    recursive = true;
+    source = quickshellDir;
+  };
+
+  #|==< Extra Packages >==|#
   home.packages = with pkgs; [
-    #(inputs.quickshell.packages.${pkgs.system}.default)
-    (inputs.quickshell.packages.${pkgs.system}.default.override {
-      withJemalloc = true;
-      withQtSvg = true;
-      withWayland = true;
-      withX11 = false;
-      withPipewire = true;
-      withPam = true;
-      withHyprland = false;
-      withI3 = false;
-    })
     qt6.qt5compat
     qt6.qtbase
     qt6.qtquick3d
@@ -40,13 +38,4 @@ in {
     brightnessctl
     cava
   ];
-
-  qt.enable = true;
-
-  #|==< Config Files >==|#
-  home.file.".config/quickshell" = {
-    enable = true;
-    recursive = true;
-    source = quickshellDir;
-  };
 }

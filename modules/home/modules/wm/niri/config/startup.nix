@@ -15,7 +15,7 @@ in {
     (makeCommand "$POLKIT_BIN")
     (makeCommand "wlr-randr")
     (makeCommand "dunst")
-    (makeCommand "qs")
+    # (makeCommand "qs")
     {
       command = [
         "${pkgs.dbus}/bin/dbus-update-activation-environment"
