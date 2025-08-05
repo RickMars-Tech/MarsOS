@@ -13,6 +13,7 @@
       helix.enable = false;
       fzf.enable = true;
       wezterm.enable = false;
+      ghostty.enable = true;
     };
     iconTheme = {
       enable = true;

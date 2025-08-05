@@ -15,8 +15,8 @@
     "XF86AudioPrev".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "previous"];
     "XF86AudioNext".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "next"];
 
-    "Mod+T".action.spawn = ["${pkgs.wezterm}/bin/wezterm"];
-    "Mod+E".action.spawn = ["${pkgs.wezterm}/bin/wezterm" "-e" "yazi"];
+    "Mod+T".action.spawn = ["${pkgs.ghostty}/bin/ghostty"];
+    "Mod+E".action.spawn = ["${pkgs.ghostty}/bin/ghostty" "-e" "yazi"];
     "Mod+B".action.spawn = ["${lib.getExe pkgs.firefox}"];
     "Mod+R".action.spawn = ["${lib.getExe pkgs.fuzzel}"];
     "Mod+Shift+Q".action.spawn = ["${lib.getExe pkgs.hyprlock}"];

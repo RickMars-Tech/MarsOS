@@ -2,7 +2,6 @@
   pointer = config.stylix.cursor;
   color = config.stylix.base16Scheme;
 in {
-  # nixpkgs.overlays = [inputs.niri.overlays.niri];
   programs.niri.settings = {
     input = {
       #= Keyboard
@@ -86,12 +85,6 @@ in {
       center-focused-column = "on-overflow";
 
       background-color = "transparent";
-
-      # preset-column-widths = [
-      #   {proportion = 1. / 3.;}
-      #   {proportion = 1. / 2.;}
-      #   {proportion = 2. / 3.;}
-      # ];
 
       preset-window-heights = [
         {proportion = 1.;}
@@ -178,7 +171,6 @@ in {
         softness = 100;
       };
       backdrop-color = "transparent";
-      # backdrop-color = "#000000F2";
     };
 
     prefer-no-csd = true;

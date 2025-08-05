@@ -3,12 +3,13 @@ _: {
     ./wm/default.nix
     ./dri/default.nix
     ./firefox/default.nix
+    ./ghostty/default.nix
     ./git/default.nix
     ./helix/default.nix
     ./mpv/default.nix
     ./shell/default.nix
     ./steam/default.nix
-    ./wezterm/default.nix
+    # ./wezterm/default.nix
     ./wireplumber/default.nix
     ./yazi/default.nix
   ];

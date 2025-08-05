@@ -1,7 +1,7 @@
 _: {
-  # imports = [
-  #   ./nix-ld.nix
-  # ];
+  imports = [
+    ./nix-ld.nix
+  ];
 
   #= Enable Nix-Shell, Flakes and More...
   nix = {

@@ -39,6 +39,7 @@
       url = "github:quickshell-mirror/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ghostty.url = "github:ghostty-org/ghostty";
   };
 
   nixConfig = {

@@ -95,9 +95,9 @@ in {
     pciutils
     usbutils
     #= Archives/Documents
-    # nautilus
-    # nautilus-open-any-terminal
-    pcmanfm
+    nautilus
+    nautilus-open-any-terminal
+    # pcmanfm
     kdePackages.ark
     imagemagick
     zathura

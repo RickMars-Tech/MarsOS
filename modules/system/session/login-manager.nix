@@ -1,10 +1,12 @@
 {
   inputs,
+  config,
   pkgs,
   lib,
   ...
 }: let
-  tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
+  font = config.stylix.fonts;
+  cursor = config.stylix.cursor;
 in {
   nixpkgs.overlays = [inputs.niri.overlays.niri];
   #|==< UWSM >==|#
@@ -18,22 +20,17 @@ in {
   };
 
   #|==< GreetD >==|#
-  services.greetd = {
+  services.cage.enable = true;
+
+  programs.regreet = {
     enable = true;
-    settings = {
-      default_session = {
-        command = "${tuigreet} --time --remember --remember-session --asterisks";
-        user = "greeter";
-      };
-    };
-    vt = 1;
+    cageArgs = ["-s"];
   };
 
-  /*
-    services.displayManager.cosmic-greeter = {
+  services.greetd = {
     enable = true;
+    settings.default_session.user = "greeter";
   };
-  */
 
   #= TTY
   console = {

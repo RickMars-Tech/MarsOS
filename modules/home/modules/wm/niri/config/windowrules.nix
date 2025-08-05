@@ -37,14 +37,14 @@ _: {
         default-column-width = {proportion = 1.0;};
       }
       {
-        matches = [{app-id = "wezterm";}];
+        matches = [{app-id = "com.mitchellh.ghostty";}];
         default-column-width = {proportion = 1.0;};
       }
       {
         matches = [
           {
             title = "yazi";
-            app-id = "wezterm";
+            app-id = "com.mitchellh.ghostty";
           }
         ];
         default-column-width = {proportion = 0.25;};

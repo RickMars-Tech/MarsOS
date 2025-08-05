@@ -32,7 +32,10 @@
 
     targets = {
       gtk.enable = true;
-      gnome.enable = false;
+      regreet = {
+        enable = true;
+        # useWallpaper = ;
+      };
     };
 
     cursor = {

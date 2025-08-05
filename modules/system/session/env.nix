@@ -5,7 +5,7 @@
 }: let
   extest = "${pkgs.extest}/lib/libextest.so";
   firefox = "${pkgs.firefox}/bin/firefox";
-  wezterm = "${pkgs.wezterm}/bin/wezterm";
+  terminal = "${pkgs.ghostty}/bin/ghostty";
   soteria = lib.getExe pkgs.soteria;
 in {
   environment = {
@@ -13,7 +13,7 @@ in {
       #|==< Default's >==|#
       EDITOR = "hx";
       BROWSER = "${firefox}";
-      TERMINAL = "${wezterm}";
+      TERMINAL = "${terminal}";
 
       #|==< Polkit >==|#
       POLKIT_BIN = "${soteria}";

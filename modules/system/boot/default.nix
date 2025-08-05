@@ -4,6 +4,6 @@ _: {
     ./kernel/default.nix
     ./security.nix
     ./systemd.nix
-    #./udev.nix
+    ./udev.nix
   ];
 }
