@@ -6,11 +6,9 @@
         source = ./ascii-art/rabbit-skull.txt;
         color = {"1" = "white";};
       };
-      display = {
-        size.binaryPrefix = "si";
-        separator = " -> ";
-      };
+      display.separator = "  • ";
       modules = [
+        "break"
         {
           type = "title";
           color = {
@@ -20,8 +18,9 @@
           };
         }
         {
-          format = "•••••••••••";
-          type = "custom";
+          type = "colors";
+          paddingLeft = 1;
+          symbol = "circle";
         }
         {
           type = "custom";
@@ -69,7 +68,12 @@
         }
         {
           type = "swap";
-          key = " └ 󰓡";
+          key = " ├ ";
+          keyColor = "green";
+        }
+        {
+          type = "disk";
+          key = " └ ";
           keyColor = "green";
         }
         # Shell/Terminal
@@ -87,11 +91,6 @@
           type = "terminal";
           key = " └ ";
           keyColor = "green";
-        }
-        {
-          type = "colors";
-          paddingLeft = 1;
-          symbol = "circle";
         }
       ];
     };
