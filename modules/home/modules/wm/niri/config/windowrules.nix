@@ -1,9 +1,9 @@
 _: {
   programs.niri.settings = {
     layer-rules = [
-      #= Hyprpaper
+      #= Wallpaper
       {
-        matches = [{namespace = "^hyprpaper$";}];
+        matches = [{namespace = "^swww-daemon$";}];
         place-within-backdrop = true;
       }
       #= Quickshell
