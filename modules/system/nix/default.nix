@@ -1,8 +1,4 @@
 _: {
-  imports = [
-    ./nix-ld.nix
-  ];
-
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     settings = {
@@ -21,7 +17,5 @@ _: {
       dates = "weekly";
       options = "--delete-older-than 1w";
     };
-    #= Extra
-    #nixPath = ["nixpkgs=${inputs.nixpkgs}"];
   };
 }
