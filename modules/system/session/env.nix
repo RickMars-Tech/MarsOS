@@ -5,7 +5,7 @@
 }: let
   extest = "${pkgs.extest}/lib/libextest.so";
   firefox = "${pkgs.firefox}/bin/firefox";
-  terminal = "${pkgs.ghostty}/bin/ghostty";
+  terminal = "${pkgs.wezterm}/bin/wezterm";
   soteria = lib.getExe pkgs.soteria;
 in {
   environment = {

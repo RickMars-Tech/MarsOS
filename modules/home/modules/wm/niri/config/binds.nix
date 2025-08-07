@@ -15,8 +15,8 @@
     "XF86AudioPrev".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "previous"];
     "XF86AudioNext".action.spawn = ["${pkgs.playerctl}/bin/playerctl" "next"];
 
-    "Mod+T".action.spawn = ["${pkgs.ghostty}/bin/ghostty"];
-    "Mod+E".action.spawn = ["${pkgs.ghostty}/bin/ghostty" "-e" "yazi"];
+    "Mod+T".action.spawn = ["${pkgs.wezterm}/bin/wezterm"];
+    "Mod+E".action.spawn = ["${pkgs.wezterm}/bin/wezterm" "-e" "yazi"];
     "Mod+B".action.spawn = ["${lib.getExe pkgs.firefox}"];
     "Mod+R".action.spawn = ["${lib.getExe pkgs.fuzzel}"];
     "Mod+Shift+Q".action.spawn = ["${lib.getExe pkgs.hyprlock}"];
@@ -42,8 +42,8 @@
     #= Focus Windows
     "Mod+H".action = focus-column-left;
     "Mod+L".action = focus-column-right;
-    "Mod+K".action = focus-workspace-down;
-    "Mod+J".action = focus-workspace-up;
+    "Mod+K".action = focus-workspace-up;
+    "Mod+J".action = focus-workspace-down;
     "Mod+Left".action = focus-column-left;
     "Mod+Right".action = focus-column-right;
     "Mod+Down".action = focus-window-down;
@@ -52,10 +52,10 @@
     #= Move Windows
     "Mod+Shift+H".action = move-column-left;
     "Mod+Shift+L".action = move-column-right;
-    "Mod+Shift+J".action = move-column-to-workspace-up;
-    "Mod+Shift+K".action = move-column-to-workspace-down;
+    "Mod+Shift+K".action = move-column-to-workspace-up;
+    "Mod+Shift+J".action = move-column-to-workspace-down;
 
-    "Mod+Shift+Ctrl+K".action = move-column-to-monitor-down;
-    "Mod+Shift+Ctrl+J".action = move-column-to-monitor-up;
+    "Mod+Shift+Ctrl+K".action = move-column-to-monitor-up;
+    "Mod+Shift+Ctrl+J".action = move-column-to-monitor-down;
   };
 }

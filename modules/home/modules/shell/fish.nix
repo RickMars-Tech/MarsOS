@@ -19,7 +19,7 @@ in {
       #= Stats
       ping = "gping";
       top = "btm";
-      fetch = "nerdfetch";
+      fetch = "fastfetch";
 
       #= Files & Archive Management
       grep = "rg --color=auto";
@@ -54,7 +54,7 @@ in {
 
     interactiveShellInit = "
       function fish_greeting
-        nerdfetch
+        fastfetch
       end
 
       ## Enable Wayland Support for different Applications

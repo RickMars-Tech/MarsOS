@@ -13,6 +13,7 @@ _: {
         place-within-backdrop = true;
       }
     ];
+    # See app-id with command = $ niri msg windows
     window-rules = [
       {
         geometry-corner-radius = let
@@ -37,14 +38,14 @@ _: {
         default-column-width = {proportion = 1.0;};
       }
       {
-        matches = [{app-id = "com.mitchellh.ghostty";}];
+        matches = [{app-id = "org.wezfurlong.wezterm";}];
         default-column-width = {proportion = 1.0;};
       }
       {
         matches = [
           {
             title = "yazi";
-            app-id = "com.mitchellh.ghostty";
+            app-id = "org.wezfurlong.wezterm";
           }
         ];
         default-column-width = {proportion = 0.25;};

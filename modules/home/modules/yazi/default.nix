@@ -5,7 +5,11 @@
 }: let
   color = config.stylix.base16Scheme;
 in {
-  imports = [./theme/icons.nix];
+  imports = [
+    ./theme/icons.nix
+    # ./theme/manager.nix
+    # ./theme/status.nix
+  ];
   programs.yazi = {
     enable = true;
     package = pkgs.yazi;

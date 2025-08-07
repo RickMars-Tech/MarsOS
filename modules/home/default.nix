@@ -47,7 +47,13 @@ in {
       enable = true;
       xdgOpenUsePortal = true;
       config.common.default = "gtk";
-      extraPortals = with pkgs; [xdg-desktop-portal-gtk];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+        libsForQt5.xdg-desktop-portal-kde
+        lxqt.xdg-desktop-portal-lxqt
+      ];
     };
     mimeApps = {
       enable = true;

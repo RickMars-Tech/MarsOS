@@ -20,11 +20,11 @@ in {
   };
 
   #|==< GreetD >==|#
-  services.cage.enable = true;
+  # services.cage.enable = true;
 
   programs.regreet = {
     enable = true;
-    cageArgs = ["-s"];
+    # cageArgs = ["-s"];
   };
 
   services.greetd = {

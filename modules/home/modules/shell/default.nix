@@ -7,7 +7,7 @@
   #= Shell/CLI programs
   home.packages = with pkgs; [
     any-nix-shell # Multiple Shell support for nix-shell
-    nerdfetch # POSIX*Nix Fetch Script + Nerdfonts
+    # nerdfetch # POSIX*Nix Fetch Script + Nerdfonts
     gping # Ping, but with a graph
     bottom # Process/System Monitor
     ripgrep # Extended Grep

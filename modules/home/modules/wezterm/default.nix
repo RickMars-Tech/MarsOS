@@ -14,6 +14,7 @@ in {
       return {
         check_for_updates = false,
         enable_wayland = true,
+        enable_tab_bar = false,
         font = wezterm.font("${cfg.fonts.monospace.name}"),
         font_size = ${toString cfg.fonts.sizes.terminal},
         window_background_opacity = 0.90,

@@ -106,8 +106,8 @@
   # then have Firefox open on some other workspace.
   "widget.disable-workspace-management" = true;
   # XDG-Portal
-  "widget.use-xdg-desktop-portal.file-picker" = 1;
-  "widget.use-xdg-desktop-portal.mime-handler" = 1;
+  "widget.use-xdg-desktop-portal.file-picker" = 2;
+  "widget.use-xdg-desktop-portal.mime-handler" = 2;
 
   # Rendering/Performance
   "webgl.force-enabled" = false;
