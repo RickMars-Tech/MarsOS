@@ -18,7 +18,7 @@ in {
     (makeCommand "systemctl --user start cliphist.service")
     (makeCommand "xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2")
     (makeCommand "swww-daemon")
-    (makeCommand "swww img ${wall}")
+    (makeCommand "swww img ${wall} --transition-type random")
     (makeCommand "$POLKIT_BIN")
     (makeCommand "wlr-randr")
     (makeCommand "dunst")
