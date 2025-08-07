@@ -7,14 +7,13 @@
 in {
   imports = [
     ./theme/icons.nix
-    # ./theme/manager.nix
-    # ./theme/status.nix
+    ./theme/manager.nix
+    ./theme/status.nix
   ];
   programs.yazi = {
     enable = true;
     package = pkgs.yazi;
     enableFishIntegration = true;
-    # package = inputs.yazi.packages.${pkgs.system}.default;
     settings.yazi = {
       manager = {
         sort_by = "natural";
@@ -23,7 +22,7 @@ in {
       };
       preview = {
         tab_size = 2;
-        image_filter = "triangle"; #"lanczos3";
+        image_filter = "triangle";
         image_delay = 10;
         image_quality = 70;
         max_width = 600;

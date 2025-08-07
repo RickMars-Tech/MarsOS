@@ -19,7 +19,7 @@
     "Mod+E".action.spawn = ["${pkgs.wezterm}/bin/wezterm" "-e" "yazi"];
     "Mod+B".action.spawn = ["${lib.getExe pkgs.firefox}"];
     "Mod+R".action.spawn = ["${lib.getExe pkgs.fuzzel}"];
-    "Mod+Shift+Q".action.spawn = ["${lib.getExe pkgs.hyprlock}"];
+    "Mod+Shift+Q".action.spawn = ["${lib.getExe pkgs.swaylock}"];
     "Mod+Shift+M".action.spawn = ["${lib.getExe pkgs.wlogout}"];
 
     "Print".action = screenshot;

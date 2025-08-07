@@ -24,6 +24,10 @@
       path = "${lib.getExe pkgs.xwayland-satellite-unstable}";
     };
   };
+  xdg.portal.extraPortals = with pkgs; [
+    xdg-desktop-portal-gnome
+    xdg-desktop-portal-gtk
+  ];
 
   #= Used Packages
   home.packages = with pkgs; [

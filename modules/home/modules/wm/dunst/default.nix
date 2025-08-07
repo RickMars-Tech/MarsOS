@@ -5,13 +5,11 @@ in {
   services.dunst = {
     enable = true;
     iconTheme = {
-      package = icon-pkg; #pkgs.cosmic-icons; #pkgs.flat-remix-icon-theme;
-      name = icon-name; #"Cosmic"; #"Flat-Remix-Blue-Dark";
+      package = icon-pkg;
+      name = icon-name;
     };
     settings = {
       global = {
-        #frame_color = "#89b4fa";
-        #separator_color = "frame";
         markup = "full";
         format = "<span foreground='#f3f4f5'><b>%s %p</b></span>\n%b";
         alignment = "left";

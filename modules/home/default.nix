@@ -6,10 +6,7 @@
 }: let
   home = config.home.homeDirectory;
 in {
-  imports = [
-    ./modules/default.nix
-    ./stylix.nix
-  ];
+  imports = [./modules/default.nix];
 
   #= Home-Manager
   home = {
@@ -24,7 +21,7 @@ in {
   #= XDG
   xdg = {
     enable = true;
-    autostart.enable = true;
+    # autostart.enable = true;
     userDirs = {
       enable = true;
       createDirectories = true;
@@ -45,17 +42,22 @@ in {
     };
     portal = {
       enable = true;
-      xdgOpenUsePortal = true;
+      xdgOpenUsePortal = false;
       config.common.default = "gtk";
+<<<<<<< HEAD
       extraPortals = with pkgs; [
         xdg-desktop-portal
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
       ];
+=======
+>>>>>>> 46ceea6
     };
+    # mime.enable = true;
     mimeApps = {
       enable = true;
       defaultApplications = {
+        "inode/directory" = "nautilus.desktop";
         "application/x-extension-htm" = "firefox.desktop";
         "application/x-extension-html" = "firefox.desktop";
         "application/x-extension-shtml" = "firefox.desktop";

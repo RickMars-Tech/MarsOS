@@ -16,15 +16,6 @@ _: {
                     };
                   };
                 }
-                # {
-                #   pane = {
-                #     size = 2;
-                #     borderless = true;
-                #     plugin = {
-                #       location = "zellij:status-bar";
-                #     };
-                #   };
-                # }
               ];
             };
           }

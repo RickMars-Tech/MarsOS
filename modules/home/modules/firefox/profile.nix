@@ -7,4 +7,8 @@
     default = "ddg";
     order = ["ddg" "google"];
   };
+<<<<<<< HEAD
+=======
+  settings = import ./settings.nix;
+>>>>>>> 46ceea6
 }

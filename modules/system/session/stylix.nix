@@ -30,14 +30,6 @@
       "base0F" = "#D02060"; # (Dark Pink) Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
     };
 
-    targets = {
-      gtk.enable = true;
-      regreet = {
-        enable = true;
-        # useWallpaper = ;
-      };
-    };
-
     cursor = {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
@@ -68,6 +60,40 @@
       };
     };
   };
+
+  #|==< HM Stylix >==|#
+  home-manager.sharedModules = [
+    {
+      stylix = {
+        targets = {
+          gtk.enable = true;
+          firefox = {
+            enable = true;
+            profileNames = [
+              "default"
+            ];
+            firefoxGnomeTheme.enable = false;
+          };
+          hyprlock.enable = false;
+          fuzzel.enable = false;
+          helix.enable = false;
+          fzf.enable = true;
+          wezterm.enable = false;
+          yazi.enable = false;
+          zellij.enable = true;
+        };
+        iconTheme = {
+          enable = true;
+          package = pkgs.whitesur-icon-theme.override {
+            boldPanelIcons = true;
+            alternativeIcons = true;
+          };
+          dark = "WhiteSur";
+          light = "WhiteSur";
+        };
+      };
+    }
+  ];
 
   #|==< Extra Fonts >==|#
   fonts = {

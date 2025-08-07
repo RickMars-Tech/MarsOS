@@ -6,6 +6,7 @@
 }: let
   wezterm = lib.getExe pkgs.wezterm;
   color = config.stylix.base16Scheme;
+  theme = config.stylix.iconTheme;
 in {
   programs.fuzzel = {
     enable = true;
@@ -14,8 +15,8 @@ in {
         dpi-aware = "no";
         terminal = "${wezterm}";
         prompt = ">_";
-        launch-prefix = "uwsm-app --";
-        icon-theme = "Cosmic";
+        # launch-prefix = "uwsm-app --";
+        icon-theme = theme.dark;
         icons-enable = "yes";
         show-actions = "yes";
         anchor = "center";
@@ -27,7 +28,7 @@ in {
         radius = 15;
       };
       colors = {
-        background = "${color.base00}ff"; #"1e1e2edd";
+        background = "${color.base00}ff";
         text = "${color.base06}ff";
         prompt = "${color.base07}ff";
         placeholder = "${color.base01}ff";
