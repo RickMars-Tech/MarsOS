@@ -1,35 +1,22 @@
 {
-  inputs,
-  config,
   pkgs,
-  lib,
+  inputs,
   ...
 }: let
-  font = config.stylix.fonts;
-  cursor = config.stylix.cursor;
+  tuigreet = "${pkgs.greetd.tuigreet}/bin/tuigreet";
+  niri-session = "${pkgs.niri-unstable}/usr/local/bin/niri-session";
 in {
   nixpkgs.overlays = [inputs.niri.overlays.niri];
-  #|==< UWSM >==|#
-  programs.uwsm = {
-    enable = true;
-    waylandCompositors."niri" = {
-      prettyName = "Niri";
-      comment = "A scrollable-tiling Wayland compositor.";
-      binPath = lib.getExe pkgs.niri-unstable;
-    };
-  };
 
-  #|==< GreetD >==|#
-  # services.cage.enable = true;
-
-  programs.regreet = {
-    enable = true;
-    # cageArgs = ["-s"];
-  };
-
+  #==> TuiGreet <==#
   services.greetd = {
     enable = true;
-    settings.default_session.user = "greeter";
+    settings = {
+      default_session = {
+        command = "${tuigreet} --time --remember --remember-session --asterisks --sessions ${niri-session}";
+        user = "greeter";
+      };
+    };
   };
 
   #= TTY
