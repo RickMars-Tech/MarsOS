@@ -15,7 +15,6 @@
   "browser.shell.checkDefaultBrowser" = false; # don't check if default browser
   "browser.bookmarks.restore_default_bookmarks" = false; # don't restore default bookmarks
   # Download handling
-  # "browser.download.dir" = "/home/${username}/Downloads"; # default download dir
   "browser.startup.page" = 3; # restore previous session
   "browser.sessionstore.resume_from_crash" = true;
   # UI changes
@@ -24,21 +23,18 @@
   "sidebar.verticalTabs" = true;
   "sidebar.visibility" = "never-show";
   "sidebar.main.tools" = "";
-  # "browser.uidensity" = 1; # enable dense UI
   "general.autoScroll" = true; # enable autoscroll
   "browser.compactmode.show" = true; # enable compact mode
-  # "browser.tabs.firefox-view" = false; # enable librewolf view
   "startup.homepage_welcome_url" = ""; # disable welcome page
   "browser.newtabpage.enabled" = false; # disable new tab page
   "full-screen-api.ignore-widgets" = true; # fullscreen within window
-  #"browser.toolbars.bookmarks.visibility" = "newtab"; # only show bookmarks toolbar on new tab
   "browser.aboutConfig.showWarning" = false; # disable warning about about:config
   "media.videocontrols.picture-in-picture.video-toggle.enabled" = true; # disable picture in picture button
   "browser.newtabpage.activity-stream.showWeather" = false;
 
   # Privacy/Security
   "security.mixed_content.block_active_content" = true; # Block mixed content
-  "media.peerconnection.enabled" = false; # Disable WebRTC
+  "media.peerconnection.enabled" = true; # Disable WebRTC
   "browser.discovery.enabled" = false; # disable discovery
   "browser.search.suggest.enabled" = false; # disable search suggestions
   "browser.contentblocking.category" = "custom"; # set tracking protection to custom
@@ -78,7 +74,6 @@
   # other
   "media.autoplay.default" = 0; # enable autoplay on open
   "devtools.toolbox.host" = "right"; # move devtools to right
-  # "browser.ssb.enabled" = true; # enable site specific browser
   "devtools.cache.disabled" = true; # disable caching in devtools
 
   # Fonts
@@ -91,29 +86,25 @@
 
   "browser.fixup.domainsuffixwhitelist.home" = true;
   "browser.fixup.domainwhitelist.server.home" = true;
-  # "keyword.enable" = false; # Disable search when typing unexistent TLD
 
   # Linux
   "gfx.webrender.software.opengl" = true;
   # prefer GPU over CPU
   "layers.gpu-process.force-enabled" = false;
   # Putting the Firefox network cache into the RAM
-  "browser.cache.disk.enable" = false;
+  "browser.cache.disk.enable" = true;
   "browser.cache.memory.enable" = true; # https://kb.mozillazine.org/Browser.cache.memory.enable
   "browser.cache.memory.capacity" = 524288; # which equals a maximum of 512 MB
   # Firefox 75+ remembers the last workspace it was opened on as part of its session management.
   # This is annoying, because I can have a blank workspace, click Firefox from the launcher, and
   # then have Firefox open on some other workspace.
   "widget.disable-workspace-management" = true;
-  # XDG-Portal
-  "widget.use-xdg-desktop-portal.file-picker" = 2;
-  "widget.use-xdg-desktop-portal.mime-handler" = 2;
 
   # Rendering/Performance
-  "webgl.force-enabled" = false;
+  "webgl.force-enabled" = true;
   "webgl.msaa-force" = false;
   "gfx.webrender.software" = true;
-  "gfx.canvas.disabled" = true;
+  "gfx.canvas.disabled" = false;
   "dom.ipc.processCount" = 6;
   "browser.preferences.defaultPerformanceSettings.enabled" = false;
   "browser.sessionstore.interval" = 600000;
@@ -130,8 +121,8 @@
   "webgl.enable-debug-renderer-info" = false;
   "media.video_stats.enabled" = false;
   "media.peerconnection.ice.no_host" = true;
-  "media.navigator.enabled" = false;
-  "media.navigator.video.enabled" = false;
+  "media.navigator.enabled" = true;
+  "media.navigator.video.enabled" = true;
   "media.getusermedia.screensharing.enabled" = false;
   "media.webspeech.recognition.enable" = false;
   "media.webspeech.synth.enabled" = false;
@@ -139,6 +130,20 @@
   "media.gmp-manager.url" = "";
   "media.hardware-video-decoding.force-enabled" = true;
   "media.ffmpeg.vaapi.enabled" = true;
-  "media.rdd-ffvpx.enabled" = false;
-  "media.rdd-vpx.enabled" = false;
+  "media.rdd-ffvpx.enabled" = true;
+  "media.rdd-vpx.enabled" = true;
+
+  # XDG-Portal (0= Disable, 1= Enable, 2= Auto)
+  "widget.use-xdg-desktop-portal.file-picker" = 1;
+  "widget.use-xdg-desktop-portal.mime-handler" = 1;
+  "widget.use-xdg-desktop-portal.settings" = 1;
+  "widget.use-xdg-desktop-portal.location" = 1;
+  "widget.use-xdg-desktop-portal.open-uri" = 1;
+
+  "browser.download.useDownloadDir" = false;
+  "browser.download.folderList" = 1;
+  "browser.download.always_ask_before_handling_new_types" = true;
+
+  # To prevent duplicate entries in the Media Player widget or tray icon
+  "media.hardwaremediakeys.enabled" = false;
 }

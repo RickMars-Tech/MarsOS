@@ -26,6 +26,7 @@
         Locked = true;
         Cryptomining = true;
         Fingerprinting = true;
+        EmailTracking = true;
       };
       HardwareAcceleration = true;
       NoDefaultBookmarks = true;

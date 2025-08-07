@@ -4,21 +4,8 @@
   isDefault = true;
   search = {
     force = true;
-    engines = import ./search-engines.nix;
-    default = "Startpage";
-  };
-  containersForce = true;
-  containers = {
-    sinenomine = {
-      id = 1;
-      icon = "chill";
-      color = "purple";
-    };
-    nublado = {
-      id = 2;
-      icon = "chill";
-      color = "blue";
-    };
+    default = "ddg";
+    order = ["ddg" "google"];
   };
   settings = import ./settings.nix;
 }
