@@ -44,16 +44,12 @@ in {
       enable = true;
       xdgOpenUsePortal = false;
       config.common.default = "gtk";
-<<<<<<< HEAD
       extraPortals = with pkgs; [
         xdg-desktop-portal
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
       ];
-=======
->>>>>>> 46ceea6
     };
-    # mime.enable = true;
     mimeApps = {
       enable = true;
       defaultApplications = {

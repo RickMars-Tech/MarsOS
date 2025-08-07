@@ -1,11 +1,4 @@
 _: {
-<<<<<<< HEAD
-  # imports = [
-  #   ./nix-ld.nix
-  # ];
-
-=======
->>>>>>> 46ceea6
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     settings = {
