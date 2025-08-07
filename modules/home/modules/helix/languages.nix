@@ -18,10 +18,6 @@
           command = "ruff";
           args = ["check"];
         };
-        # gpt = {
-        #   command = "helix-gpt";
-        #   args = ["--handler" "codeium"];
-        # };
       };
       language = [
         {

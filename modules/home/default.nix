@@ -51,8 +51,6 @@ in {
         xdg-desktop-portal
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
-        libsForQt5.xdg-desktop-portal-kde
-        lxqt.xdg-desktop-portal-lxqt
       ];
     };
     mimeApps = {

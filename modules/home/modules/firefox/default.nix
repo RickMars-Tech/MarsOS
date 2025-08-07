@@ -17,7 +17,7 @@
       DisablePasswordReveal = true;
       DisablePocket = true;
       DisableSafeMode = false;
-      DisableSecurityBypass = true;
+      DisableSecurityBypass = false;
       DisableTelemetry = true;
       DNSOverHTTPS = true;
       DontCheckDefaultBrowser = true;
@@ -26,6 +26,7 @@
         Locked = true;
         Cryptomining = true;
         Fingerprinting = true;
+        EmailTracking = true;
       };
       HardwareAcceleration = true;
       NoDefaultBookmarks = true;
@@ -37,7 +38,6 @@
       DisableFirefoxAccounts = false; # Enable FirefoxAccounts
       DisplayBookmarksToolbar = "newtab"; # alternatives: "always" or "never"
       DisplayMenuBar = "never"; # alternatives: "always", "never" or "default-on"
-      SearchBar = "unified"; # alternative: "separate"
     };
     profiles.default = import ./profile.nix;
   };
