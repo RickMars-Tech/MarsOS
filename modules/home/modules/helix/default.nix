@@ -1,8 +1,43 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: let
+  # Centralizamos los paquetes de herramientas de desarrollo
+  devTools = with pkgs; [
+    # Helix GPT
+    # helix-gpt
+    # Debug adapters
+    lldb
+    gdb
+    # Language servers y herramientas por lenguaje
+    # Rust
+    rust-analyzer
+    rustfmt
+    clippy
+    # Zig
+    zls
+    # Nix
+    alejandra
+    nil
+    # Python
+    ruff
+    pyright # LSP adicional para Python
+    # KDL
+    kdlfmt
+    # C/C++
+    clang-tools # Incluye clangd
+    # JavaScript/TypeScript
+    nodePackages.typescript-language-server
+    nodePackages.prettier
+    # Markdown
+    marksman
+    # YAML/TOML
+    taplo # TOML LSP
+    yaml-language-server
+    # Bash
+    nodePackages.bash-language-server
+    shfmt
+    # Docker
+    dockerfile-language-server-nodejs
+  ];
+in {
   imports = [
     ./languages.nix
     ./themes.nix
@@ -10,71 +45,48 @@
   ];
 
   home.packages = with pkgs; [
-    #= Helix Gpt
-    helix-gpt
-    #= Cfg debug adapter
-    lldb
-    gdb
-    #= Rust
-    #clippy
-    #rust-analyzer
-    #rustfmt
-    #= ZIG
-    zls
-    #= Nix
-    alejandra
-    nil
-    #= Python
-    ruff
-    #= Kdl
-    kdlfmt
+    # Herramientas generales
+    fd
+    ripgrep
+    tree-sitter
+    # Git para mejor integración
+    gitui
   ];
 
   programs.helix = {
     package = pkgs.helix;
     enable = true;
     defaultEditor = true;
-    extraPackages = with pkgs; [
-      #= Helix Gpt
-      helix-gpt
-      #= Cfg debug adapter
-      lldb
-      gdb
-      #= Rust
-      #clippy
-      #rust-analyzer
-      #rustfmt
-      #= ZIG
-      zls
-      #= Nix
-      alejandra
-      nil
-      #= Python
-      ruff
-      #= Kdl
-      kdlfmt
-    ];
+    extraPackages = devTools;
+
     settings = {
       theme = "base16";
 
       editor = {
         auto-completion = true;
         completion-replace = true;
-        completion-timeout = 3;
+        completion-timeout = 250;
+        completion-trigger-len = 2;
+
+        # UI improvements
         line-number = "relative";
         bufferline = "multiple";
-        # rulers = 120;
         auto-pairs = true;
         true-color = true;
         cursorline = true;
         mouse = false;
-        # other-lines = "disable";
         color-modes = true;
+
+        # Scrolling mejorado
+        scrolloff = 5; # Mantener 5 líneas visibles arriba/abajo del cursor
+        scroll-lines = 3;
+
         lsp = {
           enable = true;
           snippets = true;
           auto-signature-help = true;
           display-messages = true;
+          display-inlay-hints = true; # Mostrar hints inline
         };
         cursor-shape = {
           insert = "bar";
@@ -90,23 +102,49 @@
         soft-wrap = {
           enable = true;
           max-wrap = 25;
-          max-indent-retain = 0;
+          max-indent-retain = 40;
           wrap-indicator = "↪ ";
+          wrap-at-text-width = false;
         };
 
-        file-picker.hidden = false;
+        file-picker = {
+          hidden = false;
+          follow-symlinks = true;
+          deduplicate-links = true;
+          parents = true;
+          ignore = true;
+          git-ignore = true;
+          git-global = true;
+          git-exclude = true;
+        };
+
         end-of-line-diagnostics = "hint";
         inline-diagnostics = {
           cursor-line = "warning";
           other-lines = "disable";
         };
+
+        # Search configuration
+        search = {
+          smart-case = true;
+          wrap-around = true;
+        };
+
         statusline = {
-          left = ["mode" "spinner" "version-control" "file-name"];
-          center = ["file-name"];
+          left = [
+            "mode"
+            "spinner"
+            "version-control"
+            "file-name"
+            "read-only-indicator"
+            "file-modification-indicator"
+          ];
+          center = []; # Dejamos el centro limpio
           right = [
             "workspace-diagnostics"
             "diagnostics"
             "selections"
+            "register"
             "position"
             "total-line-numbers"
             "spacer"
@@ -119,6 +157,9 @@
         whitespace.characters = {
           newline = "↴";
           tab = "⇥";
+          nbsp = "⍽";
+          space = "·";
+          tabpad = "·";
         };
       };
     };
