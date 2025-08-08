@@ -6,9 +6,7 @@
   turboWrap = pkgs.callPackage ./custom-packages/turbo-wrap/default.nix {};
 in {
   #= Fenix(Rust)
-  nixpkgs.overlays = [
-    inputs.fenix.overlays.default
-  ];
+  nixpkgs.overlays = [inputs.fenix.overlays.default];
 
   #=> Packages Installed in System Profile.
   environment.systemPackages = with pkgs; [
@@ -26,7 +24,7 @@ in {
     clamav
     clamtk
     #|==< 3D >==|#
-    #blender
+    #blender-hip
     #|==< Dev >==|#
     #==> Arduino <==#
     arduino-core
