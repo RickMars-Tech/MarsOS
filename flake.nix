@@ -39,7 +39,6 @@
       url = "github:quickshell-mirror/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ghostty.url = "github:ghostty-org/ghostty";
   };
 
   nixConfig = {
@@ -60,11 +59,20 @@
     system = "x86_64-linux";
     username = "rick";
     name = "Rick";
+    extraSpecialArgs = {
+      inherit system username inputs;
+      inherit (inputs) self;
+    };
+    specialArgs = {
+      inherit system username name inputs;
+      inherit (inputs) self;
+    };
 
     # Función helper para crear configuraciones de hosts
     mkHost = hostname: extraModules:
       nixpkgs.lib.nixosSystem {
-        inherit system;
+        # inherit system;
+        inherit specialArgs;
         modules =
           [
             # Configuración específica del host
@@ -76,6 +84,7 @@
             inputs.chaotic.nixosModules.default
             inputs.stylix.nixosModules.stylix
             inputs.home-manager.nixosModules.home-manager
+            # inputs.bongocat.nixosModules.default
 
             # Configuración común de sistema y home-manager
             {
@@ -86,19 +95,11 @@
                 useGlobalPkgs = false;
                 useUserPackages = true;
                 users.${username} = import ./modules/home/default.nix;
-                extraSpecialArgs = {
-                  inherit username inputs;
-                  inherit (inputs) self;
-                };
+                inherit extraSpecialArgs;
               };
             }
           ]
           ++ extraModules;
-
-        specialArgs = {
-          inherit inputs username name;
-          inherit (inputs) self;
-        };
       };
 
     #= Host's
@@ -112,18 +113,7 @@
     # Configuraciones de hosts generadas automáticamente
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
 
-    # Paquetes por defecto
+    #= Default Packages
     packages.${system}.default = inputs.fenix.packages.${system}.minimal.toolchain;
-
-    # DevShells opcionales para desarrollo
-    devShells.${system}.default = nixpkgs.legacyPackages.${system}.mkShell {
-      buildInputs = with nixpkgs.legacyPackages.${system}; [
-        nixos-rebuild
-        home-manager
-      ];
-    };
-
-    # Formatter para el código Nix
-    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   };
 }
