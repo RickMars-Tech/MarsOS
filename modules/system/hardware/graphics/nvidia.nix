@@ -1,3 +1,4 @@
+# Remember, PRO is not for Professional, it is for Proprietary
 {
   pkgs,
   config,
@@ -6,7 +7,21 @@
 }: {
   options.mars.graphics.nvidia = {
     enable = lib.mkEnableOption "nVidia graphics";
-    wayland-fixes = lib.mkEnableOption "Wayland VRAM Consumption Fixes";
+    nvenc = lib.mkEnableOption "NVENC video encoding";
+    vulkan = lib.mkEnableOption "Vulkan Support";
+    opengl = lib.mkEnableOption "OpenGL Support";
+    # Driver selection
+    driver = lib.mkOption {
+      type = lib.types.enum ["open" "stable" "beta" "production" "legacy_470" "legacy_390"];
+      default = "open";
+      description = "NVIDIA driver version to use";
+    };
+    # AI/Compute options
+    compute = {
+      enable = lib.mkEnableOption "compute/AI optimizations";
+      cuda = lib.mkEnableOption "CUDA support" // {default = true;};
+      tensorrt = lib.mkEnableOption "TensorRT support";
+    };
     hybrid = {
       enable = lib.mkEnableOption "optimus prime";
       igpu = {
@@ -24,12 +39,13 @@
         description = "Bus Port of dgpu";
       };
     };
+    wayland-fixes = lib.mkEnableOption "Wayland VRAM Consumption Fixes";
   };
 
   config = let
-    cfg = config.mars.graphics.nvidia;
+    cfg = config.mars.graphics;
   in
-    lib.mkIf (cfg.enable && config.mars.graphics.enable) {
+    lib.mkIf (cfg.enable && cfg.nvidia.enable) {
       # Kernel parameters for NVIDIA
       boot = {
         kernelParams = [
@@ -38,27 +54,83 @@
         ];
         blacklistedKernelModules = ["nouveau"];
       };
-      nix.settings = {
-        extra-substituters = [
-          "https://cuda-maintainers.cachix.org"
-          "https://aseipp-nix-cache.global.ssl.fastly.net"
-        ];
-        extra-trusted-public-keys = [
-          "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-        ];
-      };
-      #services.xserver.videoDrivers = ["nvidia"];
+
       environment = {
-        systemPackages = [pkgs.zenith-nvidia]; # Top but for Nvidia
-        sessionVariables.GAMEMODERUNEXEC = "prime-run"; # Allows you to switch to the Nvidia GPU when running FeralGamemode
+        systemPackages = with pkgs;
+          [
+            # nVidia Desktop tools packages
+            zenith-nvidia # Top but for Nvidia
+            nvidia-system-monitor-qt # GPU monitoring
+            nvtop # Terminal GPU monitor
+            # Graphics utilities
+            glxinfo # OpenGL info
+            nvidia-settings # NVIDIA control panel
+          ]
+          ++ lib.optionals cfg.nvidia.vulkan [
+            # Vulkan support
+            vulkan-loader
+            vulkan-validation-layers
+            vulkan-tools
+          ]
+          ++
+          # AI/Compute packages
+          lib.optionals cfg.nvidia.compute.enable [
+            # CUDA development
+            cudatoolkit
+
+            # Monitoring and management
+            nvidia-ml-py # Python ML interface
+            nvtop # GPU monitoring
+
+            # Development tools
+            nsight-compute # CUDA profiler
+            nsight-systems # System profiler
+          ]
+          ++ lib.optionals (cfg.nvidia.compute.enable && cfg.compute.tensorrt) [
+            # TensorRT inference
+            # tensorrt
+          ];
+        sessionVariables = lib.mkMerge [
+          {
+            GAMEMODERUNEXEC = "prime-run"; # Allows you to switch to the Nvidia GPU when running FeralGamemode
+          }
+          {
+            # Force NVIDIA GPU usage
+            __NV_PRIME_RENDER_OFFLOAD = lib.mkIf cfg.gaming.prime.enable "1";
+            __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+
+            # NVENC
+            LIBVA_DRIVER_NAME = lib.mkIf cfg.nvenc "nvidia";
+          }
+          (lib.mkIf (cfg.compute.enable && cfg.compute.cuda) {
+            # CUDA environment
+            CUDA_PATH = "${pkgs.cudatoolkit}";
+            CUDA_ROOT = "${pkgs.cudatoolkit}";
+
+            # Library paths
+            LD_LIBRARY_PATH = "${pkgs.cudatoolkit}/lib:${pkgs.cudatoolkit.lib}/lib";
+
+            # cuDNN
+            CUDNN_PATH = lib.mkIf cfg.compute.cudnn "${pkgs.cudnn}";
+          })
+        ];
       };
 
       hardware = {
         graphics = {
-          extraPackages = with pkgs; [
-            nvidiaPackages.latest.lib # Vulkan and OpenGL libraries
-            cudaPackages.cudatoolkit # CUDA for GPGPU
-          ];
+          extraPackages = with pkgs;
+            [
+              nvidiaPackages.latest.lib # Vulkan and OpenGL libraries
+              nvidia-vaapi-driver
+            ]
+            ++ lib.optionals cfg.nvenc [
+              # Video encoding
+              nv-codec-headers
+            ]
+            ++ lib.optionals cfg.compute.cuda [
+              # CUDA runtime
+              cudatoolkit
+            ];
           extraPackages32 = with pkgs.driversi686Linux; [
             nvidiaPackages.latest.lib # 32-bit Vulkan/OpenGL for Steam
           ];
@@ -74,13 +146,23 @@
 
           # Use the NVidia open source kernel module (not to be confused with the
           # independent third-party "nouveau" open source driver).
-          open =
-            if lib.versionOlder config.hardware.nvidia.package.version "560"
-            then false
-            else true;
+          open = cfg.driver == "open";
 
           nvidiaSettings = true;
-          package = config.boot.kernelPackages.nvidiaPackages.latest;
+          package =
+            if cfg.driver == "stable"
+            then config.boot.kernelPackages.nvidiaPackages.stable
+            else if cfg.driver == "beta"
+            then config.boot.kernelPackages.nvidiaPackages.beta
+            else if cfg.driver == "production"
+            then config.boot.kernelPackages.nvidiaPackages.production
+            else if cfg.driver == "legacy_470"
+            then config.boot.kernelPackages.nvidiaPackages.legacy_470
+            else if cfg.driver == "legacy_390"
+            then config.boot.kernelPackages.nvidiaPackages.legacy_390
+            else if cfg.driver == "open"
+            then config.boot.kernelPackages.nvidiaPackages.open
+            else config.boot.kernelPackages.nvidiaPackages.stable;
 
           prime = lib.mkIf cfg.hybrid.enable {
             offload = {

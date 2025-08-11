@@ -12,7 +12,9 @@
     boot = {
       kernelParams = [
         "amd_pstate=active"
-        # "amd_iommu=on" # Solo si usas virtualización.
+        # IOMMU support for compute workloads
+        "amd_iommu=on"
+        "iommu=pt"
       ];
       kernelModules = ["amd-pstate-epp" "zenpower"];
       blacklistedKernelModules = ["k10temp"];
