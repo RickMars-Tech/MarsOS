@@ -39,6 +39,10 @@
       url = "github:quickshell-mirror/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -76,7 +80,7 @@
         modules =
           [
             # Configuración específica del host
-            ./modules/hosts/${hostname}.nix
+            ./modules/hosts/${hostname}/default.nix
             ./modules/system/default.nix
 
             #= NixModules
@@ -84,7 +88,6 @@
             inputs.chaotic.nixosModules.default
             inputs.stylix.nixosModules.stylix
             inputs.home-manager.nixosModules.home-manager
-            # inputs.bongocat.nixosModules.default
 
             # Configuración común de sistema y home-manager
             {
