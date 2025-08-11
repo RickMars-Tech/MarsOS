@@ -1,4 +1,8 @@
-_: {
+{
+  inputs,
+  lib,
+  ...
+}: {
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     settings = {
@@ -8,8 +12,32 @@ _: {
         "nix-command"
         "flakes"
       ];
-      sandbox = "relaxed";
-      trusted-users = ["rick"];
+
+      # Build isolation and security
+      sandbox = true;
+      restrict-eval = false;
+
+      # Advanced cache settings
+      narinfo-cache-negative-ttl = 3600;
+      narinfo-cache-positive-ttl = 432000;
+
+      # Build log optimization
+      log-lines = 100;
+      show-trace = false;
+
+      # Substituter settings
+      builders-use-substitutes = true;
+      substitute = true;
+
+      # Allow users in the wheel group to use nix
+      trusted-users = ["root" "@wheel"];
+
+      # Build users
+      max-jobs = "auto";
+
+      # Keep build dependencies
+      keep-derivations = true;
+      keep-outputs = true;
     };
     #= Clean Nix
     gc = {
@@ -17,5 +45,11 @@ _: {
       dates = "weekly";
       options = "--delete-older-than 1w";
     };
+
+    # Registry for legacy nix commands
+    registry = (lib.mapAttrs (_: flake: {inherit flake;})) inputs;
+
+    # Pin nixpkgs flake to system nixpkgs
+    nixPath = ["nixpkgs=${inputs.nixpkgs}"];
   };
 }
