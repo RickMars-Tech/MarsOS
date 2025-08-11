@@ -1,25 +1,45 @@
-_: {
-  imports = [
-    ./boot/default.nix
-    ./hardware/default.nix
-    ./nix/default.nix
-    ./session/default.nix
-  ];
+# Modules Default Import
+# Automatically discovers and imports all module directories
+{lib, ...}: let
+  # Function to automatically discover module directories
+  discoverModules = dir: let
+    # Get all entries in the directory
+    entries = builtins.readDir dir;
 
-  # Set your time zone.
-  time.timeZone = "America/Chihuahua";
+    # Filter for directories and files that should be imported
+    # Exclude installer directory as it contains ISO-specific modules
+    moduleEntries =
+      lib.filterAttrs
+      (
+        name: type:
+        # Include directories (which contain default.nix)
+          type
+          == "directory"
+          ||
+          # Include .nix files but exclude this default.nix file
+          (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
+      )
+      entries;
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "es_MX.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "es_MX.UTF-8";
-    LC_IDENTIFICATION = "es_MX.UTF-8";
-    LC_MEASUREMENT = "es_MX.UTF-8";
-    LC_MONETARY = "es_MX.UTF-8";
-    LC_NAME = "es_MX.UTF-8";
-    LC_NUMERIC = "es_MX.UTF-8";
-    LC_PAPER = "es_MX.UTF-8";
-    LC_TELEPHONE = "es_MX.UTF-8";
-    LC_TIME = "es_MX.UTF-8";
-  };
+    # Convert to list of import paths
+    modulePaths =
+      lib.mapAttrsToList
+      (
+        name: type:
+          if type == "directory"
+          then dir + "/${name}" # Import directory (will use its default.nix)
+          else dir + "/${name}" # Import .nix file directly
+      )
+      moduleEntries;
+  in
+    modulePaths;
+
+  # Automatically discover all modules in the current directory
+  discoveredModules = discoverModules ./.;
+in {
+  # Import all discovered modules
+  imports = discoveredModules;
+
+  # Debug: Uncomment the line below to see which modules are being imported
+  # warnings = [ "Imported modules: ${toString discoveredModules}" ];
 }
