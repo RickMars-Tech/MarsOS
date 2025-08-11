@@ -16,22 +16,22 @@
 <details>
 <summary>Environment Software</summary>
 
-|                             | NixOS(Wayland)                                                                                                      |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Window Manager**          | [Niri][Niri]                                                                                                        |
-| **Terminal Emulator**       | [Wezterm][Wezterm]                                                                                                  |
-| **Bar**                     | [Quickshell][Quickshell]                                                                                            |
-| **Application Launcher**    | [Fuzzel][Fuzzel]                                                                                                    |
-| **Notification Daemon**     | [Dunst][Dunst]                                                                                                      |
-| **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]                                                                             |
-| **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]                                                                       |
-| **System resource monitor** | [Bottom][Bottom]                                                                                                    |
-| **File Manager**            | [Yazi][Yazi] & [PCManFM][PCManFM]                                                                                   |
-| **Shell**                   | [Fish][Fish]                                                                                                        |
-| **Media Player**            | [MPV][MPV]                                                                                                          |
-| **Text Editor**             | [Helix][Helix]                                                                                                      |
-| **Fonts**                   | [Nerd fonts][Nerd fonts]                                                                                            |
-| **Image Viewer**            | [IMV][IMV]                                                                                                          |
+|                             | NixOS(Wayland)                                  |
+| --------------------------- | ----------------------------------------------- |
+| **Window Manager**          | [Niri][Niri]                                    |
+| **Terminal Emulator**       | [Wezterm][Wezterm]                              |
+| **Bar**                     | [Quickshell][Quickshell]                        |
+| **Application Launcher**    | [Fuzzel][Fuzzel]                                |
+| **Notification Daemon**     | [Dunst][Dunst]                                  |
+| **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]         |
+| **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]   |
+| **System resource monitor** | [Bottom][Bottom]                                |
+| **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]             |
+| **Shell**                   | [Fish][Fish]                                    |
+| **Media Player**            | [MPV][MPV]                                      |
+| **Text Editor**             | [Helix][Helix]                                  |
+| **Fonts**                   | [Nerd fonts][Nerd fonts]                        |
+| **Image Viewer**            | [IMV][IMV]                                      |
 </details>
 
 # Guide to Setup
@@ -108,7 +108,7 @@ Configurations that have inspired and taught me a lot (Sorry for stealing from y
 [NetworkManager]: https://gitlab.freedesktop.org/NetworkManager/NetworkManager
 [Bottom]: https://github.com/ClementTsang/bottom
 [Yazi]: https://github.com/sxyazi/yazi
-[PCManFM]: https://blog.lxde.org/category/pcmanfm/
+[Nautilus]: https://apps.gnome.org/Nautilus/
 [Fish]: https://fishshell.com/
 [MPV]: https://github.com/mpv-player/mpv
 [Helix]: https://helix-editor.com/
