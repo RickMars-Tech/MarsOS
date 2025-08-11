@@ -2,8 +2,8 @@
 _: {
   imports = [
     # Include the results of the hardware scan.
-    ../hardware.nix
-    ../system/default.nix
+    ./hardware.nix
+    ../../system/default.nix
   ];
 
   # Hostname
@@ -15,13 +15,35 @@ _: {
       enable = true;
       gamemode.enable = true;
     };
+    power-management = {
+      enable = true;
+      profile = "laptop";
+      cpuGovernor = "ondemand";
+      enableThermalManagement = true;
+      laptop = {
+        enable = true;
+        suspendMethod = "hybrid-sleep";
+        wakeOnLid = false;
+      };
+    };
     cpu.amd.enable = true;
     graphics = {
       enable = true;
-      amd.enable = true;
+      amd = {
+        enable = true;
+        vulkan = true;
+        opengl = true;
+        compute.enable = true;
+      };
       nvidia = {
         enable = true;
-        wayland-fixes = true;
+        nvenc = true;
+        driver = "beta";
+        compute = {
+          enable = true;
+          cuda = true;
+          tensorrt = true;
+        };
         hybrid = {
           enable = true;
           igpu = {
@@ -30,6 +52,7 @@ _: {
           };
           dgpu.port = null;
         };
+        wayland-fixes = true;
       };
     };
     gaming = {
