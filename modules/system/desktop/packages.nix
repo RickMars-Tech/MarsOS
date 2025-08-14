@@ -8,7 +8,6 @@
     # chromium
     # nodejs
     libreoffice
-    # onlyoffice-desktopeditors
     #= FOSS Electronics Design Automation suite
     kicad-small
     #= Clamav Anti-Virus

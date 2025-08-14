@@ -11,11 +11,4 @@ in {
       };
     };
   };
-
-  #==< TTY >==#
-  console = {
-    earlySetup = true;
-    keyMap = "us";
-    packages = with pkgs; [nerd-fonts.terminess-ttf];
-  };
 }

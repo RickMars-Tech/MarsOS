@@ -3,11 +3,13 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mkDefault;
+in {
   #= Host & Firewall
   networking = {
     # hostName = "nixos"; # Define your hostname.
-    useDHCP = lib.mkDefault true;
+    useDHCP = mkDefault true;
     enableIPv6 = true;
     networkmanager = {
       enable = true;
@@ -51,11 +53,11 @@
     timesyncd.enable = false;
     # Desactivar servicios innecesarios que abren puertos
     openssh = {
-      enable = lib.mkDefault false; # Disabled by default, enable per host
+      enable = mkDefault false; # Disabled by default, enable per host
       settings = {
-        PasswordAuthentication = lib.mkDefault false;
-        PermitRootLogin = lib.mkDefault "no";
-        X11Forwarding = lib.mkDefault false;
+        PasswordAuthentication = mkDefault false;
+        PermitRootLogin = mkDefault "no";
+        X11Forwarding = mkDefault false;
       };
     };
     # Fail2ban for SSH protection when enabled (requires firewall)

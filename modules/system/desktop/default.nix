@@ -5,7 +5,7 @@ _: {
     ./env.nix
     ./network.nix
     ./packages.nix
-    ./printing.nix
+    ./printers.nix
     ./sessionManager.nix
     ./stylix.nix
     ./timezone.nix
