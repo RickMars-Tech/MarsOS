@@ -1,9 +1,10 @@
 _: {
   programs.firefox.profiles.default.settings = {
-    # Disable mlChat
+    # Disable AI Trash
     "browser.ml.chat.enabled" = false; # Disable AI Chats
     "browser.ml.chat.hideLocalhost" = false;
     "browser.ml.chat.menu" = false;
+    "browser.tabs.groups.smart.enabled" = false;
 
     "ui.key.menuAccessKeyFocuses" = false; # Disable ALT Menu
     # Vertical Tabs
