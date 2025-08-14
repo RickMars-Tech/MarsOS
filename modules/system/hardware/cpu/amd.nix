@@ -2,10 +2,12 @@
   config,
   lib,
   ...
-}: {
-  options.mars.cpu.amd.enable = lib.mkEnableOption "amd cpu";
+}: let
+  inherit (lib) mkIf mkEnableOption;
+in {
+  options.mars.cpu.amd.enable = mkEnableOption "amd cpu";
 
-  config = lib.mkIf (config.mars.cpu.amd.enable) {
+  config = mkIf (config.mars.cpu.amd.enable) {
     # Enable microcode updates for AMD CPUs
     hardware.cpu.amd.updateMicrocode = true;
 

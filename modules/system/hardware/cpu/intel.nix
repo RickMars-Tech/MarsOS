@@ -3,10 +3,12 @@
   config,
   lib,
   ...
-}: {
-  options.mars.cpu.intel.enable = lib.mkEnableOption "Intel cpu Config";
+}: let
+  inherit (lib) mkIf mkEnableOption;
+in {
+  options.mars.cpu.intel.enable = mkEnableOption "Intel cpu Config";
 
-  config = lib.mkIf (config.mars.cpu.intel.enable) {
+  config = mkIf (config.mars.cpu.intel.enable) {
     hardware.cpu.intel.updateMicrocode = true;
     boot = {
       kernelParams = [
@@ -15,12 +17,8 @@
         "intel_iommu=on"
       ];
     };
-    services = {
-      throttled = {
-        enable = true;
-        extraConfig = "";
-      };
-    };
+    services.throttled.enable = true;
+
     environment.systemPackages = with pkgs; [
       intel-undervolt
     ];
