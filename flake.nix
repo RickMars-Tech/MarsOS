@@ -35,6 +35,10 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ironbar = {
+      url = "github:JakeStanger/ironbar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     quickshell = {
       url = "github:quickshell-mirror/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,19 +47,10 @@
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
-
-  nixConfig = {
-    extra-substituters = [
-      "https://install.determinate.systems"
-      "https://nix-community.cachix.org"
-      "https://chaotic-nyx.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
-    ];
+    anyrun = {
+      url = "github:Kirottu/anyrun";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {nixpkgs, ...}: let
@@ -80,7 +75,7 @@
         modules =
           [
             # Configuración específica del host
-            ./modules/hosts/${hostname}/default.nix
+            ./hosts/${hostname}/default.nix
             ./modules/system/default.nix
 
             #= NixModules
@@ -107,8 +102,8 @@
 
     #= Host's
     hosts = {
-      boltz = []; # Sin módulos adicionales
-      rift = []; # Sin módulos adicionales
+      boltz = []; # Extra Modules
+      rift = []; # Extra Modules
       # Ejemplo para agregar más hosts:
       # laptop = [ ./modules/hosts/laptop-specific.nix ];
     };
