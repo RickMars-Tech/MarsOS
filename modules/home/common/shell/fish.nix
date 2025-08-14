@@ -6,14 +6,14 @@ in {
     enable = true;
     generateCompletions = true;
     shellAbbrs = {
-      # #= Nix
+      #= Nix
       use = "nix shell nixpkgs#";
       snowboot = "${rebuildCommand} boot";
       snowswitch = "${rebuildCommand} switch";
       snowtest = "${rebuildCommand} test";
-    };
-    shellAbbrs = {
-      hw = "hwinfo --short"; #= See Hardware Info
+
+      #= See Hardware Info
+      hw = "hwinfo --short";
     };
     shellAliases = {
       #= Stats
@@ -71,7 +71,6 @@ in {
       end
     ";
     shellInitLast = "
-      any-nix-shell fish --info-right | source
       zoxide init fish | source
     ";
   };
