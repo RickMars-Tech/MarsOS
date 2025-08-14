@@ -18,12 +18,6 @@ in {
       shipwright
       #= The best Game in the World
       superTuxKart
-      #= FPS Game like Quake
-      xonotic
-      #= Steam Utils
-      winetricks
-      #= Lutris
-      lutris
       #= Launcher for Veloren.
       airshipper
       #= Game Launchers
@@ -31,8 +25,11 @@ in {
       heroic
 
       #= Gaming utilities
-      # mangohud
-      # goverlay
+      powertop
+      lm_sensors
+      mangohud #= Vulkan and OpenGL overlay for monitoring PC
+      goverlay #= Graphical UI to help manage Linux overlays
+      libstrangle #= Frame rate limiter for Linux/OpenGL
       wireshark #= Network analysis for gaming
       pkgsi686Linux.gperftools #= Required to run CS:Source
     ];

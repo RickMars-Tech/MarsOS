@@ -3,15 +3,17 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mkIf mkEnableOption;
+in {
   options.mars.gaming = {
     steam = {
-      enable = lib.mkEnableOption "Enable Steam";
-      openFirewall = lib.mkEnableOption "Open Ports of Firewall dedicated for Steam";
-      hardware-rules = lib.mkEnableOption "Steam Hardware Udev Rules";
+      enable = mkEnableOption "Enable Steam";
+      openFirewall = mkEnableOption "Open Ports of Firewall dedicated for Steam";
+      hardware-rules = mkEnableOption "Steam Hardware Udev Rules";
     };
     gamescope = {
-      enable = lib.mkEnableOption "Enable Gamescope";
+      enable = mkEnableOption "Enable Gamescope";
     };
   };
 
@@ -19,9 +21,9 @@
     cfg = config.mars.gaming;
   in {
     #==> Steam <==#
-    programs = {
+    programs = mkIf (cfg.enable && cfg.steam.enable) {
       steam = {
-        enable = cfg.enable && cfg.steam.enable;
+        enable = true;
         remotePlay.openFirewall = cfg.steam.openFirewall; # Open(or Not) ports in the firewall for Steam Remote Play
         dedicatedServer.openFirewall = cfg.steam.openFirewall; # Open ports in the firewall for Source Dedicated Server
         extest.enable = false; # Do not use this option, an environment variable has already been set that works best.
@@ -29,6 +31,10 @@
         package = pkgs.steam.override {
           extraPkgs = pkgs:
             with pkgs; [
+              SDL2
+              libjpeg
+              openal
+              mono
               xorg.libXcursor
               xorg.libXi
               xorg.libXinerama
@@ -43,24 +49,20 @@
         };
       };
       #=> Gamescope <=#
-      gamescope = {
-        enable = cfg.enable && cfg.gamescope.enable; # The T420 dont have support for Vulkan :C
+      gamescope = mkIf (cfg.enable && cfg.gamescope.enable) {
+        enable = true;
         package = pkgs.gamescope;
         capSysNice = true;
       };
     };
     #= Enable/Disable Steam Hardware Udev Rules.
-    hardware.steam-hardware.enable =
-      if cfg.steam.hardware-rules == true
-      then true
-      else lib.mkForce;
+    hardware.steam-hardware.enable = cfg.steam.hardware-rules;
 
-    environment.systemPackages = with pkgs; [
-      # adwsteamgtk
-      steam-run
-      protontricks
-      protonplus
-      # protonup-qt
-    ];
+    environment.systemPackages = with pkgs;
+      mkIf (cfg.enable && cfg.steam.enable) [
+        steam-run
+        protontricks
+        protonplus
+      ];
   };
 }

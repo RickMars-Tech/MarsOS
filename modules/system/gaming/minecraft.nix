@@ -3,38 +3,38 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mkIf mkEnableOption;
+in {
   options.mars.gaming.minecraft = {
-    prismlauncher.enable = lib.mkEnableOption "Prism Launcher";
-    java.enable = lib.mkEnableOption "Enable Java";
+    prismlauncher.enable = mkEnableOption "Prism Launcher";
+    extraJavaPackages.enable = mkEnableOption "Enable Java";
   };
   config = let
     cfg = config.mars.gaming;
   in {
     environment.systemPackages = with pkgs;
-      lib.mkIf (cfg.minecraft.prismlauncher.enable && cfg.enable) [
+      mkIf (cfg.minecraft.prismlauncher.enable && cfg.enable) [
         (prismlauncher.override {
           additionalPrograms = with pkgs; [
             ffmpeg
             glfw
-            #glfw3-minecraft
           ];
           jdks =
-            # lib.mkIf (cfg.minecraft.java.enable && cfg.enable)
+            # (mkIf (cfg.minecraft.extraJavaPackages && cfg.enable))
             [
               # = Java Runtimes
               jdk
               jdk8
               jdk17
             ];
-          gamemodeSupport = true;
+          gamemodeSupport = config.programs.gamemode.enable;
         })
-        # minetest # Minecraft Like Game
       ];
 
     #= Java =#
     programs.java = {
-      enable = cfg.minecraft.java.enable && cfg.enable;
+      enable = true;
       package = pkgs.jdk;
       binfmt = true;
     };
