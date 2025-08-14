@@ -19,7 +19,7 @@
 |                             | NixOS(Wayland)                                  |
 | --------------------------- | ----------------------------------------------- |
 | **Window Manager**          | [Niri][Niri]                                    |
-| **Terminal Emulator**       | [Wezterm][Wezterm]                              |
+| **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]           |
 | **Bar**                     | [Quickshell][Quickshell]                        |
 | **Application Launcher**    | [Fuzzel][Fuzzel]                                |
 | **Notification Daemon**     | [Dunst][Dunst]                                  |
@@ -55,7 +55,7 @@ sudo nix flake update
 Change Directorie and Generate Hardware Config:
 ```bash
 cd MarsOS/
-sudo nixos-generate-config --show-hardware-config > ./modules/hardware.nix
+sudo nixos-generate-config --show-hardware-config > ./hosts/{Host-Directory}/hardware.nix
 ```
 
 Rebuild System:
@@ -100,6 +100,7 @@ Configurations that have inspired and taught me a lot (Sorry for stealing from y
 [Niri]: https://github.com/YaLTeR/niri
 [Wezterm]: https://wezterm.org/
 [Quickshell]: https://quickshell.org/
+[Zellij]: https://zellij.dev/
 [Fuzzel]: https://codeberg.org/dnkl/fuzzel
 [Dunst]: https://github.com/dunst-project/dunst
 [GreetD]: https://sr.ht/~kennylevinsen/greetd/
