@@ -16,6 +16,5 @@ _: {
       compressor = "zstd";
       verbose = false;
     };
-    tmp.cleanOnBoot = true;
   };
 }

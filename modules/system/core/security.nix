@@ -18,10 +18,6 @@
       '';
     };
 
-    # Audit framework
-    audit.enable = true;
-    auditd.enable = true;
-
     pam.services.swaylock.text = ''
       auth include login
     '';
