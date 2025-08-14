@@ -3,25 +3,27 @@
   config,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mkEnableOption mkIf mkMerge genAttrs filterAttrs;
+in {
   options.mars.graphics.amd = {
-    enable = lib.mkEnableOption "amd graphics";
+    enable = mkEnableOption "amd graphics";
     # API´s
-    vulkan = lib.mkEnableOption "Vulkan API support" // {default = true;};
-    opengl = lib.mkEnableOption "OpenGL optimizations" // {default = true;};
+    vulkan = mkEnableOption "Vulkan API support" // {default = true;};
+    opengl = mkEnableOption "OpenGL optimizations" // {default = true;};
     # GPU model selection for specific optimizations
     # AI/Compute options
     compute = {
-      enable = lib.mkEnableOption "compute/AI optimizations";
-      rocm = lib.mkEnableOption "ROCm platform support" // {default = true;};
-      openCL = lib.mkEnableOption "OpenCL support" // {default = true;};
-      hip = lib.mkEnableOption "HIP runtime support" // {default = true;};
+      enable = mkEnableOption "compute/AI optimizations";
+      rocm = mkEnableOption "ROCm platform support" // {default = true;};
+      openCL = mkEnableOption "OpenCL support" // {default = true;};
+      hip = mkEnableOption "HIP runtime support" // {default = true;};
     };
   };
   config = let
     cfg = config.mars.graphics;
   in
-    lib.mkIf (cfg.enable && cfg.amd.enable) {
+    mkIf (cfg.enable && cfg.amd.enable) {
       hardware = {
         amdgpu.initrd.enable = true;
         graphics = {
@@ -90,21 +92,21 @@
       );
 
       # ROCm configuration for AI workloads
-      systemd.tmpfiles.rules = lib.mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) [
+      systemd.tmpfiles.rules = mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) [
         "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
         "d /dev/dri 0755 root root"
         "c /dev/kfd 0666 root root - 511:0"
       ];
 
       # Udev rules for ROCm
-      services.udev.extraRules = lib.mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) ''
+      services.udev.extraRules = mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) ''
         # ROCm device permissions
         SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="render", MODE="0666"
         KERNEL=="kfd", GROUP="render", MODE="0666"
       '';
 
       # Environment variables
-      environment.sessionVariables = lib.mkMerge [
+      environment.sessionVariables = mkMerge [
         # Common AMD variables
         {
           # Gaming optimizations
@@ -114,11 +116,11 @@
           DRI_PRIME = "1";
 
           # AMD-specific optimizations
-          RADV_PERFTEST = lib.mkIf cfg.amd.vulkan "gpl,ngg,sam,rt";
-          AMD_VULKAN_ICD = lib.mkIf cfg.amd.vulkan "RADV";
+          RADV_PERFTEST = mkIf cfg.amd.vulkan "gpl,ngg,sam,rt";
+          AMD_VULKAN_ICD = mkIf cfg.amd.vulkan "RADV";
         }
         # Compute environment
-        (lib.mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) {
+        (mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) {
           # ROCm environment
           ROCM_PATH = "${pkgs.rocm-opencl-runtime}";
           HIP_PATH = "${pkgs.hip}";
@@ -135,20 +137,13 @@
       };
 
       # Add users to GPU groups (define users in host config)
-      users.users = lib.mkMerge [
+      users.users = mkMerge [
         # This will be applied to all normal users
         (
-          lib.genAttrs
-          (builtins.attrNames (lib.filterAttrs (_: user: user.isNormalUser) config.users.users))
+          genAttrs
+          (builtins.attrNames (filterAttrs (_: user: user.isNormalUser) config.users.users))
           (_: {extraGroups = ["render" "video"];})
         )
       ];
-
-      programs.gamemode.settings = {
-        gpu = {
-          apply_gpu_optimisations = "accept-responsibility";
-          amd_performance_level = "high";
-        };
-      };
     };
 }

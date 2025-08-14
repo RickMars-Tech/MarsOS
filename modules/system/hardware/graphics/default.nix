@@ -2,16 +2,18 @@
   lib,
   config,
   ...
-}: {
+}: let
+  inherit (lib) mkIf mkEnableOption;
+in {
   imports = [
     ./amd.nix
-    ./nvidia.nix
+    ./nvidiaPro.nix
     ./intel.nix
   ];
 
-  options.mars.graphics.enable = lib.mkEnableOption "Enable graphics" // {default = true;};
+  options.mars.graphics.enable = mkEnableOption "Enable graphics" // {default = true;};
 
-  config = lib.mkIf (config.mars.graphics.enable) {
+  config = mkIf (config.mars.graphics.enable) {
     hardware.graphics = {
       enable = true;
       enable32Bit = true;
