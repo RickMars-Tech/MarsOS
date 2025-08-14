@@ -1,7 +1,5 @@
 _: {
   imports = [
-    ./windowManager/default.nix
-    ./emacs/default.nix
     ./fastfetch/default.nix
     ./firefox/default.nix
     ./helix/default.nix

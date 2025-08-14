@@ -1,6 +1,7 @@
 {username, ...}: {
   imports = [
     ./common/default.nix
+    ./windowManager/default.nix
     ./xdg.nix
   ];
 
