@@ -3,6 +3,7 @@
   lib,
   ...
 }: {
+  imports = [./cache.nix];
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     settings = {
@@ -24,10 +25,6 @@
       # Build log optimization
       log-lines = 100;
       show-trace = false;
-
-      # Substituter settings
-      builders-use-substitutes = true;
-      substitute = true;
 
       # Allow users in the wheel group to use nix
       trusted-users = ["root" "@wheel"];
