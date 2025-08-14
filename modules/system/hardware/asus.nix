@@ -3,21 +3,23 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mkIf mkEnableOption;
+in {
   options.mars.asus = {
-    enable = lib.mkEnableOption "Asus Configs";
-    gamemode.enable = lib.mkEnableOption "Integrate with gamemode for gaming performance";
+    enable = mkEnableOption "Asus Configs" // {default = false;};
+    gamemode.enable = mkEnableOption "Integrate with gamemode for gaming performance" // {default = false;};
   };
 
   config = let
     cfg = config.mars.asus;
   in {
-    boot.kernelModules = lib.mkIf (cfg.enable) ["asus-wmi"];
-    services.asusd = lib.mkIf (cfg.enable) {
+    boot.kernelModules = mkIf (cfg.enable) ["asus-wmi"];
+    services.asusd = mkIf (cfg.enable) {
       enable = true;
       package = pkgs.asusctl;
     };
-    programs.gamemode.settings = lib.mkIf (cfg.enable && cfg.gamemode.enable) {
+    programs.gamemode.settings = mkIf (cfg.enable && cfg.gamemode.enable && config.gaming.gamemode) {
       custom = {
         start = "${pkgs.asusctl}/bin/asusctl profile -p Turbo";
         end = "${pkgs.asusctl}/bin/asusctl profile -p Balanced";

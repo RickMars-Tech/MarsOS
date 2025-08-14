@@ -3,17 +3,19 @@
   pkgs,
   lib,
   ...
-}: {
-  options.mars.thinkpad.enable = lib.mkEnableOption "Thinkpad Twiks";
+}: let
+  inherit (lib) mkEnableOption mkDefault mkIf;
+in {
+  options.mars.thinkpad.enable = mkEnableOption "Thinkpad Configs" // {default = false;};
 
-  config = lib.mkIf (config.mars.thinkpad.enable) {
+  config = mkIf (config.mars.thinkpad.enable) {
     boot.kernelModules = [
       "thinkpad-acpi"
     ];
 
     hardware.trackpoint = {
-      enable = lib.mkDefault true;
-      emulateWheel = lib.mkDefault config.hardware.trackpoint.enable;
+      enable = mkDefault true;
+      emulateWheel = mkDefault config.hardware.trackpoint.enable;
     };
 
     environment.systemPackages = with pkgs; [

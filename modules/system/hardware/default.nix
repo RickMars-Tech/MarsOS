@@ -2,7 +2,9 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mkDefault;
+in {
   imports = [
     ./cpu/default.nix
     ./graphics/default.nix
@@ -13,9 +15,9 @@
   ];
 
   hardware = {
-    enableAllFirmware = lib.mkDefault true; # Enable Properitary Firmware
+    enableAllFirmware = mkDefault true; # Enable Properitary Firmware
     enableAllHardware = true;
-    enableRedistributableFirmware = lib.mkDefault true; # Lemme update my CPU Microcode, alr?!
+    enableRedistributableFirmware = mkDefault true; # Lemme update my CPU Microcode, alr?!
     firmware = with pkgs; [
       linux-firmware
     ];

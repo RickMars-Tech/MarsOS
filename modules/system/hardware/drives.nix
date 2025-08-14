@@ -3,14 +3,15 @@
   lib,
   ...
 }: let
+  inherit (lib) any mkIf mkDefault attrValues;
   # Convertir config.fileSystems (un conjunto) en una lista de sus valores
-  fileSystemsList = lib.attrValues config.fileSystems;
+  fileSystemsList = attrValues config.fileSystems;
   # Verificar si algún sistema de archivos es BTRFS
-  hasBtrfs = lib.any (fs: fs.fsType == "btrfs") fileSystemsList;
+  hasBtrfs = any (fs: fs.fsType == "btrfs") fileSystemsList;
 in {
   # Habilitar autoScrub solo si hay al menos un sistema de archivos BTRFS
   services.btrfs.autoScrub = {
-    enable = lib.mkIf hasBtrfs true;
+    enable = mkIf hasBtrfs true;
     interval = "monthly";
     fileSystems = ["/"];
   };
@@ -24,7 +25,7 @@ in {
 
   #= Enable Trim (Needed for SSD's).
   services.fstrim = {
-    enable = true;
+    enable = mkDefault true;
     interval = "weekly";
   };
 
@@ -37,10 +38,6 @@ in {
     swapDevices = 1;
   };
 
-  #= Fuse
-  services.envfs.enable = lib.mkDefault false;
-
-  #= USB.
-  services.gvfs.enable = true;
+  #= Allows Applications to query and manipulate Storage Devices
   services.udisks2.enable = true;
 }
