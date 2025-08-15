@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf mkMerge genAttrs filterAttrs;
+  inherit (lib) mkEnableOption mkIf mkMerge;
 in {
   options.mars.graphics.amd = {
     enable = mkEnableOption "amd graphics";
@@ -40,8 +40,8 @@ in {
             ]
             ++ lib.optionals cfg.amd.compute.rocm [
               # ROCm platform
-              rocm-opencl-icd
-              rocm-opencl-runtime
+              rocmPackages.clr
+              #rocmPackages.rpp-opencl
             ];
         };
       };
@@ -49,7 +49,7 @@ in {
       # Kernel parameters for AMD GPU optimization
       boot = {
         kernelParams = [
-          # Explicitly set amdgpu support in place of radeon
+          # # Explicitly set amdgpu support in place of radeon
           "radeon.cik_support=0"
           "amdgpu.cik_support=1"
           "radeon.si_support=0"
@@ -73,12 +73,11 @@ in {
         # AI/Compute packages
         lib.optionals cfg.amd.compute.enable [
           # ROCm platform
-          rocm-opencl-icd
-          rocm-opencl-runtime
+          rocmPackages.clr
 
           # Development tools
           clinfo # OpenCL info
-          rocm-smi # ROCm system management
+          rocmPackages.rocm-smi # ROCm system management
 
           # AI frameworks (examples)
           # pytorch-rocm
@@ -86,8 +85,8 @@ in {
         ]
         ++ lib.optionals (cfg.amd.compute.enable && cfg.amd.compute.hip) [
           # HIP runtime
-          hip
-          rocm-device-libs
+          rocmPackages.hip-common
+          rocmPackages.rocm-device-libs
         ]
       );
 
@@ -99,11 +98,11 @@ in {
       ];
 
       # Udev rules for ROCm
-      services.udev.extraRules = mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) ''
-        # ROCm device permissions
-        SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="render", MODE="0666"
-        KERNEL=="kfd", GROUP="render", MODE="0666"
-      '';
+      # services.udev.extraRules = mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) ''
+      #   # ROCm device permissions
+      #   SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="render", MODE="0666"
+      #   KERNEL=="kfd", GROUP="render", MODE="0666"
+      # '';
 
       # Environment variables
       environment.sessionVariables = mkMerge [
@@ -122,28 +121,12 @@ in {
         # Compute environment
         (mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) {
           # ROCm environment
-          ROCM_PATH = "${pkgs.rocm-opencl-runtime}";
-          HIP_PATH = "${pkgs.hip}";
+          ROCM_PATH = "${pkgs.rocmPackages.clr}";
+          HIP_PATH = "${pkgs.rocmPackages.hip-common}";
 
           # OpenCL
-          OPENCL_VENDOR_PATH = "${pkgs.rocm-opencl-icd}/etc/OpenCL/vendors";
+          #OPENCL_VENDOR_PATH = "${pkgs.rocm-opencl-icd}/etc/OpenCL/vendors";
         })
-      ];
-
-      # System groups for GPU access
-      users.groups = {
-        render = {}; # For compute workloads
-        video = {}; # For video acceleration
-      };
-
-      # Add users to GPU groups (define users in host config)
-      users.users = mkMerge [
-        # This will be applied to all normal users
-        (
-          genAttrs
-          (builtins.attrNames (filterAttrs (_: user: user.isNormalUser) config.users.users))
-          (_: {extraGroups = ["render" "video"];})
-        )
       ];
     };
 }
