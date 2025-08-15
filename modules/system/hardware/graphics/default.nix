@@ -8,6 +8,7 @@ in {
   imports = [
     ./amd.nix
     ./nvidiaPro.nix
+    ./nvidiaFree.nix
     ./intel.nix
   ];
 
