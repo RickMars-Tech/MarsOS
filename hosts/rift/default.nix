@@ -21,14 +21,14 @@ _: {
     cpu.amd.enable = true;
     graphics = {
       enable = true;
-      hybridGPU = true;
+      # hybridGPU.enable = true;
       amd = {
         enable = true;
         vulkan = true;
         opengl = true;
         compute.enable = true;
       };
-      nvidia = {
+      nvidiaPro = {
         enable = true;
         nvenc = true;
         driver = "beta";
@@ -37,16 +37,34 @@ _: {
           cuda = true;
           tensorrt = true;
         };
-        # hybrid = {
-        #   enable = true;
-        #   igpu = {
-        #     vendor = "amd";
-        #     port = null;
-        #   };
-        #   dgpu.port = null;
-        # };
+        hybrid = {
+          enable = true;
+          igpu = {
+            vendor = "amd";
+            port = "PCI:35@0:0:0";
+          };
+          dgpu.port = "PCI:1@0:0:0";
+        };
         wayland-fixes = true;
       };
+    };
+    gaming = {
+      enable = true;
+      gamemode = {
+        enable = true;
+        amdOptimizations = false;
+        nvidiaOptimizations = true;
+      };
+      minecraft = {
+        prismlauncher.enable = true;
+        extraJavaPackages.enable = true;
+      };
+      steam = {
+        enable = true;
+        openFirewall = false;
+        hardware-rules = true;
+      };
+      extra-gaming-packages = true;
     };
   };
 
@@ -55,29 +73,29 @@ _: {
   # Specialisations separate configs
   # by diferents boot loader entries
   # You cant diplicate configs,
-  specialisation."gaming" = {
-    inheritParentConfig = true;
-    configuration = {
-      mars.gaming = {
-        enable = true;
-        gamemode = {
-          enable = true;
-          amdOptimizations = false;
-          nvidiaOptimizations = true;
-        };
-        minecraft = {
-          prismlauncher.enable = true;
-          extraJavaPackages.enable = true;
-        };
-        steam = {
-          enable = true;
-          openFirewall = false;
-          hardware-rules = true;
-        };
-        extra-gaming-packages = true;
-      };
-    };
-  };
+  # specialisation."gaming" = {
+  #   inheritParentConfig = true;
+  #   configuration = {
+  #     mars.gaming = {
+  #       enable = true;
+  #       gamemode = {
+  #         enable = true;
+  #         amdOptimizations = false;
+  #         nvidiaOptimizations = true;
+  #       };
+  #       minecraft = {
+  #         prismlauncher.enable = true;
+  #         extraJavaPackages.enable = true;
+  #       };
+  #       steam = {
+  #         enable = true;
+  #         openFirewall = false;
+  #         hardware-rules = true;
+  #       };
+  #       extra-gaming-packages = true;
+  #     };
+  #   };
+  # };
 
   system.stateVersion = "25.11";
 }
