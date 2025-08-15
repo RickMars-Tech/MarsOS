@@ -6,6 +6,7 @@
   inherit (lib) mkDefault;
 in {
   imports = [
+    ./asus.nix
     ./cpu/default.nix
     ./graphics/default.nix
     ./drives.nix

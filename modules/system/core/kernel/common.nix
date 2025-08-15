@@ -1,6 +1,9 @@
 _: {
   boot = {
     kernelParams = [
+      "acpi_backlight=native"
+      "idle=nomwait"
+      "acpi_osi=!"
       #= E/S & Memory
       # "quiet"
       # "splash"
