@@ -6,9 +6,9 @@ in {
     input = {
       #= Keyboard
       keyboard.xkb = {
-        layout = "us";
-        variant = "intl";
-        options = "compose:ralt";
+        layout = "latam";
+        variant = "";
+        # options = "compose:ralt";
       };
       #= Touchpad
       touchpad = {
@@ -35,34 +35,6 @@ in {
       focus-follows-mouse.enable = true;
       warp-mouse-to-focus.enable = true;
       workspace-auto-back-and-forth = true;
-    };
-
-    #= Displays
-    outputs = {
-      "eDP-1" = {
-        mode = {
-          width = 1920;
-          height = 1080;
-          refresh = null;
-        };
-        scale = 1.0;
-        position = {
-          x = 0;
-          y = -768;
-        };
-      };
-      "LVDS-1" = {
-        mode = {
-          width = 1366;
-          height = 768;
-          refresh = null;
-        };
-        scale = 1.0;
-        position = {
-          x = 0;
-          y = 0; #-1080;
-        };
-      };
     };
     cursor = {
       size = pointer.size;

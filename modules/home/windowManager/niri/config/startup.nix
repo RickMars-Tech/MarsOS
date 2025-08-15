@@ -20,8 +20,6 @@ in {
     (makeCommand "swww img ${wall} --transition-type random")
     (makeCommand "$POLKIT_BIN")
     (makeCommand "wlr-randr")
-    # (makeCommand "dunst")
-    # (makeCommand "qs")
     {
       command = [
         "${pkgs.dbus}/bin/dbus-update-activation-environment"

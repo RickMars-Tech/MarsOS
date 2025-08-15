@@ -10,6 +10,7 @@ in {
     inputs.niri.homeModules.niri
     ./config/binds.nix
     ./config/env.nix
+    ./config/outputs.nix
     ./config/settings.nix
     ./config/startup.nix
     ./config/windowrules.nix
