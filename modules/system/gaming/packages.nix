@@ -15,7 +15,7 @@ in {
       #= Nintendo Emulators
       dolphin-emu # Gamecube/Wii/Triforce emulator for x86_64
       #= Ocarina of Time (PC port).
-      shipwright
+      #shipwright
       #= The best Game in the World
       superTuxKart
       #= Launcher for Veloren.
