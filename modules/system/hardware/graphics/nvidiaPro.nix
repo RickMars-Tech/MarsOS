@@ -5,7 +5,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkOption mkIf mkMerge mkForce types;
+  inherit (lib) mkEnableOption mkOption mkIf mkMerge types;
 in {
   options.mars.graphics.nvidiaPro = {
     enable = mkEnableOption "nVidia graphics";
@@ -24,23 +24,23 @@ in {
       cuda = mkEnableOption "CUDA support" // {default = true;};
       tensorrt = mkEnableOption "TensorRT support";
     };
-    # hybrid = {
-    #   enable = mkEnableOption "optimus prime";
-    #   igpu = {
-    #     vendor = mkOption {
-    #       type = types.enum ["amd" "intel"];
-    #       default = "amd";
-    #     };
-    #     port = mkOption {
-    #       default = "";
-    #       description = "Bus Port of igpu";
-    #     };
-    #   };
-    #   dgpu.port = mkOption {
-    #     default = "";
-    #     description = "Bus Port of dgpu";
-    #   };
-    # };
+    hybrid = {
+      enable = mkEnableOption "optimus prime";
+      igpu = {
+        vendor = mkOption {
+          type = types.enum ["amd" "intel"];
+          default = "amd";
+        };
+        port = mkOption {
+          default = "";
+          description = "Bus Port of igpu";
+        };
+      };
+      dgpu.port = mkOption {
+        default = "";
+        description = "Bus Port of dgpu";
+      };
+    };
     wayland-fixes = mkEnableOption "Wayland VRAM Consumption Fixes";
   };
 
@@ -59,6 +59,7 @@ in {
       #     message = "iGPU BusID must be specified for hybrid mode";
       #   }
       # ];
+      services.xserver.videoDrivers = ["nvidia"];
       # Kernel parameters for NVIDIA
       boot = {
         kernelParams = [
@@ -74,10 +75,10 @@ in {
             # nVidia Desktop tools packages
             zenith-nvidia # Top but for Nvidia
             nvidia-system-monitor-qt # GPU monitoring
-            nvtop # Terminal GPU monitor
+            #nvtop # Terminal GPU monitor
             # Graphics utilities
             glxinfo # OpenGL info
-            nvidia-settings # NVIDIA control panel
+            #nvidia-settings # NVIDIA control panel
           ]
           ++ lib.optionals cfg.nvidiaPro.vulkan [
             # Vulkan support
@@ -92,12 +93,12 @@ in {
             cudatoolkit
 
             # Monitoring and management
-            nvidia-ml-py # Python ML interface
-            nvtop # GPU monitoring
+            #nvidia-ml-py # Python ML interface
+            #nvtop # GPU monitoring
 
             # Development tools
-            nsight-compute # CUDA profiler
-            nsight-systems # System profiler
+            cudaPackages.nsight_compute # CUDA profiler
+            cudaPackages.nsight_systems # System profiler
           ]
           ++ lib.optionals (cfg.nvidiaPro.compute.enable && cfg.nvidiaPro.compute.tensorrt) [
             # TensorRT inference
@@ -114,10 +115,10 @@ in {
             CUDA_ROOT = "${pkgs.cudatoolkit}";
 
             # Library paths
-            LD_LIBRARY_PATH = "${pkgs.cudatoolkit}/lib:${pkgs.cudatoolkit.lib}/lib";
+            #LD_LIBRARY_PATH = "${pkgs.cudatoolkit}/lib:${pkgs.cudatoolkit.lib}/lib";
 
             # cuDNN
-            CUDNN_PATH = mkIf cfg.nvidiaPro.compute.cudnn "${pkgs.cudnn}";
+            # CUDNN_PATH = mkIf cfg.nvidiaPro.compute.cudnn "${pkgs.cudaPackages.cudnn}";
           })
         ];
       };
@@ -126,7 +127,7 @@ in {
         graphics = {
           extraPackages = with pkgs;
             [
-              nvidiaPackages.latest.lib # Vulkan and OpenGL libraries
+              #nvidiaPackages.latest.lib # Vulkan and OpenGL libraries
               nvidia-vaapi-driver
             ]
             ++ lib.optionals cfg.nvidiaPro.nvenc [
@@ -137,9 +138,9 @@ in {
               # CUDA runtime
               cudatoolkit
             ];
-          extraPackages32 = with pkgs.driversi686Linux; [
-            nvidiaPackages.latest.lib # 32-bit Vulkan/OpenGL for Steam
-          ];
+          #extraPackages32 = with pkgs.driversi686Linux; [
+          #  nvidiaPackages.latest.lib # 32-bit Vulkan/OpenGL for Steam
+          #];
         };
         nvidia = {
           modesetting.enable = true;
@@ -170,23 +171,18 @@ in {
             then config.boot.kernelPackages.nvidiaPackages.open
             else config.boot.kernelPackages.nvidiaPackages.stable;
 
-          #= Force Disable of Nvidia Prime/Optimus, use supergfxctl for GPU switching.
-          prime = {
-            sync.enable = mkForce false;
-            reverseSync.enable = mkForce false;
-            offload.enable = mkForce false;
-          };
-          # prime = mkIf cfg.nvidiaPro.hybrid.enable {
-          #   offload = {
-          #     enable = true;
-          #     enableOffloadCmd = true;
-          #     offloadCmdMainProgram = "prime-run"; #= Custom Name to NvidiaPrime Command
-          #   };
+          #= Nvidia Prime/Optimus
+          prime = mkIf cfg.nvidiaPro.hybrid.enable {
+            offload = {
+              enable = true;
+              enableOffloadCmd = true;
+              # offloadCmdMainProgram = "prime-run"; #= Custom Name to NvidiaPrime Command
+            };
 
-          #   amdgpuBusId = mkIf (cfg.nvidiaPro.hybrid.igpu.vendor == "amd") cfg.nvidiaPro.hybrid.igpu.port;
-          #   intelBusId = mkIf (cfg.nvidiaPro.hybrid.igpu.vendor == "intel") cfg.nvidiaPro.hybrid.igpu.port;
-          #   nvidiaBusId = cfg.nvidiaPro.hybrid.dgpu.port;
-          # };
+            amdgpuBusId = mkIf (cfg.nvidiaPro.hybrid.igpu.vendor == "amd") cfg.nvidiaPro.hybrid.igpu.port;
+            intelBusId = mkIf (cfg.nvidiaPro.hybrid.igpu.vendor == "intel") cfg.nvidiaPro.hybrid.igpu.port;
+            nvidiaBusId = cfg.nvidiaPro.hybrid.dgpu.port;
+          };
         };
       };
       environment.etc = mkIf cfg.nvidiaPro.wayland-fixes {

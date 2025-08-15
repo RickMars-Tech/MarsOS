@@ -5,6 +5,8 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption;
+  # gamemode = config.mars.gamemode;
+  asus = config.mars.asus.gamemode;
 in {
   imports = [
     ./amd.nix
@@ -38,30 +40,20 @@ in {
             pin_policy = "core"; # Mejor afinidad
           };
           custom = {
-            start = "${pkgs.libnotify}/bin/notify-send 'GameMode Started'";
-            end = "${pkgs.libnotify}/bin/notify-send 'GameMode Ended'";
+            start =
+              if (asus.enable == true)
+              then "${pkgs.asusctl}/bin/asusctl profile -p Turbo"
+              else "";
+
+            end =
+              if (asus.enable == true)
+              then "${pkgs.asusctl}/bin/asusctl profile -p Balanced"
+              else "";
           };
         };
       };
 
-      # Fuerza governor "performance" para gaming
-      powerManagement.cpuFreqGovernor = "performance";
-
-      #|==< Udev Gaming >==|#
-      services.udev.extraRules = ''
-        # Desactivar autosuspend para dispositivos de gaming
-        ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="*", TEST=="power/control", ATTR{power/control}="on"
-        ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1532", ATTR{idProduct}=="*", TEST=="power/control", ATTR{power/control}="on"
-        ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0738", ATTR{idProduct}=="*", TEST=="power/control", ATTR{power/control}="on"
-
-        # Todos los dispositivos de entrada
-        ACTION=="add", SUBSYSTEM=="usb", SUBSYSTEMS=="input", TEST=="power/control", ATTR{power/control}="on"
-
-        # Dispositivos HID (teclados, mouses, gamepads)
-        ACTION=="add", SUBSYSTEM=="usb", ATTR{bInterfaceClass}=="03", TEST=="power/control", ATTR{power/control}="on"
-      '';
-
-      boot.kernel.sysctl = {
+      boot.kernel.sysctl = mkIf (cfg.enable && cfg.gamemode.enable) {
         # Memoria: bajo swappiness y cache pressure para priorizar RAM
         "vm.swappiness" = 1;
         "vm.vfs_cache_pressure" = 50;

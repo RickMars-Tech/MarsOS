@@ -14,5 +14,8 @@ in {
     programs.gamemode.settings = mkIf (gaming.gamemode.enable && nvidia.enable) {
       gpu.nv_powermizer_mode = 1; # "Adaptive"=0 "Prefer Maximum Performance"=1 and "Auto"=2
     };
+
+    # Custom FeralGamemode Integration With Nvidia Prime Offload
+    environment.sessionVariables.GAMEMODERUNEXEC = "nvidia-offload";
   };
 }

@@ -19,11 +19,5 @@ in {
       enable = true;
       package = pkgs.asusctl;
     };
-    programs.gamemode.settings = mkIf (cfg.enable && cfg.gamemode.enable && config.gaming.gamemode) {
-      custom = {
-        start = "${pkgs.asusctl}/bin/asusctl profile -p Turbo";
-        end = "${pkgs.asusctl}/bin/asusctl profile -p Balanced";
-      };
-    };
   };
 }
