@@ -33,7 +33,7 @@ _: {
         nvenc = true;
         driver = "beta";
         compute = {
-          enable = true;
+          enable = false;
           cuda = true;
           tensorrt = true;
         };
@@ -41,9 +41,9 @@ _: {
           enable = true;
           igpu = {
             vendor = "amd";
-            port = "PCI:35@0:0:0";
+            port = "PCI:35:0:0";
           };
-          dgpu.port = "PCI:1@0:0:0";
+          dgpu.port = "PCI:1:0:0";
         };
         wayland-fixes = true;
       };
