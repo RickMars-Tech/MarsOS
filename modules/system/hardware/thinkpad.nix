@@ -9,10 +9,6 @@ in {
   options.mars.thinkpad.enable = mkEnableOption "Thinkpad Configs" // {default = false;};
 
   config = mkIf (config.mars.thinkpad.enable) {
-    boot.kernelModules = [
-      "thinkpad-acpi"
-    ];
-
     hardware.trackpoint = {
       enable = mkDefault true;
       emulateWheel = mkDefault config.hardware.trackpoint.enable;

@@ -2,7 +2,7 @@
   imports = [./common.nix];
 
   #|==< Nyx Kernel >==|#
-  boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+  boot.kernelPackages = pkgs.linuxPackages_cachyos;
 
   #|==< Scheduler SCX >==|#
   services.scx = {

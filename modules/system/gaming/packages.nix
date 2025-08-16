@@ -4,12 +4,21 @@
   lib,
   ...
 }: let
+  inherit (lib) mkIf mkEnableOption;
   GeForceInfinity = pkgs.callPackage ../../../pkgs/geforce-infinity/default.nix {};
+  # Gaming Scripts
+  dlss-swapper = pkgs.callPackage ../../../pkgs/gamingScripts/dlss-swapper.nix {};
+  dlss-swapper-dll = pkgs.callPackage ../../../pkgs/gamingScripts/dlss-swapper-dll.nix {};
+  zink-run = pkgs.callPackage ../../../pkgs/gamingScripts/zink-run.nix {};
 in {
-  options.mars.gaming.extra-gaming-packages = lib.mkEnableOption "Some Extra Games/Packages";
+  options.mars.gaming.extra-gaming-packages = mkEnableOption "Some Extra Games/Packages";
 
-  config = lib.mkIf (config.mars.gaming.extra-gaming-packages) {
+  config = mkIf (config.mars.gaming.extra-gaming-packages) {
     environment.systemPackages = with pkgs; [
+      #= Gaming Scritps
+      dlss-swapper
+      dlss-swapper-dll
+      zink-run
       #= GeForce Infinity
       GeForceInfinity
       #= Nintendo Emulators
