@@ -12,12 +12,7 @@ _: {
   #|==< Mars Config >==|#
   mars = {
     asus.enable = true;
-    power-management = {
-      enable = true;
-      profile = "laptop";
-      cpuGovernor = "ondemand";
-      enableThermalManagement = true;
-    };
+    laptopOptimizations = true;
     cpu.amd.enable = true;
     graphics = {
       enable = true;
@@ -37,7 +32,7 @@ _: {
           cuda = true;
           tensorrt = true;
         };
-        hybrid = {
+        prime = {
           enable = true;
           igpu = {
             vendor = "amd";
