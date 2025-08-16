@@ -20,31 +20,27 @@
 | --------------------------- | ----------------------------------------------- |
 | **Window Manager**          | [Niri][Niri]                                    |
 | **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]           |
-| **Bar**                     | [Quickshell][Quickshell]                        |
+| **Bar**                     | [Ironbar][Ironbar]                              |
 | **Application Launcher**    | [Fuzzel][Fuzzel]                                |
-| **Notification Daemon**     | [Dunst][Dunst]                                  |
-| **Display Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]         |
+| **Notification Daemon**     | [SwayNC][SwayNC]                                |
+| **Session Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]         |
 | **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]   |
-| **System resource monitor** | [Bottom][Bottom]                                |
+| **System Resource Monitor** | [Bottom][Bottom] & [Zenith][Zenith]             |
 | **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]             |
 | **Shell**                   | [Fish][Fish]                                    |
-| **Media Player**            | [MPV][MPV]                                      |
 | **Text Editor**             | [Helix][Helix]                                  |
 | **Fonts**                   | [Nerd fonts][Nerd fonts]                        |
 | **Image Viewer**            | [IMV][IMV]                                      |
+| **Multimedia Player**       | [MPV][MPV]                                      |
+
 </details>
 
 # Guide to Setup
 <br>
 
-Install git with Nix-shell:
+Use Git with to clone the Repo:
 ```bash
-nix shell nixpkgs#git
-```
-
-Clone the Repo:
-```bash
-git clone https://github.com/RickMars-Tech/MarsOS.git
+nix run nixpkgs#git -- clone https://github.com/RickMars-Tech/MarsOS.git
 ```
 
 Update the Flake(Optional):
@@ -99,20 +95,21 @@ Configurations that have inspired and taught me a lot (Sorry for stealing from y
 <!--------------------------------{ Components }------------------------------->
 [Niri]: https://github.com/YaLTeR/niri
 [Wezterm]: https://wezterm.org/
-[Quickshell]: https://quickshell.org/
+[Ironbar]: https://github.com/JakeStanger/ironbar
 [Zellij]: https://zellij.dev/
 [Fuzzel]: https://codeberg.org/dnkl/fuzzel
-[Dunst]: https://github.com/dunst-project/dunst
+[SwayNC]: https://github.com/ErikReider/SwayNotificationCenter
 [GreetD]: https://sr.ht/~kennylevinsen/greetd/
 [TuiGreet]: https://github.com/apognu/tuigreet
 [IWD]: https://git.kernel.org/pub/scm/network/wireless/iwd.git
 [NetworkManager]: https://gitlab.freedesktop.org/NetworkManager/NetworkManager
 [Bottom]: https://github.com/ClementTsang/bottom
+[Zenith]: https://github.com/bvaisvil/zenith
 [Yazi]: https://github.com/sxyazi/yazi
 [Nautilus]: https://apps.gnome.org/Nautilus/
 [Fish]: https://fishshell.com/
-[MPV]: https://github.com/mpv-player/mpv
 [Helix]: https://helix-editor.com/
 [Nerd fonts]: https://www.nerdfonts.com/
 [IMV]: https://sr.ht/~exec64/imv/
+[MPV]: https://mpv.io/
 [Nix-ArtWork]: https://github.com/NixOS/nixos-artwork
