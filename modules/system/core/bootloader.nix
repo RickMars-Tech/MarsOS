@@ -1,13 +1,17 @@
-_: {
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  inherit (lib) mkForce;
+in {
   boot = {
-    bootspec.enable = true;
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/var/lib/sbctl";
+    };
     loader = {
-      systemd-boot = {
-        enable = true;
-        editor = true;
-        consoleMode = "auto";
-        configurationLimit = 10;
-      };
+      systemd-boot.enable = mkForce false; # Lanzaboote currently replaces the systemd-boot module.
       efi.canTouchEfiVariables = true;
       timeout = 3;
     };
@@ -17,4 +21,6 @@ _: {
       verbose = false;
     };
   };
+  # For debugging and troubleshooting Secure Boot.
+  environment.systemPackages = with pkgs; [sbctl];
 }
