@@ -2,7 +2,10 @@
   inputs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib) mapAttrs;
+  inherit (inputs) nixpkgs;
+in {
   imports = [./cache.nix];
   #= Enable Nix-Shell, Flakes and More...
   nix = {
@@ -44,9 +47,9 @@
     };
 
     # Registry for legacy nix commands
-    registry = (lib.mapAttrs (_: flake: {inherit flake;})) inputs;
+    registry = (mapAttrs (_: flake: {inherit flake;})) inputs;
 
     # Pin nixpkgs flake to system nixpkgs
-    nixPath = ["nixpkgs=${inputs.nixpkgs}"];
+    nixPath = ["nixpkgs=${nixpkgs}"];
   };
 }
