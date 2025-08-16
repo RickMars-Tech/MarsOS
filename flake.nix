@@ -11,6 +11,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Lanzaboote(Secure boot)
+    lanzaboote = {
+      url = "https://flakehub.com/f/nix-community/lanzaboote/0.4.2";
+      # Optional but recommended to limit the size of your system closure.
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Chaotic Nyx
     chaotic = {
       url = "https://flakehub.com/f/chaotic-cx/nyx/*";
@@ -80,6 +87,7 @@
 
             #= NixModules
             inputs.determinate.nixosModules.default
+            inputs.lanzaboote.nixosModules.lanzaboote
             inputs.chaotic.nixosModules.default
             inputs.stylix.nixosModules.stylix
             inputs.home-manager.nixosModules.home-manager
