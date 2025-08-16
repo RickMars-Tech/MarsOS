@@ -142,6 +142,7 @@ in {
         color = "#000000F2";
         softness = 100;
       };
+      zoom = 0.70;
       backdrop-color = "transparent";
     };
 

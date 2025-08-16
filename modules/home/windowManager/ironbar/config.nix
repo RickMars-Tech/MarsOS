@@ -36,21 +36,20 @@ _: {
       }
       {
         type = "notifications";
-        show_count = false;
-        icons = {
-          closed_none = "󰂚";
-          closed_some = "󰂛";
-          closed_dnd = "󰂛";
-          open_none = "󰂚";
-          open_some = "󰂛";
-          open_dnd = "󰂛";
-        };
+        show_count = true;
+        icons.closed_none = "󰍥";
+        icons.closed_some = "󱥂";
+        icons.closed_dnd = "󱅯";
+        icons.open_none = "󰍡";
+        icons.open_some = "󱥁";
+        icons.open_dnd = "󱅮";
       }
       {
         type = "volume";
         format = "{icon}";
         max_volume = 100;
-        truncate = "middle";
+        truncate.mode = "end";
+        truncate.length = 50;
         icons = {
           volume_high = "";
           volume_medium = "";
@@ -60,7 +59,7 @@ _: {
       }
       {
         type = "upower";
-        show_if = "upower -e | grep BAT";
+        # show_if = "upower -e | grep BAT";
         icon_size = 16;
       }
     ];

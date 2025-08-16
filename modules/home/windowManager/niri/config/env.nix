@@ -13,7 +13,7 @@ _: {
       OZONE_PLATFORM = "wayland";
       QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      SDL_VIDEODRIVER = "wayland";
+      SDL_VIDEODRIVER = "wayland,x11";
 
       XDG_CURRENT_DESKTOP = "niri";
       XDG_SESSION_TYPE = "wayland";

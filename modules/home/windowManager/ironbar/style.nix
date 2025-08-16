@@ -3,15 +3,15 @@
     color = config.stylix.base16Scheme;
     font = config.stylix.fonts.sansSerif.name;
     background = color.base00;
-    focused = color.base0B;
+    # focused = color.base0B;
     urgent = color.base08;
     # gray = color.base01;
     white = color.base05;
     purple = color.base0C;
     pink = color.base0E;
-    pink_2 = color.base09;
+    # pink_2 = color.base09;
     blue = color.base0A;
-    borderSize = "1px";
+    # borderSize = "1px";
   in
     /*
     css
@@ -24,8 +24,23 @@
         border-radius: 0;
       }
 
+       button, label {
+        box-shadow: none;
+        background: none;
+        background-color: rgba(0, 0, 0, 0);
+        color: ${white};
+      }
+
+      button:hover {
+        background-color: ${background};
+      }
+
       .bar {
         border-top: 1px solid ${background};
+      }
+
+      .background {
+        background-color: ${background};
       }
 
       .popup {
@@ -36,25 +51,20 @@
       /* -- Workspaces -- */
       .workspaces {
         background-color: ${background};
-        margin-left: 5px;
+        border-radius: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
       }
-
       .workspaces .item {
-        background-color: ${background};
         border-radius: 20%;
       }
-
       .workspaces .item.focused {
-        background-color: ${background};
-        color: ${pink};
+        color: ${blue};
       }
-
       .workspaces .item.urgent {
-        background-color: ${blue};
+        color: ${urgent};
       }
-
       .workspaces .item:hover {
-        background-color: ${background};
         color: ${pink};
       }
 
@@ -62,8 +72,9 @@
       .clock {
         background-color: ${background};
         font-weight: bold;
-        margin-left: 5px;
-        margin-right: 5px;
+        border-radius: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
       }
 
       .popup-clock {
@@ -76,15 +87,17 @@
       }
 
       .popup-clock .calendar:selected {
+        background-color: ${background};
         color: ${purple};
       }
 
       .popup-clock .calendar-clock {
+        background-color: ${background};
         font-size: 16px;
         font-weight: bold;
-        color: ${focused};
-        margin-bottom: 5px;
-        padding-bottom: 0.1em;
+        border-radius: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
       }
 
       .popup-clock .calendar {
@@ -95,13 +108,18 @@
 
       /* -- Tray -- */
       .tray {
+        border-radius: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
         background-color: ${background};
       }
 
       /* -- Clipboard -- */
       .clipboard {
         background-color: ${background};
-        margin-left: 5px;
+        border-radius: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
         font-size: 1.1em;
       }
       .popup-clipboard {
@@ -114,17 +132,20 @@
       }
 
       /* -- Notifications -- */
-      .notifications {
-        background-color: ${background};
-      }
       .notifications .count {
         background-color: ${background};
+        color: ${white};
+        padding-left: 5px;
+        padding-right: 5px;
       }
 
       /* -- Volume -- */
       .volume {
         background-color: ${background};
-        margin-left: 5px;
+        border-radius: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+
       }
       .popup-volume .device-box .device-selector {
         background-color: ${background};
@@ -132,10 +153,15 @@
 
       .popup-volume .device-box .slider	{
         background-color: ${background};
+        border-radius: 100%;
       }
 
       /* -- UPower / Battery -- */
       .upower {
+        border-radius: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        color: ${white};
         background-color: ${background};
       }
       .popup-upower {
