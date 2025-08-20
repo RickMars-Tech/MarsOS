@@ -15,7 +15,7 @@ _: {
           Code = "";
         };
         favorites = ["1" "2" "3"];
-        all_monitors = false;
+        all_monitors = true;
       }
     ];
     center = [

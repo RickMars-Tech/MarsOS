@@ -1,15 +1,13 @@
 {
   inputs,
   pkgs,
-  lib,
   ...
-}: let
-  inherit (lib) getExe;
-in {
+}: {
   imports = [
     inputs.niri.homeModules.niri
     ./config/binds.nix
     ./config/env.nix
+    ./config/input.nix
     ./config/outputs.nix
     ./config/settings.nix
     ./config/startup.nix
@@ -17,16 +15,12 @@ in {
   ];
   nixpkgs.overlays = [inputs.niri.overlays.niri];
 
-  #= SetUp Niri(Unstable)
+  #= Setup Niri
   programs.niri = {
     enable = true;
-    package = pkgs.niri-unstable;
-    #= Xwayland-Satellite
-    settings.xwayland-satellite = {
-      enable = true;
-      path = "${getExe pkgs.xwayland-satellite-unstable}";
-    };
+    package = pkgs.niri;
   };
+
   xdg.portal.extraPortals = with pkgs; [
     xdg-desktop-portal-gnome
     xdg-desktop-portal-gtk
@@ -35,7 +29,8 @@ in {
   #= Used Packages
   home.packages = with pkgs; [
     gnome-keyring
-    xwayland-satellite-unstable
+    xwayland-satellite
+    brightnessctl
     # Clipboard-specific
     wl-clipboard-rs
     cliphist
@@ -50,13 +45,8 @@ in {
     # Image Viewer
     imv
     # XWayland/Wayland
-    #glfw
     wlr-randr
-    #wlprop
-    #wlroots
     wayland-utils
-    #xwayland
-    # xwayland-satellite
     xcb-util-cursor
     xorg.libxcb
     xorg.xprop

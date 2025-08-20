@@ -10,7 +10,7 @@
     purple = color.base0C;
     pink = color.base0E;
     # pink_2 = color.base09;
-    blue = color.base0A;
+    # blue = color.base0A;
     # borderSize = "1px";
   in
     /*
@@ -24,15 +24,10 @@
         border-radius: 0;
       }
 
-       button, label {
+      button, label {
         box-shadow: none;
         background: none;
         background-color: rgba(0, 0, 0, 0);
-        color: ${white};
-      }
-
-      button:hover {
-        background-color: ${background};
       }
 
       .bar {
@@ -57,15 +52,21 @@
       }
       .workspaces .item {
         border-radius: 20%;
+        transition: all 0.5s;
+        transition-timing-function: ease;
       }
-      .workspaces .item.focused {
-        color: ${blue};
+
+      .workspaces .item:not(:nth-child(1)){
+        margin-left: 4px;
       }
-      .workspaces .item.urgent {
-        color: ${urgent};
-      }
+
+      .workspaces .item.focused,
       .workspaces .item:hover {
         color: ${pink};
+      }
+
+      .workspaces .item.urgent {
+        color: ${urgent};
       }
 
       /* -- Clock -- */

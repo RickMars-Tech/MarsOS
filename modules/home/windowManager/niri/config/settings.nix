@@ -3,39 +3,6 @@
   color = config.stylix.base16Scheme;
 in {
   programs.niri.settings = {
-    input = {
-      #= Keyboard
-      keyboard.xkb = {
-        layout = "latam";
-        variant = "";
-        # options = "compose:ralt";
-      };
-      #= Touchpad
-      touchpad = {
-        accel-profile = "flat";
-        click-method = "button-areas";
-        dwt = true;
-        dwtp = true;
-        natural-scroll = false;
-        scroll-method = "two-finger";
-        tap = true;
-        tap-button-map = "left-right-middle";
-      };
-      #= Trackpoint
-      trackpoint = {
-        enable = true;
-        accel-profile = "flat";
-      };
-      #= Mouse
-      mouse = {
-        enable = true;
-        accel-profile = "flat";
-        scroll-factor = 1.0;
-      };
-      focus-follows-mouse.enable = true;
-      warp-mouse-to-focus.enable = true;
-      workspace-auto-back-and-forth = true;
-    };
     cursor = {
       size = pointer.size;
       theme = "${pointer.name}";
@@ -134,7 +101,14 @@ in {
       '';
     };
 
-    gestures.hot-corners.enable = false;
+    gestures = {
+      dnd-edge-view-scroll = {
+        trigger-width = 30;
+        delay-ms = 15;
+        max-speed = 1500;
+      };
+      hot-corners.enable = false;
+    };
 
     overview = {
       workspace-shadow = {

@@ -1,7 +1,14 @@
-_: {
+{
+  osConfig,
+  lib,
+  ...
+}: let
+  inherit (lib) mkIf;
+  uwsm = osConfig.programs.uwsm;
+in {
   programs.niri.settings = {
     environment = {
-      NIRI_DISABLE_SYSTEM_MANAGER_NOTIFY = "1";
+      NIRI_DISABLE_SYSTEM_MANAGER_NOTIFY = mkIf uwsm.enable "1";
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       _JAVA_AWT_WM_NONREPARENTING = "1";
 
