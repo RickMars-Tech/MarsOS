@@ -96,6 +96,7 @@
             {
               _module.args = {inherit inputs;};
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = [inputs.niri.overlays.niri];
 
               home-manager = {
                 useGlobalPkgs = false;
