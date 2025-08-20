@@ -3,39 +3,47 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf optionals;
+  inherit (lib) mkIf mkMerge optionals;
   asus = config.mars.asus;
   think = config.mars.thinkpad;
   gaming = config.mars.gaming;
   radeon = config.mars.graphics.amd;
   intel = config.mars.graphics.intel;
   nvidiaPro = config.mars.graphics.nvidiaPro;
+  plymouth = config.boot.plymouth;
 in {
   boot = {
     kernelParams =
       [
         #= Remove /dev/mem access restrictions(Needed for Upgrade Coreboot/Libreboot).
-        "iomem=relaxed"
+        #"iomem=relaxed"
         #= Vulnerability mitigations
         "mitigations=auto"
       ]
+      ++ optionals plymouth.enable [
+        #= Silent Mode
+        "quiet"
+        "loglevel=3"
+        "splash"
+        "boot.shell_on_fail"
+        "udev.log_priority=3"
+        "rd.systemd.show_status=auto"
+      ]
       ++ optionals asus.enable [
         # Asus
-        "acpi_backlight=native"
+        "acpi_backlight="
         "idle=nomwait"
-        "acpi_osi=!"
+        "acpi_osi=Linux"
       ]
       ++ optionals gaming.enable [
         "tsc=reliable"
         "clocksource=tsc"
-        "mitigations=off"
         "preempt=full" # https://reddit.com/r/linux_gaming/comments/1g0g7i0/god_of_war_ragnarok_crackling_audio/lr8j475/?context=3#lr8j475
-        "split_lock_detect=off"
       ]
       ++ optionals radeon.enable [
         "gpu_sched.sched_policy=0" # https://gitlab.freedesktop.org/drm/amd/-/issues/2516#note_2119750
         "amdgpu.mcbp=0"
-        # # Explicitly set amdgpu support in place of radeon
+        # Explicitly set amdgpu support in place of radeon
         "radeon.cik_support=0"
         "amdgpu.cik_support=1"
         "radeon.si_support=0"
@@ -45,7 +53,12 @@ in {
       ]
       ++ optionals nvidiaPro.enable [
         "nvidia-drm.modeset=1" # Improve Wayland compatibility
-        "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # Preserve VRAM on suspend
+        "nvidia,NVreg_EnableBacklightHandler=1"
+        "nvidia.NVreg_UsePageAttributeTable=1"
+        "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1"
+      ]
+      ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
+        "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # Have Problems with Prime Offload
       ]
       ++ optionals intel.enable [
         "i915.enable_guc=2" # Carga GuC/HuC (mejora rendimiento/eficiencia)
@@ -54,48 +67,74 @@ in {
       ]
       ++ optionals (intel.generation == "arc" || intel.generation == "xe") [
         "i915.force_probe=*"
-        "i915.enable_dc=2"
+        # "i915.enable_dc=2"
       ];
     kernelModules =
       [
         "ntsync"
       ]
       ++ optionals asus.enable [
-        "asus_wmi"
+        "asus-wmi"
+      ]
+      # Load Kernel Modules only is needed when nVidia GPU its the Only One,
+      # With Prime Offload its not needed
+      ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
+        "nvidia"
+        "nvidia_modeset"
+        "nvidia_uvm"
+        "nvidia_drm"
+      ]
+      ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
+        "nvidia_wmi_ec_backlight"
       ]
       ++ optionals think.enable [
         "thinkpad-acpi"
       ];
-    kernel.sysctl = mkIf (gaming.enable && gaming.gamemode.enable) {
-      "vm.max_map_count" = 2147483642;
-      "vm.mmap_min_addr" = 0; # SheepShaver
-      # https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/lib/sysctl.d/99-cachyos-settings.conf
-      "fs.file-max" = 2097152;
-      "kernel.split_lock_mitigate" = 0;
-      "net.ipv4.tcp_fin_timeout" = 5;
-      "vm.dirty_background_bytes" = 67108864;
-      "vm.dirty_bytes" = 268435456;
-      "vm.dirty_writeback_centisecs" = 1500;
-      "vm.page-cluster" = 0;
+    kernel.sysctl = mkMerge [
+      {
+        # https://wiki.archlinux.org/title/Sysctl#Increase_the_memory_dedicated_to_the_network_interfaces
+        "net.core.rmem_defaul" = 262144; # 256KB
+        "net.core.rmem_max" = 2097152; # 2MB
+        "net.core.wmem_default" = 262144;
+        "net.core.wmem_max" = 2097152;
+        "net.core.optmem_max" = 20480;
+        "net.core.netdev_max_backlog" = 1000;
+        "net.ipv4.tcp_rmem" = "4096 262144 4194304";
+        "net.ipv4.tcp_wmem" = "4096 262144 4194304";
+        "net.ipv4.tcp_congestion_control" = "bbr";
+        # https://wiki.archlinux.org/title/Sysctl#Enable_TCP_Fast_Open
+        "net.ipv4.tcp_fastopen" = 3;
+      }
+      (mkIf (gaming.enable && gaming.gamemode.enable)
+        {
+          "vm.mmap_min_addr" = 0;
+          # https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/lib/sysctl.d/99-cachyos-settings.conf
+          "fs.file-max" = 209752;
+          "kernel.split_lock_mitigate" = 0;
+          "net.ipv4.tcp_fin_timeout" = 5;
+          "vm.dirty_writeback_centisecs" = 1500;
+          "vm.page-cluster" = 0;
+          # https://wiki.archlinux.org/title/Gaming#Make_the_changes_permanent
+          "vm.compaction_proactiveness" = 0;
+          "vm.watermark_boost_factor" = 1;
+          # "vm.min_free_kbytes" = 262144; # 256MB
+          "vm.watermark_scale_factor" = 250;
+          "vm.swappiness" = 30;
+          "vm.zone_reclaim_mode" = 0;
 
-      # Memoria: bajo swappiness y cache pressure para priorizar RAM
-      "vm.swappiness" = 1;
-      "vm.vfs_cache_pressure" = 50;
-      "vm.dirty_ratio" = 15;
-      "vm.dirty_background_ratio" = 5;
+          "kernel.sched_child_runs_first" = 0;
+          "kernel.sched_autogroup_enabled" = 1;
+          # Evita que el sistema se bloquee bajo alta carga
+          "vm.overcommit_memory" = 0;
+          "vm.oom-kill" = 1; # Activa el OOM killer (necesario)
 
-      # Planificador: tiempo completo para RT y baja migración
-      "kernel.sched_rt_runtime_us" = -1; # Sin límite a tareas en tiempo real
-      "kernel.sched_migration_cost_ns" = "5000000"; # Reduce migración de tareas
-
-      # Red: optimizado para baja latencia (BBR + buffers altos)
-      "net.core.rmem_max" = 536870912;
-      "net.core.wmem_max" = 536870912;
-      "net.core.netdev_max_backlog" = 5000;
-      "net.ipv4.tcp_rmem" = "4096 87380 536870912";
-      "net.ipv4.tcp_wmem" = "4096 65536 536870912";
-      "net.ipv4.tcp_congestion_control" = "bbr";
-    };
+          # https://wiki.archlinux.org/title/Sysctl#Virtual_memory
+          "vm.dirty_ratio" = 10;
+          "vm.dirty_background_ratio" = 5;
+          # VFS cache
+          "vm.vfs_cache_pressure" = 20;
+        })
+    ];
     supportedFilesystems = ["ntfs"];
     blacklistedKernelModules =
       [
@@ -121,6 +160,7 @@ in {
         "sctp"
         #= Old, rare, or insufficiently audited filesystems
         "f2fs"
+        "bcachefs"
         "hfs"
         "hfsplus"
         "jfs"
@@ -149,7 +189,7 @@ in {
         "evbug"
       ]
       ++ optionals nvidiaPro.enable [
-        "nouveau" # set Nvidia Pro Driver support in place of noveau
+        "nouveau" # set Nvidia Pro Driver support in place of nouveau
       ]
       ++ optionals radeon.enable [
         "radeon" # set amdgpu support in place of radeon

@@ -6,6 +6,7 @@
   inherit (lib) mkForce;
 in {
   boot = {
+    #|==< Secure Boot >==|#
     lanzaboote = {
       enable = true;
       pkiBundle = "/var/lib/sbctl";
@@ -19,6 +20,18 @@ in {
       enable = true;
       compressor = "zstd";
       verbose = false;
+    };
+
+    #|==< Plymouth >==|#
+    plymouth = {
+      enable = true;
+      theme = "hexagon_dots";
+      themePackages = with pkgs; [
+        # By default we would install all themes
+        (adi1090x-plymouth-themes.override {
+          selected_themes = ["hexagon_dots"];
+        })
+      ];
     };
   };
   # For debugging and troubleshooting Secure Boot.
