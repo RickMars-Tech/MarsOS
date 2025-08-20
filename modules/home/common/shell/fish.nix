@@ -11,6 +11,7 @@ in {
       snowboot = "${rebuildCommand} boot";
       snowswitch = "${rebuildCommand} switch";
       snowtest = "${rebuildCommand} test";
+      snowclean = " sudo nix-collect-garbage -d";
 
       #= See Hardware Info
       hw = "hwinfo --short";
