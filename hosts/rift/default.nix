@@ -16,21 +16,20 @@ _: {
     cpu.amd.enable = true;
     graphics = {
       enable = true;
-      # hybridGPU.enable = true;
       amd = {
         enable = true;
         vulkan = true;
         opengl = true;
-        compute.enable = true;
+        compute.enable = false;
       };
       nvidiaPro = {
         enable = true;
         nvenc = true;
-        driver = "beta";
+        driver = "stable";
         compute = {
           enable = false;
-          cuda = true;
-          tensorrt = true;
+          cuda = false;
+          tensorrt = false;
         };
         prime = {
           enable = true;
@@ -62,35 +61,6 @@ _: {
       extra-gaming-packages = true;
     };
   };
-
-  #|==< IMPORTANT >==|#
-  # You cant diplicate configs,
-  # Specialisations separate configs
-  # by diferents boot loader entries
-  # You cant diplicate configs,
-  # specialisation."gaming" = {
-  #   inheritParentConfig = true;
-  #   configuration = {
-  #     mars.gaming = {
-  #       enable = true;
-  #       gamemode = {
-  #         enable = true;
-  #         amdOptimizations = false;
-  #         nvidiaOptimizations = true;
-  #       };
-  #       minecraft = {
-  #         prismlauncher.enable = true;
-  #         extraJavaPackages.enable = true;
-  #       };
-  #       steam = {
-  #         enable = true;
-  #         openFirewall = false;
-  #         hardware-rules = true;
-  #       };
-  #       extra-gaming-packages = true;
-  #     };
-  #   };
-  # };
 
   system.stateVersion = "25.11";
 }
