@@ -1,7 +1,13 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  inherit (lib) mkForce;
+in {
   services.dbus = {
     enable = true;
-    implementation = "dbus"; # lib.mkForce "broker";
+    implementation = mkForce "broker";
     packages = with pkgs; [
       appimage-run
       dunst
