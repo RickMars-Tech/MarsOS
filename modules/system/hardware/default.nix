@@ -11,7 +11,6 @@ in {
     ./graphics/default.nix
     ./drives.nix
     ./packages.nix
-    ./pciLatency.nix
     ./powerManagement.nix
     ./thinkpad.nix
   ];
