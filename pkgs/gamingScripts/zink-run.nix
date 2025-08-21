@@ -1,7 +1,6 @@
 # https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/bin/zink-run
 {pkgs}:
 pkgs.writeShellScriptBin "zink-run" ''
-  #!/usr/bin/env bash
   export MESA_LOADER_DRIVER_OVERRIDE=zink
   export GALLIUM_DRIVER=zink
   export __GLX_VENDOR_LIBRARY_NAME=mesa

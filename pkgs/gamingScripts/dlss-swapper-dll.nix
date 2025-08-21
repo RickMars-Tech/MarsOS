@@ -2,7 +2,6 @@
 # This forces Nvidia DLSS to use the latest preset for SR, RR and framegen + skips ngx updater
 {pkgs}:
 pkgs.writeShellScriptBin "dlss-swapper-dll" ''
-  #!/usr/bin/bash
   export DXVK_NVAPI_DRS_NGX_DLSS_RR_OVERRIDE=on
   export DXVK_NVAPI_DRS_NGX_DLSS_SR_OVERRIDE=on
   export DXVK_NVAPI_DRS_NGX_DLSS_FG_OVERRIDE=on
