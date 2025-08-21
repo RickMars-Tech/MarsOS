@@ -10,14 +10,8 @@ in {
 
   config = mkIf (config.mars.cpu.intel.enable) {
     hardware.cpu.intel.updateMicrocode = true;
-    boot = {
-      kernelParams = [
-        "intel_pstate=enable"
-        "intel_idle.max_cstate=2" # Mejor balance rendimiento/energía
-        "intel_iommu=on"
-      ];
-    };
     services.throttled.enable = true;
+    # Some config has been moved to core/kernel/common.nix
 
     environment.systemPackages = with pkgs; [
       intel-undervolt
