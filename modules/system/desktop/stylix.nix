@@ -1,4 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  inherit (lib) mkDefault;
+in {
   stylix = {
     enable = true;
     autoEnable = true;
@@ -30,7 +36,10 @@
       base0F = "#D02060"; # (Dark Pink) Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
     };
 
-    targets.gtk.enable = true;
+    targets = {
+      plymouth.enable = mkDefault false;
+      gtk.enable = true;
+    };
 
     cursor = {
       package = pkgs.bibata-cursors;
