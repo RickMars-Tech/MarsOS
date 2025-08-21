@@ -1,9 +1,39 @@
-_: {
+{pkgs, ...}: let
+  pci-latency = pkgs.callPackage ../../../pkgs/gamingScripts/pciLatency.nix {};
+  rcu-power-manager = pkgs.callPackage ../../../pkgs/gamingScripts/rcu-power-manager.nix {};
+in {
   systemd = {
+    user.services.niri-flake-polkit.enable = false;
     services = {
       systemd-udev-settle.enable = false; # Skip waiting for udev
 
-      #|==> GreetD <==|#
+      #|==< PCI Latency >==|#
+      pci-latency = {
+        description = "Set PCI Latency Timers at boot";
+        wantedBy = ["multi-user.target"];
+        after = ["basic.target"];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pci-latency}/bin/pci-latency";
+        };
+      };
+
+      #|==< RCU >==|#
+      rcu-power-manager = {
+        description = "Dynamic RCU Lazy Power Management";
+        wantedBy = ["multi-user.target"];
+        after = ["multi-user.target" "tlp.service"]; # Después de TLP
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${rcu-power-manager}/bin/rcu-power-manager";
+          # Let write on /sys
+          PrivateDevices = false;
+          PrivateNetwork = false;
+        };
+      };
+
+      #|==< GreetD >==|#
       # https://www.reddit.com/r/NixOS/comments/u0cdpi/tuigreet_with_xmonad_how/
       greetd.serviceConfig = {
         Type = "idle";
