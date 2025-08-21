@@ -5,7 +5,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkOption mkIf mkMerge types;
+  inherit (lib) mkEnableOption mkOption mkForce mkIf mkMerge types;
   graphics = config.mars.graphics;
   nvidiaPro = config.mars.graphics.nvidiaPro;
 in {
@@ -24,7 +24,7 @@ in {
     compute = {
       enable = mkEnableOption "compute/AI optimizations";
       cuda = mkEnableOption "CUDA support" // {default = true;};
-      tensorrt = mkEnableOption "TensorRT support";
+      tensorrt = mkEnableOption "TensorRT support" // {default = false;};
     };
     prime = {
       enable = mkEnableOption "optimus prime";
@@ -104,42 +104,18 @@ in {
           # CUDA environment
           CUDA_PATH = "${pkgs.cudatoolkit}";
           CUDA_ROOT = "${pkgs.cudatoolkit}";
-
-          # Library paths
-          #LD_LIBRARY_PATH = "${pkgs.cudatoolkit}/lib:${pkgs.cudatoolkit.lib}/lib";
-
-          # cuDNN
-          # CUDNN_PATH = mkIf cfg.nvidiaPro.compute.cudnn "${pkgs.cudaPackages.cudnn}";
         })
       ];
     };
 
     hardware = {
-      # graphics = {
-      #   extraPackages = with pkgs;
-      #     [
-      #       #nvidiaPackages.latest.lib # Vulkan and OpenGL libraries
-      #       nvidia-vaapi-driver
-      #     ]
-      #     ++ optionals nvidiaPro.nvenc [
-      #       # Video encoding
-      #       nv-codec-headers
-      #     ]
-      #     ++ optionals nvidiaPro.compute.cuda [
-      #       # CUDA runtime
-      #       cudatoolkit
-      #     ];
-      #   # extraPackages32 = with pkgs.driversi686Linux; [
-      #   #   nvidiaPackages.latest.lib # 32-bit Vulkan/OpenGL for Steam
-      #   # ];
-      # };
       nvidia = {
         modesetting.enable = true;
         dynamicBoost.enable = true;
 
         powerManagement = {
-          enable = true;
-          finegrained = nvidiaPro.prime.enable;
+          enable = false;
+          finegrained = mkForce false;
         };
 
         # Use the NVidia open source kernel module (not to be confused with the
@@ -194,11 +170,11 @@ in {
               settings = [
                 {
                   key = "GLVidHeapReuseRatio";
-                  value = 1;
+                  value = 0;
                 }
                 {
                   key = "GLUseEGL";
-                  value = 1;
+                  value = 0;
                 }
               ];
             }
