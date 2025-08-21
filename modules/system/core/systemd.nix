@@ -52,6 +52,15 @@ in {
       DefaultTimeoutStartSec = "30s";
       DefaultTimeoutStopSec = "10s";
     };
+
+    #|==< Tmpfiles >==|#
+    tmpfiles.rules = [
+      # Clear all coredumps that were created more than 3 days ago
+      "d /var/lib/systemd/coredump 0755 root root 3d"
+      # Improve performance for applications that use tcmalloc
+      # https://github.com/google/tcmalloc/blob/master/docs/tuning.md#system-level-optimizations
+      "w! /sys/kernel/mm/transparent_hugepage/defrag - - - - defer+madvise"
+    ];
   };
 
   #|==< JourdnalD >==|#

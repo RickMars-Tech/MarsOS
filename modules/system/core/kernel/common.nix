@@ -15,6 +15,7 @@
   plymouth = config.boot.plymouth;
 in {
   boot = {
+    supportedFilesystems = ["ntfs"];
     kernelParams =
       [
         #= Remove /dev/mem access restrictions(Needed for Upgrade Coreboot/Libreboot).
@@ -67,7 +68,7 @@ in {
         "nvidia-drm.modeset=1" # Improve Wayland compatibility
         "nvidia,NVreg_EnableBacklightHandler=1"
         "nvidia.NVreg_UsePageAttributeTable=1"
-        "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1"
+        "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1"
       ]
       ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
         "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # Have Problems with Prime Offload
@@ -152,7 +153,6 @@ in {
         })
     ];
     extraModulePackages = with config.boot.kernelPackages; mkIf amdCpu.enable [zenpower];
-    supportedFilesystems = ["ntfs"];
     blacklistedKernelModules =
       [
         #= Test
@@ -207,6 +207,7 @@ in {
       ]
       ++ optionals amdCpu.enable [
         "k10temp"
+        "sp5100_tco"
       ]
       ++ optionals nvidiaPro.enable [
         "nouveau" # set Nvidia Pro Driver support in place of nouveau

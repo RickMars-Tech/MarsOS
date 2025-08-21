@@ -13,7 +13,7 @@ in {
     };
     loader = {
       systemd-boot.enable = mkForce false; # Lanzaboote currently replaces the systemd-boot module.
-      efi.canTouchEfiVariables = true;
+      efi.canTouchEfiVariables = false;
       timeout = 3;
     };
     initrd = {
