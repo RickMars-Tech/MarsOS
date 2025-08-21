@@ -7,6 +7,8 @@
   asus = config.mars.asus;
   think = config.mars.thinkpad;
   gaming = config.mars.gaming;
+  amdCpu = config.mars.cpu.amd;
+  intelCpu = config.mars.cpu.intel;
   radeon = config.mars.graphics.amd;
   intel = config.mars.graphics.intel;
   nvidiaPro = config.mars.graphics.nvidiaPro;
@@ -23,7 +25,6 @@ in {
       ++ optionals plymouth.enable [
         #= Silent Mode
         "quiet"
-        "loglevel=3"
         "splash"
         "boot.shell_on_fail"
         "udev.log_priority=3"
@@ -39,6 +40,17 @@ in {
         "tsc=reliable"
         "clocksource=tsc"
         "preempt=full" # https://reddit.com/r/linux_gaming/comments/1g0g7i0/god_of_war_ragnarok_crackling_audio/lr8j475/?context=3#lr8j475
+      ]
+      ++ optionals amdCpu.enable [
+        "amd_pstate=active"
+        # IOMMU support for compute workloads
+        "amd_iommu=on"
+        "iommu=pt"
+      ]
+      ++ optionals intelCpu.enable [
+        "intel_pstate=enable"
+        "intel_idle.max_cstate=2" # Mejor balance rendimiento/energía
+        "intel_iommu=on"
       ]
       ++ optionals radeon.enable [
         "gpu_sched.sched_policy=0" # https://gitlab.freedesktop.org/drm/amd/-/issues/2516#note_2119750
@@ -75,6 +87,10 @@ in {
       ]
       ++ optionals asus.enable [
         "asus-wmi"
+      ]
+      ++ optionals amdCpu.enable [
+        "amd-pstate-epp"
+        "zenpower"
       ]
       # Load Kernel Modules only is needed when nVidia GPU its the Only One,
       # With Prime Offload its not needed
@@ -135,6 +151,7 @@ in {
           "vm.vfs_cache_pressure" = 20;
         })
     ];
+    extraModulePackages = with config.boot.kernelPackages; mkIf amdCpu.enable [zenpower];
     supportedFilesystems = ["ntfs"];
     blacklistedKernelModules =
       [
@@ -187,6 +204,9 @@ in {
         "floppy"
         "cpuid"
         "evbug"
+      ]
+      ++ optionals amdCpu.enable [
+        "k10temp"
       ]
       ++ optionals nvidiaPro.enable [
         "nouveau" # set Nvidia Pro Driver support in place of nouveau
