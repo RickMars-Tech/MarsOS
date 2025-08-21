@@ -21,6 +21,7 @@ in {
       compressor = "zstd";
       verbose = false;
     };
+    consoleLogLevel = 4; # Default
 
     #|==< Plymouth >==|#
     plymouth = {
