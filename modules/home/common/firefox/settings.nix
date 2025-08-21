@@ -1,10 +1,26 @@
-_: {
+{
+  osConfig,
+  lib,
+  ...
+}: let
+  inherit (lib) mkIf;
+  nvidia = osConfig.mars.graphics.nvidiaPro;
+in {
   programs.firefox.profiles.default.settings = {
     # Disable AI Trash
     "browser.ml.chat.enabled" = false; # Disable AI Chats
     "browser.ml.chat.hideLocalhost" = false;
     "browser.ml.chat.menu" = false;
     "browser.tabs.groups.smart.enabled" = false;
+
+    # Dark mode
+    "ui.systemUsesDarkTheme" = true;
+    "widget.content.allow-gtk-dark-theme" = true;
+    "layout.css.prefers-color-scheme.content-override" = 0;
+    "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+
+    # Nvidia
+    "widget.dmabuf.force-enabled" = mkIf nvidia.enable false;
 
     "ui.key.menuAccessKeyFocuses" = false; # Disable ALT Menu
     # Vertical Tabs
