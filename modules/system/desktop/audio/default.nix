@@ -4,4 +4,5 @@ _: {
     ./pipewire.nix
     ./wireplumber.nix
   ];
+  services.playerctld.enable = true;
 }
