@@ -11,7 +11,7 @@ in {
   imports = [
     ./amd.nix
     ./minecraft.nix
-    ./nvidiaPro.nix
+    ./nvidia.nix
     ./packages.nix
     ./steam.nix
   ];
