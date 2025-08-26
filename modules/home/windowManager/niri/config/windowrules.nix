@@ -64,6 +64,10 @@ _: {
         open-maximized = true;
       }
       {
+        matches = [{app-id = "steam";}];
+        default-column-width = {proportion = 1.0;};
+      }
+      {
         matches = [
           {
             title = "Friends List";

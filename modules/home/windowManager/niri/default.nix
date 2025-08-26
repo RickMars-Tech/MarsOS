@@ -30,18 +30,9 @@
   home.packages = with pkgs; [
     gnome-keyring
     xwayland-satellite
-    brightnessctl
     # Clipboard-specific
     wl-clipboard-rs
     cliphist
-    #clapboard
-    # Screenshot
-    grimblast # Taking
-    slurp # Selcting
-    swappy # Editing
-    #= Polkit
-    polkit
-    #soteria
     # Image Viewer
     imv
     # XWayland/Wayland

@@ -28,7 +28,7 @@ _: {
       accel-profile = "flat";
       scroll-factor = 1.0;
     };
-    focus-follows-mouse.enable = true;
+    focus-follows-mouse.enable = false;
     warp-mouse-to-focus.enable = true;
     workspace-auto-back-and-forth = true;
   };
