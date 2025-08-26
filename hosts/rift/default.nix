@@ -16,12 +16,15 @@ _: {
     cpu.amd.enable = true;
     graphics = {
       enable = true;
+      #= AMD/RADEON
       amd = {
         enable = true;
         vulkan = true;
         opengl = true;
         compute.enable = false;
       };
+      #= nVidia
+      nvidiaFree.enable = false; #= Broken
       nvidiaPro = {
         enable = true;
         nvenc = true;
@@ -31,6 +34,7 @@ _: {
           cuda = false;
           tensorrt = false;
         };
+        #= Nvidia Prime Offload
         prime = {
           enable = true;
           igpu = {
@@ -42,6 +46,7 @@ _: {
         wayland-fixes = true;
       };
     };
+    #= Gaming
     gaming = {
       enable = true;
       gamemode = {
