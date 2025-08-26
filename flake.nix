@@ -18,12 +18,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Chaotic Nyx
-    chaotic = {
-      url = "https://flakehub.com/f/chaotic-cx/nyx/*";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Home Manager & Theming
     home-manager = {
       url = "https://flakehub.com/f/nix-community/home-manager/0.1";
@@ -84,7 +78,6 @@
             #= NixModules
             inputs.determinate.nixosModules.default
             inputs.lanzaboote.nixosModules.lanzaboote
-            inputs.chaotic.nixosModules.default
             inputs.stylix.nixosModules.stylix
             inputs.home-manager.nixosModules.home-manager
 
@@ -109,6 +102,7 @@
     hosts = {
       boltz = []; # Extra Modules
       rift = []; # Extra Modules
+      crest = []; # Extra Modules
       # Ejemplo para agregar más hosts:
       # laptop = [ ./modules/hosts/laptop-specific.nix ];
     };
