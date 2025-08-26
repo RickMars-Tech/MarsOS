@@ -25,8 +25,8 @@
       editor = {
         auto-completion = true;
         completion-replace = true;
-        completion-timeout = 250;
-        completion-trigger-len = 2;
+        completion-timeout = 100;
+        completion-trigger-len = 1;
 
         # UI improvements
         line-number = "relative";
@@ -38,7 +38,7 @@
         color-modes = true;
 
         # Scrolling mejorado
-        scrolloff = 5; # Mantener 5 líneas visibles arriba/abajo del cursor
+        scrolloff = 8; # Mantener 5 líneas visibles arriba/abajo del cursor
         scroll-lines = 3;
 
         lsp = {
@@ -46,7 +46,8 @@
           snippets = true;
           auto-signature-help = true;
           display-messages = true;
-          display-inlay-hints = true; # Mostrar hints inline
+          display-inlay-hints = true;
+          display-signature-help-docs = true;
         };
         cursor-shape = {
           insert = "bar";
@@ -99,13 +100,13 @@
             "read-only-indicator"
             "file-modification-indicator"
           ];
-          center = []; # Dejamos el centro limpio
+          center = ["workspace-diagnostics"];
           right = [
-            "workspace-diagnostics"
             "diagnostics"
             "selections"
             "register"
             "position"
+            "position-percentage"
             "total-line-numbers"
             "spacer"
             "file-encoding"
@@ -114,12 +115,14 @@
           ];
           separator = "│";
         };
-        whitespace.characters = {
-          newline = "↴";
-          tab = "⇥";
-          nbsp = "⍽";
-          space = "·";
-          tabpad = "·";
+        whitespace = {
+          characters = {
+            newline = "↴";
+            tab = "⇥";
+            nbsp = "⍽";
+            space = "·";
+            tabpad = "·";
+          };
         };
       };
     };
