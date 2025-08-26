@@ -1,6 +1,12 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
+  inherit (lib) optionals;
   pci-latency = pkgs.callPackage ../../../pkgs/gamingScripts/pciLatency.nix {};
-  rcu-power-manager = pkgs.callPackage ../../../pkgs/gamingScripts/rcu-power-manager.nix {};
+  amd = config.mars.graphics.amd;
 in {
   systemd = {
     user.services.niri-flake-polkit.enable = false;
@@ -15,21 +21,6 @@ in {
         serviceConfig = {
           Type = "oneshot";
           ExecStart = "${pci-latency}/bin/pci-latency";
-        };
-      };
-
-      #|==< RCU >==|#
-      rcu-power-manager = {
-        description = "Dynamic RCU Lazy Power Management";
-        wantedBy = ["multi-user.target"];
-        after = ["multi-user.target" "tlp.service"]; # Después de TLP
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
-          ExecStart = "${rcu-power-manager}/bin/rcu-power-manager";
-          # Let write on /sys
-          PrivateDevices = false;
-          PrivateNetwork = false;
         };
       };
 
@@ -54,13 +45,18 @@ in {
     };
 
     #|==< Tmpfiles >==|#
-    tmpfiles.rules = [
-      # Clear all coredumps that were created more than 3 days ago
-      "d /var/lib/systemd/coredump 0755 root root 3d"
-      # Improve performance for applications that use tcmalloc
-      # https://github.com/google/tcmalloc/blob/master/docs/tuning.md#system-level-optimizations
-      "w! /sys/kernel/mm/transparent_hugepage/defrag - - - - defer+madvise"
-    ];
+    tmpfiles.rules =
+      [
+        # Clear all coredumps that were created more than 3 days ago
+        "d /var/lib/systemd/coredump 0755 root root 3d"
+        # Improve performance for applications that use tcmalloc
+        # https://github.com/google/tcmalloc/blob/master/docs/tuning.md#system-level-optimizations
+        "w! /sys/kernel/mm/transparent_hugepage/defrag - - - - defer+madvise"
+      ]
+      # ROCm configuration for AI workloads
+      ++ optionals (amd.compute.enable && amd.compute.rocm) [
+        "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+      ];
   };
 
   #|==< JourdnalD >==|#
