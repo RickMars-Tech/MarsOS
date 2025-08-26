@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkForce;
 in {
   imports = [
     ./asus.nix
@@ -17,8 +17,8 @@ in {
 
   hardware = {
     enableAllFirmware = mkDefault true; # Enable Properitary Firmware
-    enableAllHardware = true;
-    enableRedistributableFirmware = mkDefault true; # Lemme update my CPU Microcode, alr?!
+    enableAllHardware = mkDefault true;
+    enableRedistributableFirmware = mkForce true; # Lemme update my CPU Microcode, alr?!
     firmware = with pkgs; [
       linux-firmware
     ];

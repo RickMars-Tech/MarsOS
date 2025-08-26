@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf mkMerge;
+  inherit (lib) mkEnableOption mkIf optionals;
 in {
   options.mars.graphics.amd = {
     enable = mkEnableOption "amd graphics";
@@ -33,7 +33,7 @@ in {
         ]
         ++
         # AI/Compute packages
-        lib.optionals cfg.amd.compute.enable [
+        optionals cfg.amd.compute.enable [
           # ROCm platform
           rocmPackages.clr
 
@@ -45,39 +45,11 @@ in {
           # pytorch-rocm
           # tensorflow-rocm
         ]
-        ++ lib.optionals (cfg.amd.compute.enable && cfg.amd.compute.hip) [
+        ++ optionals (cfg.amd.compute.enable && cfg.amd.compute.hip) [
           # HIP runtime
           rocmPackages.hip-common
           rocmPackages.rocm-device-libs
         ]
       );
-
-      # ROCm configuration for AI workloads
-      systemd.tmpfiles.rules = mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) [
-        "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
-      ];
-
-      # Environment variables
-      environment.sessionVariables = mkMerge [
-        # Common AMD variables
-        {
-          # Gaming optimizations
-          __GL_SHADER_DISK_CACHE = "1";
-          __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
-
-          # https://reddit.com/r/linux_gaming/comments/1mg8vtl/low_latency_gaming_guide/
-          MESA_VK_WSI_PRESENT_MODE = "fifo";
-
-          # AMD-specific optimizations
-          RADV_PERFTEST = mkIf cfg.amd.vulkan "gpl,ngg,sam,rt";
-          AMD_VULKAN_ICD = mkIf cfg.amd.vulkan "RADV";
-        }
-        # Compute environment
-        (mkIf (cfg.amd.compute.enable && cfg.amd.compute.rocm) {
-          # ROCm environment
-          ROCM_PATH = "${pkgs.rocmPackages.clr}";
-          HIP_PATH = "${pkgs.rocmPackages.hip-common}";
-        })
-      ];
     };
 }

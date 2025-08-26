@@ -8,6 +8,7 @@
   intel = config.mars.graphics.intel;
   radeon = config.mars.graphics.amd;
   nvidiaPro = config.mars.graphics.nvidiaPro;
+  nvidiaFree = config.mars.graphics.nvidiaFree;
 in {
   imports = [
     ./amd.nix
@@ -29,6 +30,7 @@ in {
             mesa
             libdrm
           ]
+          #= AMDGPU
           ++ optionals radeon.enable [
             # Vulkan support
             vulkan-loader
@@ -43,8 +45,14 @@ in {
           ++ optionals intel.enable [
             intel-vaapi-driver
           ]
-          ++ lib.optionals (intel.enable
+          ++ optionals (intel.enable
             && intel.vulkan) [
+            vulkan-loader
+            vulkan-validation-layers
+            vulkan-tools
+          ]
+          #= NvidiaFree
+          ++ optionals nvidiaFree.vulkan [
             vulkan-loader
             vulkan-validation-layers
             vulkan-tools

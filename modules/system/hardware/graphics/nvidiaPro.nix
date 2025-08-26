@@ -143,7 +143,7 @@ in {
           offload = {
             enable = true;
             enableOffloadCmd = true;
-            # offloadCmdMainProgram = "prime-run"; #= Custom Name to NvidiaPrime Command
+            offloadCmdMainProgram = "prime-run"; #= Custom Name to NvidiaPrime Command
           };
 
           amdgpuBusId = mkIf (nvidiaPro.prime.igpu.vendor == "amd") nvidiaPro.prime.igpu.port;
