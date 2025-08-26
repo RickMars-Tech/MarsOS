@@ -13,6 +13,7 @@ in {
       dunst
       greetd
       tuigreet
+      brightnessctl
       xdg-desktop-portal
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome

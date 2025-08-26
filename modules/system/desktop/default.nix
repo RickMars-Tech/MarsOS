@@ -3,6 +3,7 @@ _: {
     ./audio/default.nix
     ./dbus.nix
     ./env.nix
+    ./keyboard.nix
     ./network.nix
     ./packages.nix
     ./printers.nix
