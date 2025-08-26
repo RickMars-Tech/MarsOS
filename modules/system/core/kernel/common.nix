@@ -12,6 +12,7 @@
   radeon = config.mars.graphics.amd;
   intel = config.mars.graphics.intel;
   nvidiaPro = config.mars.graphics.nvidiaPro;
+  nvidiaFree = config.mars.graphics.nvidiaFree;
   plymouth = config.boot.plymouth;
 in {
   boot = {
@@ -30,49 +31,66 @@ in {
         "boot.shell_on_fail"
         "udev.log_priority=3"
         "rd.systemd.show_status=auto"
+        "rd.udev.log_priority=3"
       ]
+      #= Asus
       ++ optionals asus.enable [
-        # Asus
         "acpi_backlight="
+        # "asus_nb_wmi.wapf=4"
+        "acpi_osi=!"
         "idle=nomwait"
-        "acpi_osi=Linux"
       ]
+      #= Gaming
       ++ optionals gaming.enable [
         "tsc=reliable"
         "clocksource=tsc"
         "preempt=full" # https://reddit.com/r/linux_gaming/comments/1g0g7i0/god_of_war_ragnarok_crackling_audio/lr8j475/?context=3#lr8j475
       ]
+      #= AMD CPU
       ++ optionals amdCpu.enable [
         "amd_pstate=active"
         # IOMMU support for compute workloads
         "amd_iommu=on"
         "iommu=pt"
       ]
+      #= Intel CPU
       ++ optionals intelCpu.enable [
         "intel_pstate=enable"
         "intel_idle.max_cstate=2" # Mejor balance rendimiento/energía
         "intel_iommu=on"
       ]
+      #= AMD/Radeon GPU
       ++ optionals radeon.enable [
         "gpu_sched.sched_policy=0" # https://gitlab.freedesktop.org/drm/amd/-/issues/2516#note_2119750
         "amdgpu.mcbp=0"
+        # "amdgpu.backlight=0"
         # Explicitly set amdgpu support in place of radeon
         "radeon.cik_support=0"
         "amdgpu.cik_support=1"
         "radeon.si_support=0"
         "amdgpu.si_support=1"
-        "amdgpu.dc=1" # Enable Display Core for better display support
+        # "amdgpu.dc=1" # Enable Display Core for better display support
         "amdgpu.dpm=1" # Enable Dynamic Power Management
       ]
+      #= nVnvidiaFree
+      ++ optionals nvidiaFree.enable [
+        "nouveau.config=NvGspRm=1"
+      ]
+      #= nVidiaPro
       ++ optionals nvidiaPro.enable [
         "nvidia-drm.modeset=1" # Improve Wayland compatibility
-        "nvidia,NVreg_EnableBacklightHandler=1"
         "nvidia.NVreg_UsePageAttributeTable=1"
         "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1"
       ]
+      #= NvidiaPrime Offload
+      # ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
+      #   # "nvidia.NVreg_EnableBacklightHandler=1"
+      # ]
+      # Have Problems with Prime Offload
       ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
-        "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # Have Problems with Prime Offload
+        "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       ]
+      #= Intel GPU
       ++ optionals intel.enable [
         "i915.enable_guc=2" # Carga GuC/HuC (mejora rendimiento/eficiencia)
         "i915.preempt_timeout=100"
@@ -82,16 +100,26 @@ in {
         "i915.force_probe=*"
         # "i915.enable_dc=2"
       ];
-    kernelModules =
+    kernelModules = (
       [
         "ntsync"
       ]
+      #= Asus
       ++ optionals asus.enable [
         "asus-wmi"
       ]
+      #= Thinkpad
+      ++ optionals think.enable [
+        "thinkpad-acpi"
+      ]
+      #= CPU
       ++ optionals amdCpu.enable [
-        "amd-pstate-epp"
+        "amd-pstate"
         "zenpower"
+      ]
+      #= GPU
+      ++ optionals (nvidiaFree.enable && !nvidiaPro.enable) [
+        "nouveau"
       ]
       # Load Kernel Modules only is needed when nVidia GPU its the Only One,
       # With Prime Offload its not needed
@@ -101,16 +129,16 @@ in {
         "nvidia_uvm"
         "nvidia_drm"
       ]
+      #= Backligh Controll with NvidiaPrime
       ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
         "nvidia_wmi_ec_backlight"
       ]
-      ++ optionals think.enable [
-        "thinkpad-acpi"
-      ];
+    );
+
     kernel.sysctl = mkMerge [
       {
         # https://wiki.archlinux.org/title/Sysctl#Increase_the_memory_dedicated_to_the_network_interfaces
-        "net.core.rmem_defaul" = 262144; # 256KB
+        "net.core.rmem_default" = 262144; # 256KB
         "net.core.rmem_max" = 2097152; # 2MB
         "net.core.wmem_default" = 262144;
         "net.core.wmem_max" = 2097152;
@@ -152,7 +180,13 @@ in {
           "vm.vfs_cache_pressure" = 20;
         })
     ];
-    extraModulePackages = with config.boot.kernelPackages; mkIf amdCpu.enable [zenpower];
+    extraModulePackages = with config.boot.kernelPackages;
+      optionals amdCpu.enable [
+        zenpower
+      ]
+      ++ optionals nvidiaPro.enable [
+        config.hardware.nvidia.package
+      ];
     blacklistedKernelModules =
       [
         #= Test
@@ -206,8 +240,15 @@ in {
         "evbug"
       ]
       ++ optionals amdCpu.enable [
-        "k10temp"
+        "k10temp" # set zenpower in place of this:
         "sp5100_tco"
+      ]
+      ++ optionals nvidiaFree.enable [
+        "nvidia"
+        "nvidia_modeset"
+        "nvidia_uvm"
+        "nvidia_drm"
+        "nvidia_wmi_ec_backlight"
       ]
       ++ optionals nvidiaPro.enable [
         "nouveau" # set Nvidia Pro Driver support in place of nouveau

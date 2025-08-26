@@ -17,6 +17,7 @@ in {
     #boot.kernelModules = mkIf (cfg.enable) ["asus-wmi"];
     services.asusd = mkIf (asus.enable) {
       enable = true;
+      enableUserService = true;
       package = pkgs.asusctl;
     };
   };
