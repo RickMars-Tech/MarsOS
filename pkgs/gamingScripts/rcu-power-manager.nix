@@ -1,3 +1,4 @@
+#= Deprecated
 {pkgs}:
 pkgs.writeShellScriptBin "rcu-power-manager" ''
   # Detectar si AC está conectado
