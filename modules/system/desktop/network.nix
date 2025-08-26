@@ -18,36 +18,71 @@ in {
         macAddress = "random";
         powersave = false;
       };
+      dns = "systemd-resolved";
     };
+    nameservers = [
+      #= Claudflare(Block Malware)
+      "1.1.1.2"
+      "2606:4700:4700::1112 "
+      "1.0.0.2"
+      "2606:4700:4700::1002"
+      #= Google
+      "8.8.8.8"
+      "2001:4860:4860::8888"
+      "8.8.4.4"
+      "2001:4860:4860::8844"
+    ];
     firewall = {
       enable = true;
       allowPing = false;
-      allowedTCPPorts = [
-        80 # http
-        443 # https
-        53 # DNS
-        123 # NTP
-        # TLS/SSl
-        465
-        587
-        993
-        995
-      ];
     };
   };
   environment.systemPackages = with pkgs; [networkmanagerapplet]; # GTK Front-end for IWD
-  services.resolved.enable = true;
 
   #= Bluetooth
   hardware.bluetooth = {
     enable = true; # enables support for Bluetooth
     powerOnBoot = true; # powers up the default Bluetooth controller on boot
     package = pkgs.bluez;
+    settings = {
+      General = {
+        # Security Config
+        JustWorksRepairing = "never";
+        Class = "0x000100";
+        FastConnectable = false;
+        Privacy = "device";
+      };
+    };
   };
 
   services = {
     #= Pairing Bluetooth devices
     blueman.enable = config.hardware.bluetooth.enable;
+
+    # DNS optimizado para uso personal
+    resolved = {
+      enable = true;
+      domains = ["~."];
+      fallbackDns = [
+        #= Claudflare(Block Malware)
+        "1.1.1.2"
+        "2606:4700:4700::1112 "
+        "1.0.0.2"
+        "2606:4700:4700::1002"
+        #= Google
+        "8.8.8.8"
+        "2001:4860:4860::8888"
+        "8.8.4.4"
+        "2001:4860:4860::8844"
+      ];
+      dnssec = "true";
+      extraConfig = ''
+        MulticastDNS=yes
+        LLMNR=yes
+        ReadEtcHosts=yes
+        ResolveUnicastSingleLabel=no
+      '';
+    };
 
     #== Disable some Things for better Security
     timesyncd.enable = false;
