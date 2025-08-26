@@ -14,12 +14,14 @@ in {
     loader = {
       systemd-boot.enable = mkForce false; # Lanzaboote currently replaces the systemd-boot module.
       efi.canTouchEfiVariables = false;
-      timeout = 3;
+      timeout = 5;
     };
     initrd = {
       enable = true;
-      compressor = "zstd";
       verbose = false;
+      #= Compession
+      compressor = "zstd";
+      compressorArgs = ["-22" "-T0" "--long" "--ultra"];
     };
     consoleLogLevel = 4; # Default
 

@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }: let
@@ -12,7 +13,7 @@ in {
     #= BTRFS Optimizations
     "/".options = mkIf rootIsBtrfs [
       "ssd"
-      "compress=zstd:3"
+      "compress=zstd:6"
       "commit=120"
       "noatime"
       "discard=async"
@@ -60,13 +61,16 @@ in {
     enable = mkDefault true;
     freeMemThreshold = 4; # Kill processes when less than 4% RAM and 10% swap remain
     freeSwapThreshold = 10;
-    # Avoid killing important system processes
     extraArgs = [
       "-g"
-      "--avoid '(^|/)(init|kthreadd|ksoftirqd|migration|rcu_|watchdog)'"
-      "--prefer '(^|/)(Web Content|Isolated Web|firefox|chromium|chrome)'"
+      "--avoid"
+      "(^|/)(init|kthreadd|ksoftirqd|migration|rcu_|watchdog)$"
+      "--prefer"
+      "(^|/)(Web Content|Isolated Web|firefox|chromium|chrome)$"
     ];
   };
+
+  environment.systemPackages = with pkgs; mkIf rootIsBtrfs [compsize];
 
   #= Allows Applications to query and manipulate Storage Devices
   services.udisks2.enable = true;
