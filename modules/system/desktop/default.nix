@@ -1,13 +1,12 @@
 _: {
   imports = [
-    ./audio/default.nix
     ./dbus.nix
-    ./env.nix
     ./keyboard.nix
     ./network.nix
     ./packages.nix
     ./printers.nix
     ./sessionManager.nix
+    ./sessionVariables.nix
     ./stylix.nix
     ./timezone.nix
     ./user.nix

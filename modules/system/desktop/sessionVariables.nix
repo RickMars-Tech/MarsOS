@@ -77,6 +77,21 @@ in {
         LD_PRELOAD = "";
         #= Load Shared Objects Immediately
         LD_BIND_NOW = "1";
+
+        STEAM_RUNTIME_PREFER_HOST_LIBRARIES = "0";
+        #= PROTON
+        PROTON_USE_WOMED3D = "0";
+        PROTON_NO_ESYNC = "0";
+        PROTON_NO_FSYNC = "0";
+        PROTON_ENABLE_NVAPI = "0";
+
+        #= VKD3D
+        VKD3D_CONFIG = "dxr";
+
+        #= Wine
+        WINEPREFIX = "$HOME/.wine";
+        WINEARCH = "win64";
+        WINE_CPU_TOPOLOGY = "4:2";
       })
 
       #|==< JAVA >==|#
