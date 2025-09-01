@@ -2,9 +2,9 @@ _: {
   programs.starship = {
     enable = true;
     # transientPrompt.enable = true;
-    enableFishIntegration = true;
-    enableInteractive = true;
-    enableTransience = true;
+    # enableFishIntegration = true;
+    # enableInteractive = true;
+    # enableTransience = true;
     settings = {
       add_newline = false;
 

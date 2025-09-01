@@ -1,10 +1,11 @@
-{osConfig, ...}: let
-  inherit (osConfig.networking) hostName; # osConfig lets you use System NixOS config on Home-Manager
+{config, ...}: let
+  inherit (config.networking) hostName;
   rebuildCommand = "sudo nixos-rebuild --flake .#${hostName}";
 in {
   programs.fish = {
     enable = true;
     generateCompletions = true;
+    # useBabelfish = true;
     shellAbbrs = {
       #= Nix
       use = "nix shell nixpkgs#";
@@ -70,8 +71,12 @@ in {
         set -gx ECORE_EVAS_ENGINE wayland_egl
         set -gx ELM_ENGINE wayland_egl
       end
+
+      if status is-interactive
+        eval (zellij setup --generate-auto-start fish | string collect)
+      end
     ";
-    shellInitLast = "
+    shellInit = "
       zoxide init fish | source
     ";
   };

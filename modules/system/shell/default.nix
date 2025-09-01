@@ -5,7 +5,7 @@
   ];
 
   #= Shell/CLI programs
-  home.packages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     gping # Ping, but with a graph
     bottom # Process/System Monitor
     ripgrep # Extended Grep
