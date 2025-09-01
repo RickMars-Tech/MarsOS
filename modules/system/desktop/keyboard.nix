@@ -7,12 +7,13 @@
       step = "10";
     in [
       #= Backlight
+      # Low
       {
         keys = [224];
         events = ["key"];
-        # -N is used to ensure that value >= minBrightness
         command = "${bright} set ${step}%-";
       }
+      # Up
       {
         keys = [225];
         events = ["key"];
