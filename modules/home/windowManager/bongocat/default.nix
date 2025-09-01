@@ -2,6 +2,10 @@
 {pkgs, ...}: let
   bongoFile = ./config/bongocat.conf;
 in {
+  home.packages = with pkgs; [
+    wayland-bongocat
+  ];
+
   systemd.user.services.wayland-bongocat = {
     Unit = {
       Description = "Wayland Bongo Cat Overlay";

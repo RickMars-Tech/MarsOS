@@ -15,7 +15,7 @@
   };
   programs.home-manager.enable = true;
 
-  #= Wallpapers
+  #= Assets & Wallpapers
   home.file = {
     "wallpapers" = {
       source = ../../assets/wallpapers;

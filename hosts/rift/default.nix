@@ -28,7 +28,7 @@ _: {
       nvidiaPro = {
         enable = true;
         nvenc = true;
-        driver = "stable";
+        driver = "latest";
         compute = {
           enable = false;
           cuda = false;

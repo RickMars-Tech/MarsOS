@@ -14,8 +14,15 @@ _: {
           Games = "icon:steam";
           Code = "";
         };
-        favorites = ["1" "2" "3"];
+        # favorites = ["1" "2" "3"];
         all_monitors = true;
+      }
+      {
+        type = "focused";
+        show_icon = false;
+        show_title = true;
+        icon_size = 32;
+        truncate = "end";
       }
     ];
     center = [
@@ -58,9 +65,14 @@ _: {
         };
       }
       {
-        type = "upower";
-        # show_if = "upower -e | grep BAT";
+        type = "battery";
+        show_if = "upower -e | grep BAT";
         icon_size = 16;
+        format = "{percentage}%";
+        thresholds = {
+          warning = 20;
+          critical = 5;
+        };
       }
     ];
   };

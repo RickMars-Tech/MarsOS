@@ -4,12 +4,13 @@
   lib,
   ...
 }: let
-  inherit (lib) optionals;
+  inherit (lib) optionals mkDefault;
   pci-latency = pkgs.callPackage ../../../pkgs/gamingScripts/pciLatency.nix {};
   amd = config.mars.graphics.amd;
+  gaming = config.mars.gaming;
 in {
   systemd = {
-    user.services.niri-flake-polkit.enable = false;
+    user.services.niri-flake-polkit.enable = mkDefault false;
     services = {
       systemd-udev-settle.enable = false; # Skip waiting for udev
 
@@ -55,7 +56,11 @@ in {
       ]
       # ROCm configuration for AI workloads
       ++ optionals (amd.compute.enable && amd.compute.rocm) [
-        "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+        "L+ /opt/rocm/hip - - - - ${pkgs.rocmPackages.clr}"
+      ]
+      ++ optionals gaming.enable [
+        #= Create Steam Runtime Directory with proper Permissions
+        "d /tmp/.X11-unix 1777 root root -"
       ];
   };
 
