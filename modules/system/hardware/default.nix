@@ -7,10 +7,10 @@
 in {
   imports = [
     ./asus.nix
+    ./audio/default.nix
     ./cpu/default.nix
     ./graphics/default.nix
     ./drives.nix
-    ./packages.nix
     ./powerManagement.nix
     ./thinkpad.nix
   ];

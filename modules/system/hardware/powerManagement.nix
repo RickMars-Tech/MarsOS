@@ -10,9 +10,11 @@ in {
 
   config = mkIf cfg.laptopOptimizations {
     # Lid
-    services.logind.lidSwitch = "hybrid-sleep";
-    services.logind.lidSwitchExternalPower = "lock";
-    services.logind.lidSwitchDocked = "ignore";
+    services.logind.settings.Login = {
+      HandleLidSwitch = "hybrid-sleep";
+      HandleLidSwitchExternalPower = "lock";
+      HandleLidSwitchDocked = "ignore";
+    };
 
     # UPower
     services.upower.enable = true;

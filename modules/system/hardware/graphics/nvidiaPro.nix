@@ -16,7 +16,7 @@ in {
     opengl = mkEnableOption "OpenGL Support" // {default = true;};
     # Driver selection
     driver = mkOption {
-      type = types.enum ["open" "stable" "beta" "production" "legacy_470" "legacy_390"];
+      type = types.enum ["open" "stable" "latest" "beta" "production" "legacy_470" "legacy_390"];
       default = "stable";
       description = "NVIDIA driver version to use";
     };
@@ -60,53 +60,17 @@ in {
     ];
     services.xserver.videoDrivers = ["nvidia"];
 
-    environment = {
-      systemPackages = with pkgs;
-        [
-          # nVidia Desktop tools packages
-          zenith-nvidia # Top but for Nvidia
-          nvidia-system-monitor-qt # GPU monitoring
-          #nvtop # Terminal GPU monitor
-          # Graphics utilities
-          glxinfo # OpenGL info
-          #nvidia-settings # NVIDIA control panel
-        ]
-        ++ lib.optionals nvidiaPro.vulkan [
-          # Vulkan support
-          vulkan-loader
-          vulkan-validation-layers
-          vulkan-tools
-        ]
-        ++
-        # AI/Compute packages
-        lib.optionals nvidiaPro.compute.enable [
-          # CUDA development
-          cudatoolkit
-
-          # Monitoring and management
-          #nvidia-ml-py # Python ML interface
-          #nvtop # GPU monitoring
-
-          # Development tools
-          cudaPackages.nsight_compute # CUDA profiler
-          cudaPackages.nsight_systems # System profiler
-        ]
-        ++ lib.optionals (nvidiaPro.compute.enable && nvidiaPro.compute.tensorrt) [
-          # TensorRT inference
-          # tensorrt
-        ];
-      sessionVariables = mkMerge [
-        {
-          # NVENC
-          LIBVA_DRIVER_NAME = mkIf nvidiaPro.nvenc "nvidia";
-        }
-        (mkIf (nvidiaPro.compute.enable && nvidiaPro.compute.cuda) {
-          # CUDA environment
-          CUDA_PATH = "${pkgs.cudatoolkit}";
-          CUDA_ROOT = "${pkgs.cudatoolkit}";
-        })
-      ];
-    };
+    environment.sessionVariables = mkMerge [
+      {
+        # NVENC
+        LIBVA_DRIVER_NAME = mkIf nvidiaPro.nvenc "nvidia";
+      }
+      (mkIf (nvidiaPro.compute.enable && nvidiaPro.compute.cuda) {
+        # CUDA environment
+        CUDA_PATH = "${pkgs.cudatoolkit}";
+        CUDA_ROOT = "${pkgs.cudatoolkit}";
+      })
+    ];
 
     hardware = {
       nvidia = {
@@ -128,6 +92,8 @@ in {
           then config.boot.kernelPackages.nvidiaPackages.stable
           else if nvidiaPro.driver == "beta"
           then config.boot.kernelPackages.nvidiaPackages.beta
+          else if nvidiaPro.driver == "latest"
+          then config.boot.kernelPackages.nvidiaPackages.latest
           else if nvidiaPro.driver == "production"
           then config.boot.kernelPackages.nvidiaPackages.production
           else if nvidiaPro.driver == "legacy_470"

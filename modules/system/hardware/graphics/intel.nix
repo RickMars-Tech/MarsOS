@@ -1,10 +1,9 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }: let
-  inherit (lib) mkIf types mkMerge mkOption options mkEnableOption;
+  inherit (lib) mkIf types mkMerge mkOption mkEnableOption;
   graphics = config.mars.graphics;
   intel = config.mars.graphics.intel;
 in {
@@ -23,18 +22,18 @@ in {
 
   config = mkIf (intel.enable && graphics.enable) {
     environment = {
-      systemPackages = with pkgs;
-        [
-          intel-gpu-tools
-          libva-utils
-          glxinfo
-        ]
-        ++ options intel.vulkan [vulkan-tools]
-        ++ options (intel.generation == "arc" || intel.generation == "xe") [
-          intel-compute-runtime
-          clinfo
-          level-zero
-        ];
+      # systemPackages = with pkgs;
+      #   [
+      #     intel-gpu-tools
+      #     libva-utils
+      #     glxinfo
+      #   ]
+      #   ++ options intel.vulkan [vulkan-tools]
+      #   ++ options (intel.generation == "arc" || intel.generation == "xe") [
+      #     intel-compute-runtime
+      #     clinfo
+      #     level-zero
+      #   ];
       sessionVariables = mkMerge [
         (mkIf intel.vaapi {
           LIBVA_DRIVER_NAME = "iHD";
