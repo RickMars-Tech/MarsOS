@@ -20,7 +20,7 @@
 | --------------------------- | ----------------------------------------------- |
 | **Window Manager**          | [Niri][Niri]                                    |
 | **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]           |
-| **Bar**                     | [Ironbar][Ironbar]                              |
+| **Bar**                     | [Ironbar][Ironbar] + [BongoCat][BongoCat]       |
 | **Application Launcher**    | [Fuzzel][Fuzzel]                                |
 | **Notification Daemon**     | [SwayNC][SwayNC]                                |
 | **Session Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]         |
@@ -59,12 +59,6 @@ Rebuild System:
 sudo nixos-rebuild boot --flake .#{host}
 ```
 
-The script is "Experimental", so I don't recommend it, but, if you want to use it just give permissions:
-```bash
-sudo chmod +x setup
-./setup
-```
-
 <br>
 
 
@@ -96,6 +90,7 @@ Configurations that have inspired and taught me a lot (Sorry for stealing from y
 [Niri]: https://github.com/YaLTeR/niri
 [Wezterm]: https://wezterm.org/
 [Ironbar]: https://github.com/JakeStanger/ironbar
+[BongoCat]: https://github.com/saatvik333/wayland-bongocat
 [Zellij]: https://zellij.dev/
 [Fuzzel]: https://codeberg.org/dnkl/fuzzel
 [SwayNC]: https://github.com/ErikReider/SwayNotificationCenter
