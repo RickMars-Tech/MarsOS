@@ -69,33 +69,31 @@
       nixpkgs.lib.nixosSystem {
         # inherit system;
         inherit specialArgs;
-        modules =
-          [
-            # Configuración específica del host
-            ./hosts/${hostname}/default.nix
-            ./modules/system/default.nix
+        modules = [
+          # Configuración específica del host
+          ./hosts/${hostname}/default.nix
+          ./modules/system/default.nix
 
-            #= NixModules
-            inputs.determinate.nixosModules.default
-            inputs.lanzaboote.nixosModules.lanzaboote
-            inputs.stylix.nixosModules.stylix
-            inputs.home-manager.nixosModules.home-manager
+          #= NixModules
+          inputs.determinate.nixosModules.default
+          inputs.lanzaboote.nixosModules.lanzaboote
+          inputs.stylix.nixosModules.stylix
+          inputs.home-manager.nixosModules.home-manager
 
-            # Configuración común de sistema y home-manager
-            {
-              _module.args = {inherit inputs;};
-              nixpkgs.config.allowUnfree = true;
-              nixpkgs.overlays = [inputs.niri.overlays.niri];
+          # Configuración común de sistema y home-manager
+          {
+            _module.args = {inherit inputs;};
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.overlays = [inputs.niri.overlays.niri];
 
-              home-manager = {
-                useGlobalPkgs = false;
-                useUserPackages = true;
-                users.${username} = import ./modules/home/default.nix;
-                inherit extraSpecialArgs;
-              };
-            }
-          ]
-          ++ extraModules;
+            home-manager = {
+              useGlobalPkgs = false;
+              useUserPackages = true;
+              users.${username} = import ./modules/home/default.nix;
+              inherit extraSpecialArgs;
+            };
+          }
+        ];
       };
 
     #= Host's
@@ -110,7 +108,7 @@
     # Configuraciones de hosts generadas automáticamente
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
 
-    #= Default Packages
+    #= Fenix
     packages.${system}.default = inputs.fenix.packages.${system}.minimal.toolchain;
   };
 }
