@@ -1,45 +1,19 @@
-# Modules Default Import
-# Automatically discovers and imports all module directories
 {lib, ...}: let
-  # Function to automatically discover module directories
-  discoverModules = dir: let
-    # Get all entries in the directory
-    entries = builtins.readDir dir;
-
-    # Filter for directories and files that should be imported
-    # Exclude installer directory as it contains ISO-specific modules
-    moduleEntries =
-      lib.filterAttrs
-      (
-        name: type:
-        # Include directories (which contain default.nix)
-          type
-          == "directory"
-          ||
-          # Include .nix files but exclude this default.nix file
-          (type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix")
-      )
-      entries;
-
-    # Convert to list of import paths
-    modulePaths =
-      lib.mapAttrsToList
-      (
-        name: type:
-          if type == "directory"
-          then dir + "/${name}" # Import directory (will use its default.nix)
-          else dir + "/${name}" # Import .nix file directly
-      )
-      moduleEntries;
-  in
-    modulePaths;
-
-  # Automatically discover all modules in the current directory
-  discoveredModules = discoverModules ./.;
+  inherit (builtins) filter map readDir pathExists;
+  inherit (lib.attrsets) filterAttrs mapAttrsToList;
 in {
-  # Import all discovered modules
-  imports = discoveredModules;
-
-  # Debug: Uncomment the line below to see which modules are being imported
-  # warnings = [ "Imported modules: ${toString discoveredModules}" ];
+  imports =
+    map (name: ./. + "/${name}")
+    (
+      filter (
+        name:
+        # Verifica que existe un default.nix en el subdirectorio
+          pathExists (./. + "/${name}/default.nix")
+      )
+      (
+        # Solo nombres de directorios (no archivos)
+        mapAttrsToList (name: type: name)
+        (filterAttrs (name: type: type == "directory") (readDir ./.))
+      )
+    );
 }
