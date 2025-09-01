@@ -4,8 +4,5 @@ _: {
     ./settings.nix
   ];
 
-  programs.zellij = {
-    enable = true;
-    exitShellOnExit = true;
-  };
+  programs.zellij.enable = true;
 }

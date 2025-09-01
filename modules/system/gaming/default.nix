@@ -6,14 +6,10 @@
 }: let
   inherit (lib) mkIf mkEnableOption;
   asus = config.mars.asus.gamemode;
-  amd = config.mars.graphics.amd;
   gaming = config.mars.gaming;
 in {
   imports = [
-    ./amd.nix
     ./minecraft.nix
-    # ./nvidia.nix
-    # ./packages.nix
     ./steam.nix
   ];
   options.mars.gaming = {
@@ -21,6 +17,7 @@ in {
     gamemode = {
       enable = mkEnableOption "Feral Gamemode" // {default = false;};
       nvidiaOptimizations = mkEnableOption "nVidia Gamemode"; #= Configs on desktop/env.nix
+      amdOptimizations = mkEnableOption "AMD Gamemode";
     };
     extra-gaming-packages = mkEnableOption "Some Extra Games/Packages";
   };
@@ -36,7 +33,7 @@ in {
           inhibit_screensaver = 1;
           disable_splitlock = 1;
         };
-        gpu = mkIf (amd.enable && gaming.enable) {
+        gpu = mkIf (gaming.gamemode.amdOptimizations && gaming.enable) {
           amd_performance_level = "high";
         };
         cpu = {
