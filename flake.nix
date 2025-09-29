@@ -2,36 +2,36 @@
   description = "My NixOS Configuration";
 
   inputs = {
-    # Core
+    #= Core
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
 
-    # Determinate Systems
+    #= Determinate Systems
     determinate = {
       url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Lanzaboote(Secure boot)
+    #= Lanzaboote(Secure boot)
     lanzaboote = {
       url = "https://flakehub.com/f/nix-community/lanzaboote/0.4.2";
-      # Optional but recommended to limit the size of your system closure.
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Home Manager & Theming
+    #= Home Manager & Theming
     home-manager = {
       url = "https://flakehub.com/f/nix-community/home-manager/0.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "https://flakehub.com/f/danth/stylix/*.tar.gz";
 
-    # Development Tools
+    #= Development Tools
+    # Rust
     fenix = {
       url = "https://flakehub.com/f/nix-community/fenix/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Window Manager & Widgets
+    #= Window Manager & Widgets
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -44,14 +44,10 @@
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    anyrun = {
-      url = "github:Kirottu/anyrun";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ {nixpkgs, ...}: let
-    # Sistema y usuario globales
+    # System & User
     system = "x86_64-linux";
     username = "rick";
     name = "Rick";
@@ -67,7 +63,6 @@
     # Función helper para crear configuraciones de hosts
     mkHost = hostname: extraModules:
       nixpkgs.lib.nixosSystem {
-        # inherit system;
         inherit specialArgs;
         modules = [
           # Configuración específica del host
@@ -98,17 +93,21 @@
 
     #= Host's
     hosts = {
-      boltz = []; # Extra Modules
-      rift = []; # Extra Modules
-      crest = []; # Extra Modules
-      # Ejemplo para agregar más hosts:
-      # laptop = [ ./modules/hosts/laptop-specific.nix ];
+      boltz = [
+        # Example: specific modules for this host
+        # inputs.nixos-hardware.nixosModules.common-cpu-amd
+      ];
+      rift = [];
+      crest = [];
     };
   in {
-    # Configuraciones de hosts generadas automáticamente
+    #= Configuraciones de hosts generadas automáticamente
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
 
-    #= Fenix
+    #= Rust
     packages.${system}.default = inputs.fenix.packages.${system}.minimal.toolchain;
+
+    #= Formatter
+    formatter = nixpkgs.legacyPackages.${system}.alejandra;
   };
 }
