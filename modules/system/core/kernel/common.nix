@@ -22,12 +22,8 @@ in {
         #= Remove /dev/mem access restrictions(Needed for Upgrade Coreboot/Libreboot).
         #"iomem=relaxed"
         #= Vulnerability mitigations
+        "pcie_aspm=off"
         "mitigations=auto"
-        #= ZSwap
-        "zswap.enabled=1" # enables zswap
-        "zswap.compressor=zstd" # compression algorithm
-        "zswap.max_pool_percent=20" # maximum percentage of RAM that zswap is allowed to use
-        "zswap.shrinker_enabled=1" # whether to shrink the pool proactively on high memory pressure
       ]
       ++ optionals plymouth.enable [
         #= Silent Mode
@@ -42,8 +38,8 @@ in {
       ++ optionals asus.enable [
         "acpi_backlight="
         # "asus_nb_wmi.wapf=4"
-        "acpi_osi=!"
-        "idle=nomwait"
+        # "acpi_osi=!"
+        # "idle=nomwait"
       ]
       #= Gaming
       ++ optionals gaming.enable [
@@ -79,7 +75,9 @@ in {
       ]
       #= nVnvidiaFree
       ++ optionals nvidiaFree.enable [
-        "nouveau.config=NvGspRm=1"
+        "nouveau.modeset=1"
+        "nouveau.config=NvGspRm=1" # Necesario para GPUs Ada Lovelace
+        "nouveau.debug=info" # Para debug temporal
       ]
       #= nVidiaPro
       ++ optionals nvidiaPro.enable [
@@ -125,6 +123,8 @@ in {
       #= GPU
       ++ optionals (nvidiaFree.enable && !nvidiaPro.enable) [
         "nouveau"
+        "drm_kms_helper"
+        "nvidia_wmi_ec_backlight"
       ]
       # Load Kernel Modules only is needed when nVidia GPU its the Only One,
       # With Prime Offload its not needed
@@ -196,9 +196,9 @@ in {
       [
         #= Test
         "snd_seq_dummy"
-        "rfcomm"
-        "bnep"
-        "btusb"
+        # "rfcomm"
+        # "bnep"
+        # "btusb"
         "dm_mod"
         "lpc_ich"
         #= Not used by the system
@@ -253,7 +253,6 @@ in {
         "nvidia_modeset"
         "nvidia_uvm"
         "nvidia_drm"
-        "nvidia_wmi_ec_backlight"
       ]
       ++ optionals nvidiaPro.enable [
         "nouveau" # set Nvidia Pro Driver support in place of nouveau
