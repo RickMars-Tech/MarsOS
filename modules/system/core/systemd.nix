@@ -4,15 +4,17 @@
   lib,
   ...
 }: let
-  inherit (lib) optionals mkDefault;
+  inherit (lib) optionals mkDefault mkForce mkIf;
   pci-latency = pkgs.callPackage ../../../pkgs/gamingScripts/pciLatency.nix {};
   amd = config.mars.graphics.amd;
   gaming = config.mars.gaming;
+  greetd = config.services.greetd;
 in {
   systemd = {
     user.services.niri-flake-polkit.enable = mkDefault false;
     services = {
       systemd-udev-settle.enable = false; # Skip waiting for udev
+      NetworkManager-wait-online.wantedBy = mkForce []; # Faster Boot Times
 
       #|==< PCI Latency >==|#
       pci-latency = {
@@ -27,7 +29,7 @@ in {
 
       #|==< GreetD >==|#
       # https://www.reddit.com/r/NixOS/comments/u0cdpi/tuigreet_with_xmonad_how/
-      greetd.serviceConfig = {
+      greetd.serviceConfig = mkIf greetd.enable {
         Type = "idle";
         StandardError = "journal"; # Without this errors will spam on screen
         TTYReset = true;
@@ -53,6 +55,8 @@ in {
         # Improve performance for applications that use tcmalloc
         # https://github.com/google/tcmalloc/blob/master/docs/tuning.md#system-level-optimizations
         "w! /sys/kernel/mm/transparent_hugepage/defrag - - - - defer+madvise"
+
+        "D! /nix/var/nix/profiles/per-user/root 1755 root root 1d"
       ]
       # ROCm configuration for AI workloads
       ++ optionals (amd.compute.enable && amd.compute.rocm) [
