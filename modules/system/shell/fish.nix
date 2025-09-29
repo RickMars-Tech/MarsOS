@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  pkgs,
+  ...
+}: let
   inherit (config.networking) hostName;
   rebuildCommand = "sudo nixos-rebuild --flake .#${hostName}";
 in {
@@ -19,32 +23,32 @@ in {
     };
     shellAliases = {
       #= Stats
-      ping = "gping";
-      top = "btm";
-      fetch = "fastfetch";
+      ping = "${pkgs.gping}/bin/gping";
+      top = "${pkgs.bottom}/bin/btm";
+      fetch = "${pkgs.fastfetch}/bin/fastfetch";
 
       #= Files & Archive Management
-      grep = "rg --color=auto";
-      cat = "bat --style header --style snip --style changes";
-      la = "eza -a --color=always --group-directories-first --grid --icons";
-      ls = "eza -al --color=always --group-directories-first --grid --icons";
-      ll = "eza -l --color=always --group-directories-first --octal-permissions --icons";
-      lt = "eza -aT --color=always --group-directories-first --icons";
-      tree = "eza -T --all --icons";
+      grep = "${pkgs.ripgrep}/bin/rg --color=auto";
+      cat = "${pkgs.bat}/bin/bat --style header --style snip --style changes";
+      la = "${pkgs.eza}/bin/eza -a --color=always --group-directories-first --grid --icons";
+      ls = "${pkgs.eza}/bin/eza -al --color=always --group-directories-first --grid --icons";
+      ll = "${pkgs.eza}/bin/eza -l --color=always --group-directories-first --octal-permissions --icons";
+      lt = "${pkgs.eza}/bin/eza -aT --color=always --group-directories-first --icons";
+      tree = "${pkgs.eza}/bin/eza -T --all --icons";
+      cp = "${pkgs.xcp}/bin/xcp";
+      search = "${pkgs.skim}/bin/sk --ansi";
+      restore = "${pkgs.trashy}/bin/trash -r ";
+      ls-trash = "${pkgs.trashy}/bin/trash list";
+      clc-trash = "${pkgs.trashy}/bin/trash empty --all";
       cd = "z";
-      cp = "xcp";
       clc = "clear";
-      search = "sk --ansi";
-      restore = "trash -r ";
-      ls-trash = "trash list";
-      clc-trash = "trash empty --all";
       untar = "tar -xvf";
       untargz = "tar -xzvf";
       untarxz = "tar -xJvf";
 
       #= Disk Usage
-      du = "dust"; # Better disk usage analyzer
-      df = "duf"; # Better df alternative
+      du = "${pkgs.dust}/bin/dust"; # Better disk usage analyzer
+      df = "${pkgs.duf}/bin/duf"; # Better df alternative
 
       #= See Governor used
       see-governor = "cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor";
@@ -75,9 +79,6 @@ in {
       if status is-interactive
         eval (zellij setup --generate-auto-start fish | string collect)
       end
-    ";
-    shellInit = "
-      zoxide init fish | source
     ";
   };
 }
