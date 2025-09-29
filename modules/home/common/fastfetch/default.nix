@@ -3,7 +3,7 @@ _: {
     enable = true;
     settings = {
       logo = {
-        source = ../../../../assets/ascii-art/rabbit-skull.txt;
+        source = ../../../../assets/ascii-art/skull.txt;
         color = {"1" = "white";};
       };
       display.separator = "  • ";
