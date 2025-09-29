@@ -1,10 +1,12 @@
 {
   osConfig,
+  config,
   lib,
   ...
 }: let
   inherit (lib) mkIf;
   nvidia = osConfig.mars.graphics.nvidiaPro;
+  ffVersion = config.programs.firefox.package.version;
 in {
   programs.firefox.profiles.default.settings = {
     # Disable AI Trash
@@ -13,14 +15,18 @@ in {
     "browser.ml.chat.menu" = false;
     "browser.tabs.groups.smart.enabled" = false;
 
+    # Nvidia
+    "widget.dmabuf.force-enabled" = mkIf nvidia.enable false;
+    "media.ffmpeg.vaapi.enabled" = lib.versionOlder ffVersion "137.0.0";
+    "media.hardware-video-decoding.force-enabled" = lib.versionAtLeast ffVersion "137.0.0";
+    "media.rdd-ffmpeg.enabled" = lib.versionOlder ffVersion "97.0.0";
+    "media.av1.enabled" = mkIf nvidia.enable true;
+
     # Dark mode
     "ui.systemUsesDarkTheme" = true;
     "widget.content.allow-gtk-dark-theme" = true;
     "layout.css.prefers-color-scheme.content-override" = 0;
     "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
-
-    # Nvidia
-    "widget.dmabuf.force-enabled" = mkIf nvidia.enable false;
 
     "ui.key.menuAccessKeyFocuses" = false; # Disable ALT Menu
     # Vertical Tabs
