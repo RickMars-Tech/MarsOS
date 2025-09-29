@@ -13,9 +13,6 @@ in {
       openFirewall = mkEnableOption "Open Ports of Firewall dedicated for Steam";
       hardware-rules = mkEnableOption "Steam Hardware Udev Rules";
     };
-    gamescope = {
-      enable = mkEnableOption "Enable Gamescope";
-    };
   };
 
   config = {
@@ -27,12 +24,6 @@ in {
         dedicatedServer.openFirewall = gaming.steam.openFirewall; # Open ports in the firewall for Source Dedicated Server
         extest.enable = false; # Do not use this option, an environment variable has already been set that works best.
         protontricks.enable = true;
-      };
-      #=> Gamescope <=#
-      gamescope = mkIf (gaming.enable && gaming.gamescope.enable) {
-        enable = true;
-        package = pkgs.gamescope;
-        capSysNice = true;
       };
     };
     #= Enable/Disable Steam Hardware Udev Rules.

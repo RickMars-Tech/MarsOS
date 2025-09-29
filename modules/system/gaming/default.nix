@@ -9,6 +9,7 @@
   gaming = config.mars.gaming;
 in {
   imports = [
+    ./gamescope.nix
     ./minecraft.nix
     ./steam.nix
   ];
