@@ -18,7 +18,7 @@ _: {
       mode = {
         width = 1920;
         height = 1080;
-        refresh = 60.000; # 59.790;
+        refresh = null;
       };
       scale = 1.0;
       position = {

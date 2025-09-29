@@ -1,8 +1,11 @@
 {
   inputs,
   pkgs,
+  lib,
   ...
-}: {
+}: let
+  inherit (lib) getExe;
+in {
   imports = [
     inputs.niri.homeModules.niri
     ./config/binds.nix
@@ -19,6 +22,10 @@
   programs.niri = {
     enable = true;
     package = pkgs.niri;
+    settings.xwayland-satellite = {
+      enable = true;
+      path = getExe pkgs.xwayland-satellite;
+    };
   };
 
   xdg.portal.extraPortals = with pkgs; [
@@ -29,7 +36,7 @@
   #= Used Packages
   home.packages = with pkgs; [
     gnome-keyring
-    xwayland-satellite
+    # xwayland-satellite
     # Clipboard-specific
     wl-clipboard-rs
     cliphist

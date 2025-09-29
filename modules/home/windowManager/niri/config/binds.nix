@@ -1,5 +1,4 @@
 {
-  inputs,
   config,
   osConfig,
   pkgs,
@@ -11,7 +10,7 @@
   asusctl = "${pkgs.asusctl}/bin/asusctl";
   wpctl = "${pkgs.wireplumber}/bin/wpctl";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
-  anyrun = getExe inputs.anyrun.packages.${pkgs.system}.anyrun;
+  launcher = getExe pkgs.fuzzel;
   firefox = getExe pkgs.firefox;
   term = getExe pkgs.wezterm;
   lock = getExe pkgs.swaylock;
@@ -33,7 +32,7 @@ in {
         "Mod+T".action.spawn = [term];
         "Mod+E".action.spawn = [term "-e" "yazi"];
         "Mod+B".action.spawn = [firefox];
-        "Mod+R".action.spawn = [anyrun];
+        "Mod+R".action.spawn = [launcher];
         "Mod+Shift+Q".action.spawn = [lock];
         "Mod+Shift+M".action.spawn = [logout];
 

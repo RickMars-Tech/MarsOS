@@ -3,10 +3,14 @@ _: {
     layer-rules = [
       #= Wallpaper
       {
-        matches = [{namespace = "^swww-daemon$";}];
+        matches = [{namespace = "^wpaperd-HDMI-A-1$";}];
         place-within-backdrop = true;
       }
-      #= Quickshell
+      {
+        matches = [{namespace = "^wpaperd-eDP-1$";}];
+        place-within-backdrop = true;
+      }
+      #= Ironbar
       {
         matches = [{namespace = "^ironbar$";}];
         opacity = 0.90;
