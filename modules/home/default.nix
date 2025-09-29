@@ -16,13 +16,8 @@
   programs.home-manager.enable = true;
 
   #= Assets & Wallpapers
-  home.file = {
-    "wallpapers" = {
-      source = ../../assets/wallpapers;
-      recursive = true;
-    };
-    ".face.icon" = {
-      source = ../../assets/usr.png;
-    };
+  home.file."wallpapers" = {
+    source = ../../assets/wallpapers;
+    recursive = true;
   };
 }
