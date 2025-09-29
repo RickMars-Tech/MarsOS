@@ -11,6 +11,11 @@ _: {
 
   #|==< Mars Config >==|#
   mars = {
+    boot = {
+      lanzaboot = true;
+      plymouth = true;
+      kernel.version = "latest";
+    };
     asus.enable = true;
     laptopOptimizations = true;
     cpu.amd.enable = true;
@@ -54,6 +59,7 @@ _: {
         amdOptimizations = false;
         nvidiaOptimizations = true;
       };
+      gamescope.enable = true;
       minecraft = {
         prismlauncher.enable = true;
         extraJavaPackages.enable = true;
