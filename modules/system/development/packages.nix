@@ -34,6 +34,7 @@
     glib
     glibc
     glibmm
+    gdb
     libgcc
     SDL2
     SDL2_image
@@ -82,7 +83,7 @@
     nodePackages.bash-language-server
     shfmt
     # Docker
-    dockerfile-language-server-nodejs
+    dockerfile-language-server
     #==< Debug adapters >==#
     lldb
     gdb
