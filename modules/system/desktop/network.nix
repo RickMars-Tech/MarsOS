@@ -4,11 +4,10 @@
   lib,
   ...
 }: let
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkIf;
 in {
   #= Host & Firewall
   networking = {
-    # hostName = "nixos"; # Define your hostname.
     useDHCP = mkDefault true;
     enableIPv6 = true;
     networkmanager = {
@@ -26,12 +25,12 @@ in {
     };
     nameservers = ["8.8.8.8" "8.8.4.4"];
   };
-  environment.systemPackages = with pkgs; [networkmanagerapplet blueman];
+  environment.systemPackages = with pkgs; mkIf (config.hardware.bluetooth.enable) [networkmanagerapplet bluetui bluez];
 
   #= Bluetooth
   hardware.bluetooth = {
     enable = true; # enables support for Bluetooth
-    powerOnBoot = true; # powers up the default Bluetooth controller on boot
+    powerOnBoot = false; # powers up the default Bluetooth controller on boot
     package = pkgs.bluez;
   };
 
