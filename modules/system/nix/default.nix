@@ -1,10 +1,22 @@
 {
+  config,
   inputs,
+  self,
   lib,
   ...
 }: let
-  inherit (lib) mapAttrs;
-  inherit (inputs) nixpkgs;
+  inherit
+    (lib)
+    concatStringsSep
+    mapAttrsToList
+    mkDefault
+    mapAttrs
+    sort
+    ;
+  registry = mapAttrs (_: flake: {inherit flake;}) inputs;
+  nixPath = mapAttrsToList (name: _: "${name}=flake:${name}") inputs;
+  nixTag = config.system.nixos.tags;
+  nixVersion = config.system.nixos.version;
 in {
   imports = [./cache.nix];
   #= Enable Nix-Shell, Flakes and More...
@@ -46,10 +58,20 @@ in {
       options = "--delete-older-than 1w";
     };
 
+    channel.enable = false;
     # Registry for legacy nix commands
-    registry = (mapAttrs (_: flake: {inherit flake;})) inputs;
-
+    registry = registry;
     # Pin nixpkgs flake to system nixpkgs
-    nixPath = ["nixpkgs=${nixpkgs}"];
+    nixPath = nixPath;
+  };
+  system = {
+    rebuild.enableNg = mkDefault true;
+
+    #= Better nixos generation label
+    # https://www.reddit.com/r/NixOS/comments/16t2njf/small_trick_for_people_using_nixos_with_flakes/
+    nixos.label = concatStringsSep "." (
+      (sort (x: y: x < y) nixTag)
+      ++ ["${nixVersion}.${self.sourceInfo.shortRev or "dirty"}"]
+    );
   };
 }
