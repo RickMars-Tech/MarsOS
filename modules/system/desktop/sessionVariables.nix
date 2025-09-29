@@ -55,7 +55,7 @@ in {
         MESA_LOADER_DRIVER_OVERRIDE = mkIf nvidiaFree.zink "zink";
 
         #= Use Nvidia GPU with FeralGamemode
-        GAMEMODERUNEXEC = mkIf (gaming.nvidiaOptimizations && nvidiaFree.enable) "DRI_PRIME=1";
+        # GAMEMODERUNEXEC = mkIf (gaming.nvidiaOptimizations && nvidiaFree.enable) "DRI_PRIME=1";
       })
 
       #|==< nVidiaPRO >==|#
