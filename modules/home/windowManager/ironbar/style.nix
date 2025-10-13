@@ -3,171 +3,277 @@
     color = config.stylix.base16Scheme;
     font = config.stylix.fonts.sansSerif.name;
     background = color.base00;
-    # focused = color.base0B;
+    focused = color.base0B;
     urgent = color.base08;
-    # gray = color.base01;
+    gray = color.base01;
     white = color.base05;
     purple = color.base0C;
     pink = color.base0E;
-    # pink_2 = color.base09;
-    # blue = color.base0A;
-    # borderSize = "1px";
+    pink_2 = color.base09;
+    blue = color.base0A;
   in
     /*
     css
     */
     ''
+      @define-color color_bg ${background};
+      @define-color color_bg_dark ${gray};
+      @define-color color_border ${background};
+      @define-color color_border_active ${background};
+      @define-color color_text ${white};
+      @define-color color_urgent ${urgent};
+      /* -- base styles -- */
+
       * {
-        font-family: ${font}, sans-serif;
-        font-size: 14px;
+        font-family: Noto Sans Nerd Font, sans-serif;
+        font-size: 16px;
         border: none;
         border-radius: 0;
       }
 
-      button, label {
+      box, menubar, button {
+        background-color: @color_bg;
+        background-image: none;
         box-shadow: none;
-        background: none;
-        background-color: rgba(0, 0, 0, 0);
       }
 
-      .bar {
-        border-top: 1px solid ${background};
+      button, label {
+        color: @color_text;
       }
 
-      .background {
-        background-color: ${background};
+      button:hover {
+        background-color: @color_bg_dark;
+      }
+
+      scale trough {
+        min-width: 1px;
+        min-height: 2px;
+      }
+
+      #bar {
+        border-top: 1px solid @color_border;
       }
 
       .popup {
-        border: 1px solid ${pink};
+        border: 1px solid @color_border;
         padding: 1em;
       }
 
-      /* -- Workspaces -- */
-      .workspaces {
-        background-color: ${background};
-        border-radius: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-      .workspaces .item {
-        border-radius: 20%;
-        transition: all 0.5s;
-        transition-timing-function: ease;
+      /* -- bluetooth -- */
+      .popup-bluetooth {
+        min-height: 14em;
+        min-width: 24em;
       }
 
-      .workspaces .item:not(:nth-child(1)){
-        margin-left: 4px;
+      .popup-bluetooth .header {
+        padding-bottom: 1.0em;
+        margin-bottom: 0.6em;
+        border-bottom: 1px solid @color_border;
       }
 
-      .workspaces .item.focused,
-      .workspaces .item:hover {
-        color: ${pink};
+      .popup-bluetooth .header .label {
+        margin-left: 0.5em;
       }
 
-      .workspaces .item.urgent {
-        color: ${urgent};
+      .popup-bluetooth .disabled .spinner {
+        min-width: 2.0em;
+        min-height: 2.0em;
+        padding: 0.4em;
       }
 
-      /* -- Clock -- */
+      .popup-bluetooth .devices .box .device {
+        margin-bottom: 0.4em;
+      }
+
+      .popup-bluetooth .devices .icon {
+        min-width: 2.5em;
+        min-height: 2.5em;
+        margin-right: 0.8em;
+      }
+
+      .popup-bluetooth .devices .box .device .status .footer-label {
+        font-size: 0.8em;
+      }
+
+      .popup-bluetooth .devices .box .device .spinner {
+        min-width: 1.5em;
+        min-height: 1.5em;
+        margin: 0.5em;
+      }
+
+
+      /* -- clipboard -- */
+      .clipboard {
+        margin-left: 5px;
+        font-size: 1.1em;
+      }
+
+      .popup-clipboard .item {
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid @color_border;
+      }
+
+
+      /* -- clock -- */
       .clock {
-        background-color: ${background};
         font-weight: bold;
-        border-radius: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-
-      .popup-clock {
-        background-color: ${background};
-        font-size: 2.5em;
-        margin-bottom: 5px;
-        padding-left: 5px;
-        padding-right: 5px;
-        color: ${white};
-      }
-
-      .popup-clock .calendar:selected {
-        background-color: ${background};
-        color: ${purple};
+        margin-left: 5px;
       }
 
       .popup-clock .calendar-clock {
-        background-color: ${background};
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
+        color: @color_text;
+        font-size: 2.5em;
+        padding-bottom: 0.1em;
       }
 
       .popup-clock .calendar {
-        background-color: ${background};
-        color: ${white};
-        padding: 0.2em 0.4em;
+        background-color: @color_bg;
+        color: @color_text;
       }
 
-      /* -- Tray -- */
-      .tray {
+      .popup-clock .calendar .header {
+        padding-top: 1em;
+        border-top: 1px solid @color_border;
+        font-size: 1.5em;
+      }
+
+      .popup-clock .calendar:selected {
+        background-color: @color_border_active;
+      }
+
+
+      /* -- launcher -- */
+      .launcher .item {
+        margin-right: 4px;
+      }
+
+      .launcher .ifix examtem:not(.focused):hover {
+        background-color: @color_bg_dark;
+      }
+
+      .launcher .open {
+        border-bottom: 1px solid @color_text;
+      }
+
+      .launcher .focused {
+        border-bottom: 1px solid @color_border_active;
+      }
+
+      .launcher .urgent {
+        border-bottom-color: @color_urgent;
+      }
+
+      .popup-launcher {
+        padding: 0;
+      }
+
+      .popup-launcher .popup-item:not(:first-child) {
+        border-top: 1px solid @color_border;
+      }
+
+
+      /* -- music -- */
+      .music:hover * {
+        background-color: @color_bg_dark;
+      }
+
+      .popup-music .album-art {
+        margin-right: 1em;
+      }
+
+      .popup-music .icon-box {
+        margin-right: 0.4em;
+      }
+
+      .popup-music .title .icon, .popup-music .title .label {
+        font-size: 1.7em;
+      }
+
+      .popup-music .controls *:disabled {
+        color: @color_border;
+      }
+
+      .popup-music .volume .slider slider {
         border-radius: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
-        background-color: ${background};
       }
 
-      /* -- Clipboard -- */
-      .clipboard {
-        background-color: ${background};
+      .popup-music .volume .icon {
+        margin-left: 4px;
+      }
+
+      .popup-music .progress .slider slider {
         border-radius: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
-        font-size: 1.1em;
-      }
-      .popup-clipboard {
-        background-color: ${background};
-      }
-      .popup-clipboard .item {
-        background-color: ${background};
-        padding-bottom: 0.3em;
-        border-bottom: 1px solid ${purple};
       }
 
-      /* -- Notifications -- */
+      /* notifications */
       .notifications .count {
-        background-color: ${background};
-        color: ${white};
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-
-      /* -- Volume -- */
-      .volume {
-        background-color: ${background};
+        font-size: 0.6rem;
+        background-color: @color_text;
+        color: @color_bg;
         border-radius: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
-
-      }
-      .popup-volume .device-box .device-selector {
-        background-color: ${background};
-      }
-
-      .popup-volume .device-box .slider	{
-        background-color: ${background};
-        border-radius: 100%;
+        margin-right: 3px;
+        margin-top: 3px;
+        padding-left: 4px;
+        padding-right: 4px;
+        opacity: 0.7;
       }
 
-      /* -- UPower / Battery -- */
-      .upower {
-        border-radius: 100%;
+      /* -- script -- */
+      .script {
         padding-left: 10px;
-        padding-right: 10px;
-        color: ${white};
-        background-color: ${background};
       }
-      .popup-upower {
-        background-color: ${background};
-        color: ${white};
+
+
+      /* -- sys_info -- */
+      .sysinfo {
+        margin-left: 10px;
+      }
+
+      .sysinfo .item {
+        margin-left: 5px;
+      }
+
+
+      /* -- tray -- */
+      .tray {
+        margin-left: 10px;
+      }
+
+      /* -- volume -- */
+      .popup-volume .device-box {
+        border-right: 1px solid @color_border;
+      }
+
+      /* -- workspaces -- */
+      .workspaces .item.focused {
+        box-shadow: inset 0 -3px;
+        background-color: @color_bg_dark;
+      }
+
+      .workspaces .item.urgent {
+        background-color: @color_urgent;
+      }
+
+      .workspaces .item:hover {
+        box-shadow: inset 0 -3px;
+      }
+
+
+      /* -- custom: power menu -- */
+      .popup-power-menu #header {
+        font-size: 1.4em;
+        padding-bottom: 0.4em;
+        margin-bottom: 0.6em;
+        border-bottom: 1px solid @color_border;
+      }
+
+      .popup-power-menu .power-btn {
+        border: 1px solid @color_border;
+        padding: 0.6em 1em;
+      }
+
+      .popup-power-menu #buttons > *:nth-child(1) .power-btn {
+        margin-right: 1em;
       }
     '';
 }

@@ -10,7 +10,7 @@
   asusctl = "${pkgs.asusctl}/bin/asusctl";
   wpctl = "${pkgs.wireplumber}/bin/wpctl";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
-  launcher = getExe pkgs.fuzzel;
+  launcher = getExe pkgs.walker;
   firefox = getExe pkgs.firefox;
   term = getExe pkgs.wezterm;
   lock = getExe pkgs.swaylock;

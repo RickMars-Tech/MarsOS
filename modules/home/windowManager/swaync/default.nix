@@ -16,7 +16,7 @@ _: {
       notification-inline-replies = false;
       notification-icon-size = 64;
       notification-body-image-height = 50;
-      notification-body-image-width = 100;
+      notification-body-image-width = 70;
     };
   };
 }

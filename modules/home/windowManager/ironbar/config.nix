@@ -43,7 +43,7 @@ _: {
       }
       {
         type = "notifications";
-        show_count = true;
+        show_count = false;
         icons.closed_none = "󰍥";
         icons.closed_some = "󱥂";
         icons.closed_dnd = "󱅯";

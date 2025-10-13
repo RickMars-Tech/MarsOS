@@ -1,10 +1,10 @@
 {
   config,
   pkgs,
-  lib,
+  # lib,
   ...
 }: let
-  inherit (lib) concatStringsSep;
+  # inherit (lib) concatStringsSep;
   home = config.home.homeDirectory;
 in {
   home.packages = with pkgs; [
@@ -13,18 +13,18 @@ in {
     gtk4
   ];
 
-  home.sessionVariables = {
-    XDG_DATA_DIRS = concatStringsSep ":" [
-      "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
-      "${pkgs.gtk4}/share/gsettings-schemas/${pkgs.gtk4.name}"
-      "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
-      "${home}/.nix-profile/share"
-      "/nix/var/nix/profiles/default/share"
-      "/run/current-system/sw/share"
-      "/usr/share"
-      "/usr/local/share"
-    ];
-  };
+  # home.sessionVariables = {
+  #   XDG_DATA_DIRS = concatStringsSep ":" [
+  #     "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+  #     "${pkgs.gtk4}/share/gsettings-schemas/${pkgs.gtk4.name}"
+  #     "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+  #     "${home}/.nix-profile/share"
+  #     "/nix/var/nix/profiles/default/share"
+  #     "/run/current-system/sw/share"
+  #     "/usr/share"
+  #     "/usr/local/share"
+  #   ];
+  # };
 
   xdg = {
     enable = true;

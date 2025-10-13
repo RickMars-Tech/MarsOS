@@ -13,7 +13,7 @@
     enableNixpkgsReleaseCheck = true;
     stateVersion = "25.05";
   };
-  programs.home-manager.enable = true;
+  # programs.home-manager.enable = true;
 
   #= Assets & Wallpapers
   home.file."wallpapers" = {

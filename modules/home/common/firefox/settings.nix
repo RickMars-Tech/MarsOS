@@ -1,13 +1,15 @@
 {
-  osConfig,
-  config,
-  lib,
+  # osConfig,
+  # config,
+  # lib,
   ...
-}: let
-  inherit (lib) mkIf;
-  nvidia = osConfig.mars.graphics.nvidiaPro;
-  ffVersion = config.programs.firefox.package.version;
-in {
+}:
+#   let
+#   inherit (lib) mkIf;
+#   nvidia = osConfig.mars.graphics.nvidiaPro;
+#   # ffVersion = config.programs.firefox.package.version;
+# in
+{
   programs.firefox.profiles.default.settings = {
     # Disable AI Trash
     "browser.ml.chat.enabled" = false; # Disable AI Chats
@@ -15,12 +17,18 @@ in {
     "browser.ml.chat.menu" = false;
     "browser.tabs.groups.smart.enabled" = false;
 
-    # Nvidia
-    "widget.dmabuf.force-enabled" = mkIf nvidia.enable false;
-    "media.ffmpeg.vaapi.enabled" = lib.versionOlder ffVersion "137.0.0";
-    "media.hardware-video-decoding.force-enabled" = lib.versionAtLeast ffVersion "137.0.0";
-    "media.rdd-ffmpeg.enabled" = lib.versionOlder ffVersion "97.0.0";
-    "media.av1.enabled" = mkIf nvidia.enable true;
+    # Harware Acceleration
+    "gfx.webrender.all" = true;
+    "layers.acceleration.force-enabled" = true;
+    "media.hardware-video-decoding.enabled" = true;
+    "media.hardware-video-decoding.force-enabled" = true;
+    "media.ffmpeg.vaapi.enabled" = true;
+    "widget.dmabuf.force-enabled" = true;
+    "media.av1.enabled" = true;
+
+    # Desactiva software fallback
+    "media.ffvpx.enabled" = false;
+    "media.rdd-ffvpx.enabled" = false;
 
     # Dark mode
     "ui.systemUsesDarkTheme" = true;

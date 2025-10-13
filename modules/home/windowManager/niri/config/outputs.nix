@@ -5,7 +5,7 @@ _: {
       mode = {
         width = 1920;
         height = 1080;
-        refresh = 144.000;
+        refresh = null;
       };
       variable-refresh-rate = "on-demand";
       scale = 1.0;

@@ -23,7 +23,7 @@ _: {
     };
     FirefoxHome = {
       Search = true;
-      TopSites = true;
+      TopSites = false;
       SponsoredPocket = false;
       Pocket = false;
       Snippets = false;

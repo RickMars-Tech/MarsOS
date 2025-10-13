@@ -35,8 +35,9 @@ in {
 
   #= Used Packages
   home.packages = with pkgs; [
+    # Prevents swayidle from sleeping while any application is outputting or receiving audio.
+    sway-audio-idle-inhibit
     gnome-keyring
-    # xwayland-satellite
     # Clipboard-specific
     wl-clipboard-rs
     cliphist

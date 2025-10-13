@@ -3,8 +3,9 @@ _: {
     enable = true;
     settings = {
       logo = {
-        source = ../../../../assets/ascii-art/skull.txt;
-        color = {"1" = "white";};
+        type = "small";
+        #source = ../../../../assets/ascii-art/skull.txt;
+        #color = {"1" = "white";};
       };
       display.separator = "  • ";
       modules = [
