@@ -47,6 +47,16 @@ in {
       size = 20;
     };
 
+    icons = {
+      enable = true;
+      package = pkgs.whitesur-icon-theme.override {
+        boldPanelIcons = true;
+        alternativeIcons = true;
+      };
+      dark = "WhiteSur";
+      light = "WhiteSur";
+    };
+
     fonts = {
       sizes = {
         applications = 11;

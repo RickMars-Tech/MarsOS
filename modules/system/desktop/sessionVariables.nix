@@ -7,7 +7,7 @@
   inherit (lib) getExe mkIf mkMerge;
   #= Options
   nvidiaPro = config.mars.graphics.nvidiaPro;
-  nvidiaFree = config.mars.graphics.nvidiaFree;
+  # nvidiaFree = config.mars.graphics.nvidiaFree;
   amd = config.mars.graphics.amd;
   gaming = config.mars.gaming.gamemode;
   steam = config.mars.gaming.steam;
@@ -24,6 +24,8 @@ in {
         EDITOR = "hx";
         BROWSER = "${firefox}";
         TERMINAL = "${terminal}";
+
+        RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
 
         #|==< Polkit >==|#
         POLKIT_BIN = "${soteria}";
@@ -49,14 +51,14 @@ in {
       })
 
       #|==< nVidiaFree >==|#
-      (mkIf nvidiaFree.enable {
-        __GLX_VENDOR_LIBRARY_NAME = "mesa";
-        #= Force Zink on Nouveau
-        MESA_LOADER_DRIVER_OVERRIDE = mkIf nvidiaFree.zink "zink";
+      # (mkIf nvidiaFree.enable {
+      #   __GLX_VENDOR_LIBRARY_NAME = "mesa";
+      #   #= Force Zink on Nouveau
+      #   MESA_LOADER_DRIVER_OVERRIDE = mkIf nvidiaFree.zink "zink";
 
-        #= Use Nvidia GPU with FeralGamemode
-        # GAMEMODERUNEXEC = mkIf (gaming.nvidiaOptimizations && nvidiaFree.enable) "DRI_PRIME=1";
-      })
+      #   #= Use Nvidia GPU with FeralGamemode
+      #   # GAMEMODERUNEXEC = mkIf (gaming.nvidiaOptimizations && nvidiaFree.enable) "DRI_PRIME=1";
+      # })
 
       #|==< nVidiaPRO >==|#
       (mkIf nvidiaPro.enable {

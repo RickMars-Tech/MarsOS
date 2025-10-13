@@ -1,6 +1,13 @@
-{pkgs, ...}: let
+{
+  # config,
+  pkgs,
+  # lib,
+  ...
+}: let
+  # inherit (lib) mkIf;
   tuigreet = "${pkgs.tuigreet}/bin/tuigreet";
   niri-session = "${pkgs.niri}/bin/niri";
+  # niri = config.home-manager.programs.niri;
 in {
   #|==< UWSM >==|#
   programs.uwsm = {
@@ -22,4 +29,5 @@ in {
       };
     };
   };
+  console.keyMap = "la-latin1";
 }
