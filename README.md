@@ -2,7 +2,7 @@
 <p align="center"> 
  MarsOS is a simple way to replicate my setup on any NixOS system via a Flake.
 
-<p/>
+</p>
 
 </div>
 
