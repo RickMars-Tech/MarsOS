@@ -4,15 +4,7 @@
   ...
 }: let
   inherit (lib) mkIf mkMerge optionals;
-  asus = config.mars.asus;
-  think = config.mars.thinkpad;
   gaming = config.mars.gaming;
-  amdCpu = config.mars.cpu.amd;
-  intelCpu = config.mars.cpu.intel;
-  radeon = config.mars.graphics.amd;
-  intel = config.mars.graphics.intel;
-  nvidiaPro = config.mars.graphics.nvidiaPro;
-  nvidiaFree = config.mars.graphics.nvidiaFree;
   plymouth = config.boot.plymouth;
 in {
   boot = {
@@ -34,111 +26,14 @@ in {
         "rd.systemd.show_status=auto"
         "rd.udev.log_priority=3"
       ]
-      #= Asus
-      ++ optionals asus.enable [
-        "acpi_backlight="
-        # "asus_nb_wmi.wapf=4"
-        # "acpi_osi=!"
-        # "idle=nomwait"
-      ]
       #= Gaming
       ++ optionals gaming.enable [
         "tsc=reliable"
         "clocksource=tsc"
         "preempt=full" # https://reddit.com/r/linux_gaming/comments/1g0g7i0/god_of_war_ragnarok_crackling_audio/lr8j475/?context=3#lr8j475
-      ]
-      #= AMD CPU
-      ++ optionals amdCpu.enable [
-        "amd_pstate=active"
-        # IOMMU support for compute workloads
-        "amd_iommu=on"
-        "iommu=pt"
-      ]
-      #= Intel CPU
-      ++ optionals intelCpu.enable [
-        "intel_pstate=enable"
-        "intel_idle.max_cstate=2" # Mejor balance rendimiento/energía
-        "intel_iommu=on"
-      ]
-      #= AMD/Radeon GPU
-      ++ optionals radeon.enable [
-        "gpu_sched.sched_policy=0" # https://gitlab.freedesktop.org/drm/amd/-/issues/2516#note_2119750
-        "amdgpu.mcbp=0"
-        # "amdgpu.backlight=0"
-        # Explicitly set amdgpu support in place of radeon
-        "radeon.cik_support=0"
-        "amdgpu.cik_support=1"
-        "radeon.si_support=0"
-        "amdgpu.si_support=1"
-        # "amdgpu.dc=1" # Enable Display Core for better display support
-        "amdgpu.dpm=1" # Enable Dynamic Power Management
-      ]
-      #= nVnvidiaFree
-      ++ optionals nvidiaFree.enable [
-        "nouveau.modeset=1"
-        "nouveau.config=NvGspRm=1" # Necesario para GPUs Ada Lovelace
-        "nouveau.debug=info" # Para debug temporal
-      ]
-      #= nVidiaPro
-      ++ optionals nvidiaPro.enable [
-        "nvidia-drm.modeset=1" # Improve Wayland compatibility
-        "nvidia.NVreg_UsePageAttributeTable=1"
-        "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1"
-      ]
-      #= NvidiaPrime Offload
-      # ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
-      #   # "nvidia.NVreg_EnableBacklightHandler=1"
-      # ]
-      # Have Problems with Prime Offload
-      ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
-        "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-      ]
-      #= Intel GPU
-      ++ optionals intel.enable [
-        "i915.enable_guc=2" # Carga GuC/HuC (mejora rendimiento/eficiencia)
-        "i915.preempt_timeout=100"
-        "i915.timeslice_duration=1"
-      ]
-      ++ optionals (intel.generation == "arc" || intel.generation == "xe") [
-        "i915.force_probe=*"
-        # "i915.enable_dc=2"
       ];
-    kernelModules = (
-      [
-        "ntsync"
-      ]
-      #= Asus
-      ++ optionals asus.enable [
-        "asus-wmi"
-      ]
-      #= Thinkpad
-      ++ optionals think.enable [
-        "thinkpad-acpi"
-      ]
-      #= CPU
-      ++ optionals amdCpu.enable [
-        "amd-pstate"
-        "zenpower"
-      ]
-      #= GPU
-      ++ optionals (nvidiaFree.enable && !nvidiaPro.enable) [
-        "nouveau"
-        "drm_kms_helper"
-        "nvidia_wmi_ec_backlight"
-      ]
-      # Load Kernel Modules only is needed when nVidia GPU its the Only One,
-      # With Prime Offload its not needed
-      ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_uvm"
-        "nvidia_drm"
-      ]
-      #= Backligh Controll with NvidiaPrime
-      ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
-        "nvidia_wmi_ec_backlight"
-      ]
-    );
+
+    kernelModules = ["ntsync"];
 
     kernel.sysctl = mkMerge [
       {
@@ -185,80 +80,56 @@ in {
           "vm.vfs_cache_pressure" = 20;
         })
     ];
-    extraModulePackages = with config.boot.kernelPackages;
-      optionals amdCpu.enable [
-        zenpower
-      ]
-      ++ optionals nvidiaPro.enable [
-        config.hardware.nvidia.package
-      ];
-    blacklistedKernelModules =
-      [
-        #= Test
-        "snd_seq_dummy"
-        # "rfcomm"
-        # "bnep"
-        # "btusb"
-        "dm_mod"
-        "lpc_ich"
-        #= Not used by the system
-        "ath3k"
-        "fprint"
-        "ide_core"
-        #= Obscure network protocols
-        "af_802154"
-        "decnet"
-        "econet"
-        "ipx"
-        "p8022"
-        "p8023"
-        "psnap"
-        "sctp"
-        #= Old, rare, or insufficiently audited filesystems
-        "f2fs"
-        "bcachefs"
-        "hfs"
-        "hfsplus"
-        "jfs"
-        "squashfs"
-        "udf"
-        "ufs"
-        #= Unused network filesystems
-        "cifs"
-        "gfs2"
-        "ksmbd"
-        "nfs"
-        "nfsv3"
-        "nfsv4"
-        #= Thunderbolt
-        "thunderbolt"
-        #= Vivid testing driver
-        "vivid"
-        #= Modules that are disabled in hardened but not the default kernel
-        "hwpoison_inject"
-        "punit_atom_debug"
-        "acpi_configfs"
-        "slram"
-        "phram"
-        "floppy"
-        "cpuid"
-        "evbug"
-      ]
-      ++ optionals amdCpu.enable [
-        "k10temp" # set zenpower in place of this:
-        "sp5100_tco"
-      ]
-      ++ optionals nvidiaFree.enable [
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_uvm"
-        "nvidia_drm"
-      ]
-      ++ optionals nvidiaPro.enable [
-        "nouveau" # set Nvidia Pro Driver support in place of nouveau
-      ]
-      ++ optionals radeon.enable [
-        "radeon" # set amdgpu support in place of radeon
-      ];
+    blacklistedKernelModules = [
+      #= Test
+      "snd_seq_dummy"
+      # "rfcomm"
+      # "bnep"
+      # "btusb"
+      "dm_mod"
+      "lpc_ich"
+      #= Not used by the system
+      "ath3k"
+      "fprint"
+      "ide_core"
+      #= Obscure network protocols
+      "af_802154"
+      "decnet"
+      "econet"
+      "ipx"
+      "p8022"
+      "p8023"
+      "psnap"
+      "sctp"
+      #= Old, rare, or insufficiently audited filesystems
+      "f2fs"
+      "bcachefs"
+      "hfs"
+      "hfsplus"
+      "jfs"
+      "squashfs"
+      "udf"
+      "ufs"
+      #= Unused network filesystems
+      "cifs"
+      "gfs2"
+      "ksmbd"
+      "nfs"
+      "nfsv3"
+      "nfsv4"
+      #= Thunderbolt
+      "thunderbolt"
+      #= Vivid testing driver
+      "vivid"
+      #= Modules that are disabled in hardened but not the default kernel
+      "hwpoison_inject"
+      "punit_atom_debug"
+      "acpi_configfs"
+      "slram"
+      "phram"
+      "floppy"
+      "cpuid"
+      "evbug"
+    ];
   };
 }

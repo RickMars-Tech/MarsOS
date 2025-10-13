@@ -1,16 +1,19 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }: let
-  inherit (lib) optionalString;
+  inherit (lib) mkIf optionalString;
+  gaming = config.mars.gaming;
   nvidiaPro = config.mars.graphics.nvidiaPro;
 in {
   services.udev = {
     enable = true;
-    # packages = with pkgs; [
-    #   game-devices-udev-rules
-    # ];
+    packages = with pkgs;
+      mkIf gaming.enable [
+        game-devices-udev-rules
+      ];
     extraRules = ''
       # For Programing ESP32/Arduino Like Boards
       KERNEL=="ttyACM[0-9]*", MODE="0660", GROUP="dialout"

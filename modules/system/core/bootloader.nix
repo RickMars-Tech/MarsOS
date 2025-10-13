@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkForce mkIf;
+  inherit (lib) mkEnableOption mkIf;
 in {
   options.mars.boot = {
     lanzaboot = mkEnableOption "Enable Secure Boot";
@@ -18,7 +18,7 @@ in {
         pkiBundle = "/var/lib/sbctl";
       };
       loader = {
-        systemd-boot.enable = mkForce false; # Lanzaboote currently replaces the systemd-boot module.
+        systemd-boot.enable = !config.mars.boot.lanzaboot; # Lanzaboote currently replaces the systemd-boot module.
         efi.canTouchEfiVariables = false;
         timeout = 5;
       };
