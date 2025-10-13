@@ -1,11 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
-  #= Fenix(Rust)
-  nixpkgs.overlays = [inputs.fenix.overlays.default];
-
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     #==< Nix >==#
     alejandra
@@ -15,14 +8,11 @@
     arduino-cli
     arduino-ide
     #==< Rust >==#
-    (fenix.complete.withComponents [
-      "cargo"
-      "clippy"
-      "rust-src"
-      "rustc"
-      "rustfmt"
-    ])
-    rust-analyzer-nightly
+    cargo
+    rustc
+    rustfmt
+    clippy
+    rust-analyzer
     #==< Zig >==#
     zig
     zls
@@ -51,10 +41,7 @@
           qtawesome
           pyautogui
           pyside6
-          pyqt6-webengine
-          py
-          pygame-ce
-          pyopengl
+          pygame
         ]
     ))
     ruff
@@ -72,18 +59,18 @@
     # C/C++
     clang-tools # Incluye clangd
     # JavaScript/TypeScript
-    nodePackages.typescript-language-server
-    nodePackages.prettier
+    # nodePackages.typescript-language-server
+    # nodePackages.prettier
     # Markdown
-    marksman
+    # marksman
     # YAML/TOML
-    taplo # TOML LSP
-    yaml-language-server
+    # taplo # TOML LSP
+    # yaml-language-server
     # Bash
-    nodePackages.bash-language-server
-    shfmt
+    # nodePackages.bash-language-server
+    # shfmt
     # Docker
-    dockerfile-language-server
+    # dockerfile-language-server
     #==< Debug adapters >==#
     lldb
     gdb

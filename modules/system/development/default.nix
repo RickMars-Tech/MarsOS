@@ -2,7 +2,7 @@ _: {
   imports = [
     ./git.nix
     ./packages.nix
-    ./vscode.nix
+    # ./vscode.nix
   ];
   options.mars.dev = {
   };
