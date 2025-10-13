@@ -8,12 +8,12 @@
   intel = config.mars.graphics.intel;
   radeon = config.mars.graphics.amd;
   nvidiaPro = config.mars.graphics.nvidiaPro;
-  nvidiaFree = config.mars.graphics.nvidiaFree;
+  # nvidiaFree = config.mars.graphics.nvidiaFree;
 in {
   imports = [
     ./amd.nix
     ./nvidiaPro.nix
-    ./nvidiaFree.nix
+    # ./nvidiaFree.nix
     ./intel.nix
   ];
 
@@ -52,11 +52,11 @@ in {
             vulkan-tools
           ]
           #= NvidiaFree
-          ++ optionals nvidiaFree.vulkan [
-            vulkan-loader
-            vulkan-validation-layers
-            vulkan-tools
-          ]
+          # ++ optionals nvidiaFree.vulkan [
+          #   vulkan-loader
+          #   vulkan-validation-layers
+          #   vulkan-tools
+          # ]
           #= NvidiaPro
           ++ optionals nvidiaPro.enable [
             nvidia-vaapi-driver
@@ -81,5 +81,6 @@ in {
       };
       intel-gpu-tools.enable = intel.enable;
     };
+    boot.blacklistedKernelModules = ["radeon"];
   };
 }

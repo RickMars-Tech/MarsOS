@@ -10,6 +10,22 @@ in {
   config = mkIf (config.mars.cpu.intel.enable) {
     hardware.cpu.intel.updateMicrocode = true;
     services.throttled.enable = true;
-    # Some configs has been moved to core/kernel/common.nix
+    boot = {
+      kernelModules = [
+        "amd-pstate"
+        "zenpower"
+      ];
+      kernelParams = [
+        "intel_pstate=enable"
+        "intel_idle.max_cstate=2" # Mejor balance rendimiento/energía
+        "intel_iommu=on"
+      ];
+      extraModulePackages = with config.boot.kernelPackages; [zenpower];
+      blacklistedKernelModules = [
+        # set zenpower in place of this:
+        "k10temp"
+        "sp5100_tco"
+      ];
+    };
   };
 }

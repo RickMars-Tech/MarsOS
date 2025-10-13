@@ -5,7 +5,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkOption mkForce mkIf mkMerge types;
+  inherit (lib) mkEnableOption mkOption optionals mkForce mkIf mkMerge types;
   graphics = config.mars.graphics;
   nvidiaPro = config.mars.graphics.nvidiaPro;
 in {
@@ -58,7 +58,74 @@ in {
         message = "iGPU BusID must be specified for hybrid mode";
       }
     ];
+
+    boot = {
+      kernelParams =
+        [
+          "nvidia-drm.modeset=1" # Improve Wayland compatibility
+          "nvidia.NVreg_UsePageAttributeTable=1"
+          "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1"
+        ]
+        # Have Problems with Prime Offload
+        ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
+          "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+        ];
+      kernelModules =
+        [
+          "nvidia"
+          "nvidia_modeset"
+          "nvidia_uvm"
+          "nvidia_drm"
+        ]
+        #= Backligh Controll with NvidiaPrime
+        ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
+          "nvidia_wmi_ec_backlight"
+        ]
+        ++ optionals (!nvidiaPro.enable) [
+          "nouveau"
+        ];
+      blacklistedKernelModules =
+        ["nouveau"]
+        ++ optionals (!nvidiaPro.enable) [
+          "nvidia"
+          "nvidia_modeset"
+          "nvidia_uvm"
+          "nvidia_drm"
+        ];
+    };
+
     services.xserver.videoDrivers = ["nvidia"];
+
+    environment.systemPackages = with pkgs;
+      [
+        # nVidia Desktop tools packages
+        zenith-nvidia # Top but for Nvidia
+        nvidia-system-monitor-qt # GPU monitoring
+        #nvtop # Terminal GPU monitor
+        # Graphics utilities
+        glxinfo # OpenGL info
+        #nvidia-settings # NVIDIA control panel
+      ]
+      ++ optionals nvidiaPro.vulkan [
+        # Vulkan support
+        vulkan-loader
+        vulkan-validation-layers
+        vulkan-tools
+      ]
+      ++
+      # AI/Compute packages
+      optionals nvidiaPro.compute.enable [
+        # CUDA development
+        cudatoolkit
+
+        # Development tools
+        cudaPackages.nsight_compute # CUDA profiler
+        cudaPackages.nsight_systems # System profiler
+      ]
+      ++ optionals (nvidiaPro.compute.enable && nvidiaPro.compute.tensorrt) [
+        # TensorRT inference
+        # tensorrt
+      ];
 
     environment.sessionVariables = mkMerge [
       {
@@ -103,12 +170,12 @@ in {
           else if nvidiaPro.driver == "latest"
           then
             config.boot.kernelPackages.nvidiaPackages.mkDriver {
-              version = "580.82.09";
-              sha256_64bit = "sha256-Puz4MtouFeDgmsNMKdLHoDgDGC+QRXh6NVysvltWlbc=";
-              sha256_aarch64 = "sha256-6tHiAci9iDTKqKrDIjObeFdtrlEwjxOHJpHfX4GMEGQ=";
-              openSha256 = "sha256-YB+mQD+oEDIIDa+e8KX1/qOlQvZMNKFrI5z3CoVKUjs=";
-              settingsSha256 = "sha256-um53cr2Xo90VhZM1bM2CH4q9b/1W2YOqUcvXPV6uw2s=";
-              persistencedSha256 = "sha256-lbYSa97aZ+k0CISoSxOMLyyMX//Zg2Raym6BC4COipU=";
+              version = "580.95.05"; #"580.82.09";
+              sha256_64bit = "sha256-hJ7w746EK5gGss3p8RwTA9VPGpp2lGfk5dlhsv4Rgqc=";
+              sha256_aarch64 = lib.fakeSha256; #"sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
+              openSha256 = lib.fakeSha256; #"sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
+              settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
+              persistencedSha256 = lib.fakeSha256; #"sha256-lbYSa97aZ+k0CISoSxOMLyyMX//Zg2Raym6BC4COipU=";
             }
           else config.boot.kernelPackages.nvidiaPackages.stable;
 

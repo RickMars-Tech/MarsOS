@@ -1,9 +1,10 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }: let
-  inherit (lib) mkIf types mkMerge mkOption mkEnableOption;
+  inherit (lib) mkIf types mkMerge mkOption mkEnableOption optionals;
   graphics = config.mars.graphics;
   intel = config.mars.graphics.intel;
 in {
@@ -21,19 +22,28 @@ in {
   };
 
   config = mkIf (intel.enable && graphics.enable) {
+    boot.kernelParams =
+      [
+        "i915.enable_guc=2" # Carga GuC/HuC (mejora rendimiento/eficiencia)
+        "i915.preempt_timeout=100"
+        "i915.timeslice_duration=1"
+      ]
+      ++ optionals (intel.generation == "arc" || intel.generation == "xe") [
+        "i915.force_probe=*"
+      ];
     environment = {
-      # systemPackages = with pkgs;
-      #   [
-      #     intel-gpu-tools
-      #     libva-utils
-      #     glxinfo
-      #   ]
-      #   ++ options intel.vulkan [vulkan-tools]
-      #   ++ options (intel.generation == "arc" || intel.generation == "xe") [
-      #     intel-compute-runtime
-      #     clinfo
-      #     level-zero
-      #   ];
+      systemPackages = with pkgs;
+        [
+          intel-gpu-tools
+          libva-utils
+          glxinfo
+        ]
+        ++ options intel.vulkan [vulkan-tools]
+        ++ options (intel.generation == "arc" || intel.generation == "xe") [
+          intel-compute-runtime
+          clinfo
+          level-zero
+        ];
       sessionVariables = mkMerge [
         (mkIf intel.vaapi {
           LIBVA_DRIVER_NAME = "iHD";
