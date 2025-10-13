@@ -1,4 +1,4 @@
-#|==< Configuration for Asus (Ryzen + Nvidia Laptop) >==|#
+#|==< Desktop PC with Integrated AMD Gpu >==|#
 _: {
   imports = [
     # Include the results of the hardware scan.

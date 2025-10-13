@@ -1,4 +1,4 @@
-#|==< Configuration for Thinkpad T420(Intel Laptop) >==|#
+#|==< Thinkpad T420(Intel) >==|#
 _: {
   imports = [
     # Include the results of the hardware scan.

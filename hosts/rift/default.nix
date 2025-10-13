@@ -1,8 +1,8 @@
-#|==< Configuration for Asus (Ryzen + Nvidia Laptop) >==|#
-_: {
+#|==< Asus Laptop with AMD APU + Nvidia GPU >==|#
+{
   imports = [
     # Include the results of the hardware scan.
-    ./hardware.nix
+    # ./hardware.nix
     ../../modules/system/default.nix
   ];
 
@@ -29,7 +29,7 @@ _: {
         compute.enable = false;
       };
       #= nVidia
-      nvidiaFree.enable = false; #= Broken
+      # nvidiaFree.enable = true; #= Broken
       nvidiaPro = {
         enable = true;
         nvenc = true;
