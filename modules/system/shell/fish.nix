@@ -30,6 +30,7 @@ in {
       #= Files & Archive Management
       grep = "${pkgs.ripgrep}/bin/rg --color=auto";
       cat = "${pkgs.bat}/bin/bat --style header --style snip --style changes";
+      man = "batman";
       la = "${pkgs.eza}/bin/eza -a --color=always --group-directories-first --grid --icons";
       ls = "${pkgs.eza}/bin/eza -al --color=always --group-directories-first --grid --icons";
       ll = "${pkgs.eza}/bin/eza -l --color=always --group-directories-first --octal-permissions --icons";
@@ -63,22 +64,11 @@ in {
         fastfetch
       end
 
-      ## Enable Wayland Support for different Applications
-      if [ '$XDG_SESSION_TYPE' = 'wayland' ]
-        set -gx WAYLAND 1
-        set -gx QT_QPA_PLATFORM 'wayland;xcb'
-        set -gx GDX_BACKEND 'wayland,x11'
-        set -gx MOZ_DBUS_REMOTE 1
-        set -gx MOZ_ENABLE_WAYLAND 1
-        set -gx _JAVA_AWT_WM_NONREPARENTING 1
-        set -gx BEMENU_BACKEND wayland
-        set -gx ECORE_EVAS_ENGINE wayland_egl
-        set -gx ELM_ENGINE wayland_egl
-      end
-
       if status is-interactive
         eval (zellij setup --generate-auto-start fish | string collect)
       end
+
+      ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
     ";
   };
 }

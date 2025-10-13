@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  pkgs,
   self,
   lib,
   ...
@@ -21,9 +22,16 @@ in {
   imports = [./cache.nix];
   #= Enable Nix-Shell, Flakes and More...
   nix = {
+    channel.enable = false;
+    # Registry for legacy nix commands
+    registry = registry;
+    # Pin nixpkgs flake to system nixpkgs
+    nixPath = nixPath;
+    # Use Lix
+    package = pkgs.lixPackageSets.latest.lix;
     settings = {
       auto-optimise-store = true;
-      download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
+      # download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
       experimental-features = [
         "nix-command"
         "flakes"
@@ -52,17 +60,11 @@ in {
       keep-outputs = true;
     };
     #= Clean Nix
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 1w";
-    };
-
-    channel.enable = false;
-    # Registry for legacy nix commands
-    registry = registry;
-    # Pin nixpkgs flake to system nixpkgs
-    nixPath = nixPath;
+    # gc = {
+    #   automatic = true;
+    #   dates = "weekly";
+    #   options = "--delete-older-than 1w";
+    # };
   };
   system = {
     rebuild.enableNg = mkDefault true;
