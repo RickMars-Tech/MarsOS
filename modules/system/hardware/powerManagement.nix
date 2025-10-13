@@ -37,10 +37,12 @@ in {
         CPU_MIN_PERF_ON_BAT = 0;
         CPU_MAX_PERF_ON_BAT = 20;
 
+        USB_AUTOSUSPEND = 0;
+
         # Wifi
-        WIFI_PWR_ON_AC = "off";
-        WIFI_PWR_ON_BAT = "on";
-        WOL_DISABLE = "Y";
+        # WIFI_PWR_ON_AC = "off";
+        # WIFI_PWR_ON_BAT = "on";
+        # WOL_DISABLE = "Y";
 
         # Optional helps save long term battery health
         START_CHARGE_THRESH_BAT0 = 40; # 40 and bellow it starts to charge

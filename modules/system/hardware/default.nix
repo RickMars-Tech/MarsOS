@@ -24,4 +24,25 @@ in {
     ];
     firmwareCompression = "zstd";
   };
+  environment.systemPackages = with pkgs; [
+    #= PC monitoring
+    cpu-x
+    clinfo
+    glxinfo
+    hardinfo2
+    hwinfo
+    #= Multimedia Codecs & Libs
+    openh264
+    x264
+    # H.265/HEVC
+    x265
+    # WebM VP8/VP9 codec SDK
+    libvpx
+    # Open, royalty-free, highly versatile audio codec
+    libopus
+    # MPEG
+    lame
+    # FFMPEG
+    ffmpeg
+  ];
 }

@@ -12,10 +12,13 @@ in {
     gamemode.enable = mkEnableOption "Integrate with gamemode for gaming performance" // {default = false;};
   };
 
-  config = {
+  config = mkIf (asus.enable) {
     # Moved to core/kernel/common.nix
-    #boot.kernelModules = mkIf (cfg.enable) ["asus-wmi"];
-    services.asusd = mkIf (asus.enable) {
+    boot = {
+      kernelModules = ["asus-wmi"];
+      kernelParams = ["acpi_backlight="];
+    };
+    services.asusd = {
       enable = true;
       enableUserService = true;
       package = pkgs.asusctl;

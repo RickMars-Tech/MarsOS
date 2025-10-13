@@ -4,11 +4,12 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkDefault mkMerge optionals;
-  #= Detect if Root is BTRFS
+  inherit (lib) mkIf mkDefault optionals;
+
+  # Detect if Root is BTRFS
   rootIsBtrfs = config.fileSystems."/".fsType or "" == "btrfs";
 
-  #= Detect if is SDD
+  # Detect if is SSD
   hasSSD =
     builtins.pathExists /sys/block
     && builtins.any (dev:
@@ -17,98 +18,141 @@
     (builtins.attrNames (builtins.readDir /sys/block));
 in {
   #|==< FileSystem >==|#
-  fileSystems = mkMerge [
-    {
-      #= BTRFS Optimizations
-      "/".options = mkIf rootIsBtrfs ([
-          "compress=zstd:6"
-          "relatime"
-          "commit=120"
-          "discard=async"
-          "space_cache=v2"
-        ]
-        ++ (
-          if hasSSD
-          then [
-            "ssd"
-          ]
-          else [
-            "autodefrag"
-          ]
-        ));
-      #= Tmp Partition
-      "/tmp" = {
-        device = "tmpfs";
-        fsType = "tmpfs";
-        options = [
-          "size=4G"
-          "noatime"
-          "noexec"
-          "mode=1777"
-        ];
-      };
-    }
-  ];
-  # Enable AutoScrub if Root Filesystem is BTRFS
-  services.btrfs.autoScrub = {
-    enable = mkIf rootIsBtrfs true;
+  # Nota: Con Disko, las opciones de montaje ya están configuradas
+  # en disko-config.nix, pero podemos añadir configuraciones adicionales aquí
+
+  # fileSystems = mkMerge [
+  #   {
+  #     # Tmp Partition - tmpfs en RAM para mejor rendimiento
+  #     "/tmp" = {
+  #       device = "tmpfs";
+  #       fsType = "tmpfs";
+  #       options = [
+  #         "size=8G" # Aumentado a 8G para compilaciones grandes
+  #         "noatime"
+  #         "nodev"
+  #         "nosuid"
+  #         "noexec"
+  #         "mode=1777"
+  #       ];
+  #     };
+
+  #     # /var/tmp - más persistente que /tmp
+  #     "/var/tmp" = mkIf (!rootIsBtrfs) {
+  #       device = "tmpfs";
+  #       fsType = "tmpfs";
+  #       options = [
+  #         "size=4G"
+  #         "noatime"
+  #         "nodev"
+  #         "nosuid"
+  #         "mode=1777"
+  #       ];
+  #     };
+  #   }
+  # ];
+
+  # BTRFS Auto-Scrub - verificación de integridad mensual
+  services.btrfs.autoScrub = mkIf rootIsBtrfs {
+    enable = true;
     interval = "monthly";
     fileSystems = ["/"];
   };
 
-  #= Enable Trim (Needed for SSD's).
+  # TRIM para SSD - optimización de rendimiento
   services.fstrim = {
     enable = mkDefault true;
-    interval = mkIf rootIsBtrfs "monthly"; # Less frecuent on BTRFS by discard=async
+    interval = mkIf rootIsBtrfs "monthly"; # Menos frecuente con discard=async
   };
 
-  #= ZRAM
-  # Compression for RAM
+  #|==< Memory Management >==|#
+
+  # ZRAM - compresión de RAM para mejor uso de memoria
   zramSwap = {
     enable = true;
-    priority = 100;
-    memoryPercent = 75;
+    priority = 100; # Mayor prioridad que swap de disco
+    memoryPercent = 100; # Usa hasta 100% de RAM para ZRAM
     algorithm = "zstd";
     swapDevices = 1;
   };
 
-  #= kernel Same-Page Merging
-  # Deduplication of identical memory pages
+  # Kernel Same-Page Merging - deduplicación de memoria
   hardware.ksm = {
     enable = mkDefault true;
-    sleep = mkDefault 20;
+    sleep = mkDefault 1000; # ms entre escaneos (1000 = menos agresivo)
   };
 
-  #= Prevents system freezes due to lack of memory
+  # Early OOM - previene congelamiento del sistema
   services.earlyoom = {
     enable = mkDefault true;
-    freeMemThreshold = 4; # Kill processes when less than 4% RAM and 10% swap remain
-    freeSwapThreshold = 10;
+    freeMemThreshold = 5; # Activa cuando queda menos del 5% RAM
+    freeSwapThreshold = 10; # Y menos del 10% swap
+    enableNotifications = true; # Notificaciones cuando mata procesos
     extraArgs = [
-      "-g"
+      "-g" # Mata todo el grupo de procesos
       "--avoid"
-      "(^|/)(init|kthreadd|ksoftirqd|migration|rcu_|watchdog)$"
+      "(^|/)(init|systemd|Xorg|sway|waybar|kitty|alacritty|foot)$"
       "--prefer"
-      "(^|/)(Web Content|Isolated Web|firefox|chromium|chrome)$"
+      "(^|/)(firefox|chromium|chrome|electron|slack|discord|teams|java|node)$"
     ];
   };
+
+  #|==< Swap Configuration >==|#
+
+  # Parámetros de swap optimizados
+  boot.kernel.sysctl = {
+    # Reduce el uso de swap (prefiere RAM)
+    "vm.swappiness" = mkDefault 10;
+
+    # Mejora el rendimiento cuando se usa swap
+    "vm.vfs_cache_pressure" = mkDefault 50;
+
+    # Previene OOM matando procesos aleatorios
+    "vm.overcommit_memory" = mkDefault 1;
+
+    # Dirty pages - optimiza escritura a disco
+    "vm.dirty_ratio" = mkDefault 10;
+    "vm.dirty_background_ratio" = mkDefault 5;
+
+    # Para BTRFS específicamente
+    "vm.dirty_writeback_centisecs" = mkIf rootIsBtrfs (mkDefault 1500);
+  };
+
+  #|==< System Packages >==|#
 
   environment.systemPackages = with pkgs;
     [
-      caligula # User-friendly, lightweight TUI for disk imaging
-      gnome-disk-utility # Disk Manager.
-      baobab # Gui app to analyse disk usage.
-      woeusb # Flash OS images for Windows.
+      # Disk management tools
+      caligula # TUI para disk imaging
+      gnome-disk-utility # GUI disk manager
+      baobab # Análisis de uso de disco
+      woeusb # Flash Windows ISO
+      gparted # Particionamiento avanzado
+
+      # Monitoring tools
+      iotop # Monitor I/O de disco
+      ncdu # Análisis de espacio en disco (TUI)
+      duf # Mejor 'df' con colores
     ]
     ++ optionals rootIsBtrfs [
-      compsize
-      btrfs-progs
+      compsize # Ver compresión real de BTRFS
+      btrfs-progs # Herramientas BTRFS
+      btrbk # Backup automático con snapshots
     ]
     ++ optionals hasSSD [
-      hdparm
-      smartmontools
+      hdparm # Configuración de discos
+      smartmontools # Monitoreo SMART
+      nvme-cli # Herramientas específicas para NVMe
     ];
 
-  #= Allows Applications to query and manipulate Storage Devices
+  #|==< Storage Services >==|#
+  # UDisks2
   services.udisks2.enable = true;
+
+  # SMART for SSD/NVMe
+  services.smartd = mkIf hasSSD {
+    enable = true;
+    autodetect = true;
+    notifications.x11.enable = mkDefault true;
+  };
 }
