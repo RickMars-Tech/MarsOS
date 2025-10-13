@@ -15,13 +15,21 @@ in {
     environment.systemPackages = with pkgs;
       optionals (mc.minecraft.prismlauncher.enable && mc.enable) [
         (prismlauncher.override {
+          additionalLibs = [
+            bzip2
+            openssl
+            nss
+            nspr
+          ];
           additionalPrograms = with pkgs; [
             ffmpeg
             glfw
           ];
           jdks = optionals (mc.minecraft.extraJavaPackages.enable && mc.enable) [
-            jdk8
-            jdk17
+            temurin-jre-bin
+            temurin-jre-bin-25
+            temurin-jre-bin-17
+            temurin-jre-bin-8
           ];
           gamemodeSupport = config.programs.gamemode.enable;
         })
@@ -30,7 +38,7 @@ in {
     #= Java =#
     programs.java = mkIf mc.enable {
       enable = true;
-      package = pkgs.jdk;
+      package = pkgs.temurin-jre-bin;
       binfmt = true;
     };
   };

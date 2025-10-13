@@ -11,7 +11,7 @@ in {
     steam = {
       enable = mkEnableOption "Enable Steam";
       openFirewall = mkEnableOption "Open Ports of Firewall dedicated for Steam";
-      hardware-rules = mkEnableOption "Steam Hardware Udev Rules";
+      hardware-rules = mkEnableOption "Steam Hardware Udev Rules" // {default = false;};
     };
   };
 

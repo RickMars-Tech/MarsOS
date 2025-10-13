@@ -5,6 +5,12 @@
   ...
 }: let
   inherit (lib) mkIf mkEnableOption;
+  # Imports
+  GeForceInfinity = pkgs.callPackage ../../../pkgs/geforce-infinity/default.nix {};
+  dlss-swapper = pkgs.callPackage ../../../pkgs/gamingScripts/dlss-swapper.nix {};
+  dlss-swapper-dll = pkgs.callPackage ../../../pkgs/gamingScripts/dlss-swapper-dll.nix {};
+  zink-run = pkgs.callPackage ../../../pkgs/gamingScripts/zink-run.nix {};
+  # Options
   asus = config.mars.asus.gamemode;
   gaming = config.mars.gaming;
 in {
@@ -55,5 +61,27 @@ in {
         };
       };
     };
+    # packages
+    environment.systemPackages = with pkgs;
+      mkIf gaming.extra-gaming-packages [
+        #= Gaming Scritps
+        dlss-swapper
+        dlss-swapper-dll
+        zink-run
+        #= GeForce Infinity
+        GeForceInfinity
+        #= Game Launchers
+        lutris
+        heroic
+        #= Wine
+        bottles
+        #= Gaming utilities
+        lm_sensors
+        mangohud #= Vulkan and OpenGL overlay for monitoring PC
+        goverlay #= Graphical UI to help manage Linux overlays
+        libstrangle #= Frame rate limiter for Linux/OpenGL
+        wireshark #= Network analysis for gaming
+        pkgsi686Linux.gperftools #= Required to run CS:Source
+      ];
   };
 }
