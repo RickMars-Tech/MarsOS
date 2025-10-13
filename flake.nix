@@ -3,31 +3,25 @@
 
   inputs = {
     #= Core
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
-
-    #= Determinate Systems
-    determinate = {
-      url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
+    # nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     #= Lanzaboote(Secure boot)
     lanzaboote = {
-      url = "https://flakehub.com/f/nix-community/lanzaboote/0.4.2";
+      url = "github:nix-community/lanzaboote/v0.4.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #= Home Manager & Theming
+    #= Home & Theming
     home-manager = {
-      url = "https://flakehub.com/f/nix-community/home-manager/0.1";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stylix.url = "https://flakehub.com/f/danth/stylix/*.tar.gz";
-
-    #= Development Tools
-    # Rust
-    fenix = {
-      url = "https://flakehub.com/f/nix-community/fenix/*";
+    stylix = {
+      url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -70,8 +64,9 @@
           ./modules/system/default.nix
 
           #= NixModules
-          inputs.determinate.nixosModules.default
+          # inputs.determinate.nixosModules.default
           inputs.lanzaboote.nixosModules.lanzaboote
+          inputs.disko.nixosModules.disko
           inputs.stylix.nixosModules.stylix
           inputs.home-manager.nixosModules.home-manager
 
@@ -103,9 +98,6 @@
   in {
     #= Configuraciones de hosts generadas automáticamente
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
-
-    #= Rust
-    packages.${system}.default = inputs.fenix.packages.${system}.minimal.toolchain;
 
     #= Formatter
     formatter = nixpkgs.legacyPackages.${system}.alejandra;
