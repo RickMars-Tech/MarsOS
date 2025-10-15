@@ -1,7 +1,6 @@
 {
   config,
   inputs,
-  pkgs,
   self,
   lib,
   ...
@@ -27,15 +26,11 @@ in {
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     channel.enable = false;
-    # Registry for legacy nix commands
-    registry = registry;
-    # Pin nixpkgs flake to system nixpkgs
-    nixPath = nixPath;
-    # Use Lix
-    package = pkgs.lixPackageSets.latest.lix;
+    registry = registry; # Registry for legacy nix commands
+    nixPath = nixPath; # Pin nixpkgs flake to system nixpkgs
     settings = {
       auto-optimise-store = true;
-      # download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
+      download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
       experimental-features = [
         "nix-command"
         "flakes"

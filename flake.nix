@@ -67,7 +67,7 @@
           overlays = [inputs.niri.overlays.niri];
         };
         home-manager = {
-          useGlobalPkgs = true;
+          useGlobalPkgs = false;
           useUserPackages = true;
           users.${username} = import ./modules/home;
           extraSpecialArgs = commonArgs;

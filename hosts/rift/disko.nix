@@ -21,11 +21,11 @@
               };
             };
             swap = {
-              size = "100%";
+              priority = 2;
+              size = "4G";
               content = {
                 type = "swap";
-                randomEncryption = true; # Opcional: encripta el swap
-                resumeDevice = true; # true si usas hibernación
+                resumeDevice = true;
               };
             };
             root = {
@@ -38,9 +38,8 @@
                   "/root" = {
                     mountpoint = "/";
                     mountOptions = [
-                      "compress=zstd:6"
-                      "relatime"
-                      "commit=120"
+                      "compress=zstd:3" # Nivel 3 es mejor balance
+                      "noatime" # Mejor que relatime para SSDs
                       "discard=async"
                       "space_cache=v2"
                       "ssd"
@@ -49,8 +48,8 @@
                   "/home" = {
                     mountpoint = "/home";
                     mountOptions = [
-                      "compress=zstd:6"
-                      "relatime"
+                      "compress=zstd:3"
+                      "noatime"
                     ];
                   };
                   "/nix" = {
@@ -60,6 +59,22 @@
                       "noatime"
                       "space_cache=v2"
                       "ssd"
+                    ];
+                  };
+                  # Subvolumen para snapshots (opcional pero recomendado)
+                  "/.snapshots" = {
+                    mountpoint = "/.snapshots";
+                    mountOptions = [
+                      "compress=zstd:3"
+                      "noatime"
+                    ];
+                  };
+                  # Subvolumen para logs (opcional)
+                  "/var/log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [
+                      "compress=zstd:1"
+                      "noatime"
                     ];
                   };
                 };
@@ -72,7 +87,10 @@
     nodev = {
       "/tmp" = {
         fsType = "tmpfs";
-        mountOptions = ["size=200M"];
+        mountOptions = [
+          "size=4G" # 4GB es más razonable para sistemas modernos
+          "mode=1777" # Permisos correctos
+        ];
       };
     };
   };

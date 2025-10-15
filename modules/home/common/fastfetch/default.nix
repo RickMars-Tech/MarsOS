@@ -2,11 +2,11 @@
   programs.fastfetch = {
     enable = true;
     settings = {
-      logo = {
-        type = "small";
-        #source = ../../../../assets/ascii-art/skull.txt;
-        #color = {"1" = "white";};
-      };
+      # logo = {
+      #   type = "small";
+      #   #source = ../../../../assets/ascii-art/skull.txt;
+      #   #color = {"1" = "white";};
+      # };
       display.separator = "  • ";
       modules = [
         "break"

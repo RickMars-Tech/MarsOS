@@ -4,8 +4,8 @@
     config = {
       # ===== General
       border = "no";
-      hls-bitrate = "max";
-      keep-open = true;
+      # hls-bitrate = "max";
+      # keep-open = true;
       prefetch-playlist = true;
       save-position-on-quit = true;
       snap-window = true;
@@ -18,8 +18,8 @@
       audio-file-auto = "fuzzy"; # Load additional audio files containing the video filename
 
       # ===== Video
-      #vo = "gpu";
-      hwdec = "no"; #"vaapi"; #"auto-safe";
+      vo = "gpu";
+      hwdec = "auto-safe";
       pause = "no";
       profile = "gpu-hq";
       gpu-context = "wayland";
