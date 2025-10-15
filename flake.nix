@@ -2,10 +2,10 @@
   description = "My NixOS Configuration";
 
   inputs = {
-    #= Core
-    # nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixos-unstable";
+    # Core
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    #= Lanzaboote(Secure boot)
+
+    # System tools
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.4.2";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,7 +15,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #= Home & Theming
+    # Home & Theming
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,13 +25,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #= Window Manager & Widgets
+    # Window Manager & Extensions
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ironbar = {
-      url = "github:JakeStanger/ironbar";
+      url = "github:JakeStanger/ironbar/v0.17.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     firefox-addons = {
@@ -40,66 +40,56 @@
     };
   };
 
-  outputs = inputs @ {nixpkgs, ...}: let
-    # System & User
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    ...
+  } @ inputs: let
     system = "x86_64-linux";
     username = "rick";
-    name = "Rick";
-    extraSpecialArgs = {
-      inherit system username inputs;
-      inherit (inputs) self;
-    };
-    specialArgs = {
-      inherit system username name inputs;
-      inherit (inputs) self;
+    fullname = "Rick";
+
+    commonArgs = {
+      inherit system username fullname inputs self;
     };
 
-    # Función helper para crear configuraciones de hosts
+    baseModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      inputs.disko.nixosModules.disko
+      inputs.stylix.nixosModules.stylix
+      home-manager.nixosModules.home-manager
+      ./modules/system
+      {
+        nixpkgs = {
+          hostPlatform = system;
+          config.allowUnfree = true;
+          overlays = [inputs.niri.overlays.niri];
+        };
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users.${username} = import ./modules/home;
+          extraSpecialArgs = commonArgs;
+        };
+      }
+    ];
+
     mkHost = hostname: extraModules:
       nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
-        modules = [
-          # Configuración específica del host
-          ./hosts/${hostname}/default.nix
-          ./modules/system/default.nix
-
-          #= NixModules
-          # inputs.determinate.nixosModules.default
-          inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.disko.nixosModules.disko
-          inputs.stylix.nixosModules.stylix
-          inputs.home-manager.nixosModules.home-manager
-
-          # Configuración común de sistema y home-manager
-          {
-            _module.args = {inherit inputs;};
-            nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = [inputs.niri.overlays.niri];
-
-            home-manager = {
-              useGlobalPkgs = false;
-              useUserPackages = true;
-              users.${username} = import ./modules/home/default.nix;
-              inherit extraSpecialArgs;
-            };
-          }
-        ];
+        specialArgs = commonArgs;
+        modules = baseModules ++ [./hosts/${hostname}] ++ extraModules;
       };
 
-    #= Host's
+    # Define hosts
     hosts = {
-      boltz = [
-        # Example: specific modules for this host
-        # inputs.nixos-hardware.nixosModules.common-cpu-amd
-      ];
+      boltz = [];
       rift = [];
       crest = [];
     };
   in {
-    #= Configuraciones de hosts generadas automáticamente
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
 
-    #= Formatter
-    formatter = nixpkgs.legacyPackages.${system}.alejandra;
+    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   };
 }
