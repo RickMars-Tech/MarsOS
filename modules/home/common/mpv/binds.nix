@@ -1,4 +1,4 @@
-_: {
+{
   programs.mpv.bindings = {
     "ctrl+a" = "script-message osc-visibility cycle";
     UP = "add volume +5";

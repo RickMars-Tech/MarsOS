@@ -1,4 +1,4 @@
-_: let
+let
   # Función helper para comandos de Yazi
   yaziCommand = chooserFile: directory: [
     ":sh rm -f ${chooserFile}"

@@ -19,7 +19,11 @@
   nixTag = config.system.nixos.tags;
   nixVersion = config.system.nixos.version;
 in {
-  imports = [./cache.nix];
+  imports = [
+    ./cache.nix
+    ./nh.nix
+    ./nix-ld.nix
+  ];
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     channel.enable = false;
@@ -60,11 +64,11 @@ in {
       keep-outputs = true;
     };
     #= Clean Nix
-    # gc = {
-    #   automatic = true;
-    #   dates = "weekly";
-    #   options = "--delete-older-than 1w";
-    # };
+    gc = {
+      automatic = !config.programs.nh.clean.enable;
+      dates = "weekly";
+      options = "--delete-older-than 1w";
+    };
   };
   system = {
     rebuild.enableNg = mkDefault true;

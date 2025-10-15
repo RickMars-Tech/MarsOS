@@ -34,5 +34,7 @@ in {
       package = pkgs.scx.rustscheds;
       scheduler = "scx_lavd";
     };
+
+    services.fwupd.enable = true;
   };
 }

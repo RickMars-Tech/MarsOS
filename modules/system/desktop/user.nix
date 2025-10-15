@@ -1,6 +1,6 @@
 {
   pkgs,
-  name,
+  fullname,
   username,
   ...
 }: {
@@ -10,9 +10,9 @@
     users.${username} = {
       isNormalUser = true;
       createHome = true;
-      description = "${name}";
+      description = "${fullname}";
       initialPassword = "010304yo6661";
-      group = "wheel"; # enable 'sudo'
+      group = "wheel";
       extraGroups = [
         "video"
         "audio"

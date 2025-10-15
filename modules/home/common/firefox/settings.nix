@@ -1,15 +1,4 @@
 {
-  # osConfig,
-  # config,
-  # lib,
-  ...
-}:
-#   let
-#   inherit (lib) mkIf;
-#   nvidia = osConfig.mars.graphics.nvidiaPro;
-#   # ffVersion = config.programs.firefox.package.version;
-# in
-{
   programs.firefox.profiles.default.settings = {
     # Disable AI Trash
     "browser.ml.chat.enabled" = false; # Disable AI Chats

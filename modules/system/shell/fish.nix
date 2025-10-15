@@ -4,7 +4,11 @@
   ...
 }: let
   inherit (config.networking) hostName;
-  rebuildCommand = "sudo nixos-rebuild --flake .#${hostName}";
+  # Reference: nh os switch . #{host}
+  # rebuildCommand =
+  #   if config.programs.nh.enable == "true"
+  #   then "sudo nh os . #${hostName}"
+  #   else "sudo nixos-rebuild --flake .#${hostName}";
 in {
   programs.fish = {
     enable = true;
@@ -13,10 +17,13 @@ in {
     shellAbbrs = {
       #= Nix
       use = "nix shell nixpkgs#";
-      snowboot = "${rebuildCommand} boot";
-      snowswitch = "${rebuildCommand} switch";
-      snowtest = "${rebuildCommand} test";
-      snowclean = " sudo nix-collect-garbage -d";
+      snowboot = "nh os boot . #${hostName}"; #"${rebuildCommand} boot";
+      snowswitch = "nh os switch . #${hostName}"; #"${rebuildCommand} switch";
+      snowtest = "nh os test . #${hostName}"; #"${rebuildCommand} test";
+      snowclean = "nh clean all --ask";
+      # if config.programs.nh.enable == "true"
+      # then "nh clean all --ask"
+      # else "sudo nix-collect-garbage -d";
 
       #= See Hardware Info
       hw = "hwinfo --short";

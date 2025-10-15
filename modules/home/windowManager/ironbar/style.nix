@@ -1,16 +1,10 @@
 {config, ...}: {
   programs.ironbar.style = let
     color = config.stylix.base16Scheme;
-    font = config.stylix.fonts.sansSerif.name;
     background = color.base00;
-    focused = color.base0B;
     urgent = color.base08;
     gray = color.base01;
     white = color.base05;
-    purple = color.base0C;
-    pink = color.base0E;
-    pink_2 = color.base09;
-    blue = color.base0A;
   in
     /*
     css

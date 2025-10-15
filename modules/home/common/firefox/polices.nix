@@ -1,4 +1,4 @@
-_: {
+{
   programs.firefox.policies = {
     # Extensions = import ./extensions.nix;
     DefaultDownloadDirectory = "\${home}/Downloads";

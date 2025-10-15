@@ -7,17 +7,13 @@
     background_light = color.base01;
     background_lighter = color.base02;
     foreground = color.base05;
-    foreground_dim = color.base04;
 
     # Colores de acento
     accent_blue = color.base0A;
     accent_cyan = color.base0B;
-    accent_purple = color.base0C;
-    accent_pink = color.base0E;
 
     # Colores de estado
     error = color.base08;
-    warning = color.base09;
   in
     /*
     css

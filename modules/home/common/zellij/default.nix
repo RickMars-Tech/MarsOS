@@ -1,4 +1,4 @@
-_: {
+{
   imports = [
     ./layout.nix
     ./settings.nix

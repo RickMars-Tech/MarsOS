@@ -1,4 +1,4 @@
-_: {
+{
   nix.settings = {
     substitute = true;
     builders-use-substitutes = true;

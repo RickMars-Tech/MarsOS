@@ -1,4 +1,4 @@
-_: {
+{
   programs.zellij.settings = {
     default_layout = "dev";
 

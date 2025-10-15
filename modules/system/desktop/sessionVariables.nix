@@ -25,20 +25,18 @@ in {
         BROWSER = "${firefox}";
         TERMINAL = "${terminal}";
 
-        RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-
         #|==< Polkit >==|#
         POLKIT_BIN = "${soteria}";
       }
       #|==< AMD >==|#
       (mkIf amd.enable {
         # https://reddit.com/r/linux_gaming/comments/1mg8vtl/low_latency_gaming_guide/
-        MESA_VK_WSI_PRESENT_MODE = mkIf (gaming.amdOptimizations && amd.enable) "fifo";
+        # MESA_VK_WSI_PRESENT_MODE = mkIf (gaming.amdOptimizations && amd.enable) "fifo";
 
         #= ShaderOptimizations
         # https://github.com/psygreg/shader-booster/
         AMD_VULKAN_ICD = "RADV";
-        MESA_SHADER_CACHE_MAX_SIZE = mkIf (gaming.amdOptimizations && amd.enable) "12G";
+        # MESA_SHADER_CACHE_MAX_SIZE = mkIf (gaming.amdOptimizations && amd.enable) "12G";
 
         RADV_PERFTEST = "gpl,ngg,sam,rt";
       })
@@ -67,6 +65,8 @@ in {
         __GL_SHADER_DISK_CACHE_SIZE = 12000000000;
         __GL_SHADER_DISK_CACHE = "1";
         __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
+
+        GBM_BACKEND = "nvidia-drm";
 
         #= Prime
         GAMEMODERUNEXEC = mkIf (gaming.nvidiaOptimizations && nvidiaPro.enable) "prime-run";

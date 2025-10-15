@@ -62,7 +62,6 @@ in {
           # https://wiki.archlinux.org/title/Gaming#Make_the_changes_permanent
           "vm.compaction_proactiveness" = 0;
           "vm.watermark_boost_factor" = 1;
-          # "vm.min_free_kbytes" = 262144; # 256MB
           "vm.watermark_scale_factor" = 250;
           "vm.swappiness" = 30;
           "vm.zone_reclaim_mode" = 0;
@@ -83,9 +82,6 @@ in {
     blacklistedKernelModules = [
       #= Test
       "snd_seq_dummy"
-      # "rfcomm"
-      # "bnep"
-      # "btusb"
       "dm_mod"
       "lpc_ich"
       #= Not used by the system

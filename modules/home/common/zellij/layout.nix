@@ -1,4 +1,4 @@
-_: {
+{
   programs.zellij.layouts = {
     dev = {
       layout = {

@@ -3,6 +3,7 @@
     #==< Nix >==#
     alejandra
     nil
+    deadnix
     #==< Arduino >==#
     arduino-core
     arduino-cli

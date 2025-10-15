@@ -1,4 +1,4 @@
-_: {
+{
   imports = [
     ./dbus.nix
     ./keyboard.nix

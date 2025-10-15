@@ -1,4 +1,4 @@
-_: {
+{
   imports = [./config.nix ./binds.nix];
 
   xdg.configFile."mpv/shaders" = {

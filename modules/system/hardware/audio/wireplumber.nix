@@ -1,4 +1,4 @@
-_: {
+{
   services.pipewire.wireplumber = {
     enable = true;
     extraConfig = {
