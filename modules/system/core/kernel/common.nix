@@ -33,19 +33,33 @@ in {
         "preempt=full" # https://reddit.com/r/linux_gaming/comments/1g0g7i0/god_of_war_ragnarok_crackling_audio/lr8j475/?context=3#lr8j475
       ];
 
-    kernelModules = ["ntsync"];
+    kernelModules = [
+      "ntsync"
+      "tcp_bbr" # bbr
+      "sch_cake"
+    ];
 
     kernel.sysctl = mkMerge [
       {
+        "net.core.default_qdisc" = "cake"; # Mejor QoS
+        # Aumentar buffers para mejor throughput
+        "net.core.rmem_max" = 134217728;
+        "net.core.wmem_max" = 134217728;
+        "net.ipv4.tcp_rmem" = "4096 87380 67108864";
+        "net.ipv4.tcp_wmem" = "4096 65536 67108864";
+
+        # Optimización WiFi
+        "net.ipv4.tcp_mtu_probing" = 1;
+
+        # IPv6 optimizations
+        "net.ipv6.conf.all.accept_ra" = 2;
+        "net.ipv6.conf.default.accept_ra" = 2;
+
         # https://wiki.archlinux.org/title/Sysctl#Increase_the_memory_dedicated_to_the_network_interfaces
         "net.core.rmem_default" = 262144; # 256KB
-        "net.core.rmem_max" = 2097152; # 2MB
         "net.core.wmem_default" = 262144;
-        "net.core.wmem_max" = 2097152;
         "net.core.optmem_max" = 20480;
         "net.core.netdev_max_backlog" = 1000;
-        "net.ipv4.tcp_rmem" = "4096 262144 4194304";
-        "net.ipv4.tcp_wmem" = "4096 262144 4194304";
         "net.ipv4.tcp_congestion_control" = "bbr";
         # https://wiki.archlinux.org/title/Sysctl#Enable_TCP_Fast_Open
         "net.ipv4.tcp_fastopen" = 3;
