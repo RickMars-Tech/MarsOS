@@ -21,12 +21,11 @@
               };
             };
             swap = {
-              priority = 2;
-              size = "9.4G";
+              size = "100%";
               content = {
                 type = "swap";
                 randomEncryption = true; # Opcional: encripta el swap
-                resumeDevice = false; # true si usas hibernación
+                resumeDevice = true; # true si usas hibernación
               };
             };
             root = {

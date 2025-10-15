@@ -1,4 +1,5 @@
 #|==< Thinkpad T420(Intel) >==|#
+# DEPRECATED
 _: {
   imports = [
     # Include the results of the hardware scan.
