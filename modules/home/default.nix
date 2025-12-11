@@ -11,9 +11,8 @@
     homeDirectory = "/home/${username}";
     preferXdgDirectories = true; #= Make programs use XDG directories
     enableNixpkgsReleaseCheck = true;
-    stateVersion = "25.05";
+    stateVersion = "26.05";
   };
-  # programs.home-manager.enable = true;
 
   #= Assets & Wallpapers
   home.file."wallpapers" = {
