@@ -5,6 +5,5 @@
     ./security.nix
     ./systemd.nix
     ./udev.nix
-    ./uutils.nix
   ];
 }

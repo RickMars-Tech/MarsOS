@@ -7,18 +7,18 @@
   inherit (lib) mkEnableOption mkIf;
 in {
   options.mars.boot = {
-    lanzaboot = mkEnableOption "Enable Secure Boot";
+    secureBoot = mkEnableOption "Enable Secure Boot";
     plymouth = mkEnableOption "Enable Plymouth";
   };
   config = {
     boot = {
       #|==< Secure Boot >==|#
       lanzaboote = {
-        enable = config.mars.boot.lanzaboot;
+        enable = config.mars.boot.secureBoot;
         pkiBundle = "/var/lib/sbctl";
       };
       loader = {
-        systemd-boot.enable = !config.mars.boot.lanzaboot; # Lanzaboote currently replaces the systemd-boot module.
+        systemd-boot.enable = !config.mars.boot.secureBoot; # Lanzaboote currently replaces the systemd-boot module.
         efi.canTouchEfiVariables = false;
         timeout = 5;
       };
@@ -44,6 +44,6 @@ in {
       };
     };
     # For debugging and troubleshooting Secure Boot.
-    environment.systemPackages = with pkgs; mkIf config.mars.boot.lanzaboot [sbctl];
+    environment.systemPackages = with pkgs; mkIf config.mars.boot.secureBoot [sbctl];
   };
 }
