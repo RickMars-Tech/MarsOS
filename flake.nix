@@ -1,5 +1,5 @@
 {
-  description = "My NixOS Configuration";
+  description = "A Demostration of The Power of Nix";
 
   inputs = {
     # Core
@@ -7,7 +7,7 @@
 
     # System tools
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.2";
+      url = "github:nix-community/lanzaboote/v0.4.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
@@ -31,7 +31,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ironbar = {
-      url = "github:JakeStanger/ironbar/v0.17.1";
+      # url = "github:JakeStanger/ironbar/v0.17.1";
+      url = "github:JakeStanger/ironbar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     firefox-addons = {
@@ -43,7 +44,6 @@
   outputs = {
     self,
     nixpkgs,
-    home-manager,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -58,11 +58,11 @@
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.disko.nixosModules.disko
       inputs.stylix.nixosModules.stylix
-      home-manager.nixosModules.home-manager
+      inputs.home-manager.nixosModules.home-manager
       ./modules/system
       {
         nixpkgs = {
-          hostPlatform = system;
+          # hostPlatform = system;
           config.allowUnfree = true;
           overlays = [inputs.niri.overlays.niri];
         };
@@ -78,6 +78,7 @@
     mkHost = hostname: extraModules:
       nixpkgs.lib.nixosSystem {
         specialArgs = commonArgs;
+        system = system;
         modules = baseModules ++ [./hosts/${hostname}] ++ extraModules;
       };
 
@@ -89,6 +90,8 @@
     };
   in {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
+
+    # stdenv.hostPlatform.system = system;
 
     formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   };
