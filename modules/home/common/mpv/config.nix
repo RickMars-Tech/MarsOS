@@ -18,12 +18,12 @@
       audio-file-auto = "fuzzy"; # Load additional audio files containing the video filename
 
       # ===== Video
-      vo = "gpu";
-      hwdec = "auto-safe";
+      vo = "dmabuf-wayland";
+      hwdec = "vaapi";
       pause = "no";
       profile = "gpu-hq";
       gpu-context = "wayland";
-      gpu-api = "vulkan";
+      gpu-api = "opengl";
       vulkan-queue-count = 4;
       video-sync = "display-resample";
       interpolation = true;
