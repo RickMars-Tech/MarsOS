@@ -1,6 +1,12 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: let
+  enableVSC = config.mars.dev.ide.vscode;
+in {
   programs.vscode = {
-    enable = true;
+    enable = enableVSC;
     package = pkgs.vscodium-fhs;
   };
 }

@@ -1,11 +1,18 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  inherit (lib) mkIf;
+in {
   programs.git = {
-    enable = true;
+    enable = config.mars.dev.git.enable;
     lfs.enable = true;
     config = {
       user = {
-        name = "RickMars-Tech";
-        email = "rickmars117@proton.me";
+        name = config.mars.dev.git.username;
+        email = config.mars.dev.git.email;
       };
 
       core = {
@@ -29,12 +36,13 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    git-lfs # Large file support
-    gh # GitHub CLI
-    gitflow # Git Flow extensions
-    tig # Text-based Git interface
-    lazygit # Terminal Git UI
-    gitui # Another terminal Git UI
-  ];
+  environment.systemPackages = with pkgs;
+    mkIf config.mars.dev.git.enable [
+      git-lfs # Large file support
+      gh # GitHub CLI
+      gitflow # Git Flow extensions
+      tig # Text-based Git interface
+      # lazygit # Terminal Git UI
+      gitui # Another terminal Git UI
+    ];
 }

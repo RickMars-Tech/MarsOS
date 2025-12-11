@@ -1,83 +1,102 @@
-{pkgs, ...}: {
-  environment.systemPackages = with pkgs; [
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  inherit (lib) optionals;
+  lang = config.mars.dev.languages;
+  ide = config.mars.dev.ide;
+  flashprog = config.mars.dev.flash.flashprog;
+in {
+  environment.systemPackages = with pkgs;
+    [
+      fd
+      tree-sitter
+      nodePackages.typescript-language-server
+      nodePackages.yaml-language-server
+      nodePackages.bash-language-server
+      nodePackages.prettier
+      shfmt
+      marksman
+      taplo # TOML
+    ]
+    ++ optionals ide.arduino [
+      #==< Arduino >==#
+      arduino-core
+      arduino-cli
+      arduino-ide
+    ]
     #==< Nix >==#
-    alejandra
-    nil
-    deadnix
-    #==< Arduino >==#
-    arduino-core
-    arduino-cli
-    arduino-ide
+    ++ optionals lang.nix [
+      alejandra
+      nil
+      deadnix
+    ]
     #==< Rust >==#
-    cargo
-    rustc
-    rustfmt
-    clippy
-    rust-analyzer
+    ++ optionals lang.rust [
+      cargo
+      rustc
+      rustfmt
+      clippy
+      rust-analyzer
+    ]
     #==< Zig >==#
-    zig
-    zls
+    ++ optionals lang.zig [
+      zig
+      zls
+    ]
     #==< C/C++ >==#
-    clang-tools
-    libclang
-    cmake
-    gccgo
-    glib
-    glibc
-    glibmm
-    gdb
-    libgcc
-    SDL2
-    SDL2_image
-    SDL2_ttf
+    ++ optionals lang.cpp [
+      clang-tools
+      libclang
+      cmake
+      gccgo
+      glib
+      glibc
+      glibmm
+      gdb
+      libgcc
+      clang-tools # Incluye clangd
+      lldb
+      gdb
+    ]
     #==< Python >==#
-    (python313.withPackages (
-      p:
-        with p; [
-          anyqt
-          numpy
-          matplotlib
-          mathutils
-          pyqtdarktheme
-          qtawesome
-          pyautogui
-          pyside6
-          pygame
-        ]
-    ))
-    ruff
-    pyright # LSP adicional para Python
+    ++ optionals lang.python [
+      (python313.withPackages (
+        p:
+          with p; [
+            anyqt
+            numpy
+            matplotlib
+            mathutils
+            pyqtdarktheme
+            qtawesome
+            pyautogui
+            pyside6
+            pygame
+            scipy
+          ]
+      ))
+      ruff
+      pyright # LSP adicional para Python
+    ]
     #==< Octave >==#
-    (octaveFull.withPackages (opkgs:
-      with opkgs; [
-        io
-        symbolic
-        video
-        strings
-      ]))
-    # KDL
-    kdlfmt
-    # C/C++
-    clang-tools # Incluye clangd
-    # JavaScript/TypeScript
-    # nodePackages.typescript-language-server
-    # nodePackages.prettier
-    # Markdown
-    # marksman
-    # YAML/TOML
-    # taplo # TOML LSP
-    # yaml-language-server
-    # Bash
-    # nodePackages.bash-language-server
-    # shfmt
-    # Docker
-    # dockerfile-language-server
-    #==< Debug adapters >==#
-    lldb
-    gdb
-    # Others
-    flashprog
-    pciutils
-    usbutils
-  ];
+    ++ optionals lang.octave [
+      (octaveFull.withPackages (opkgs:
+        with opkgs; [
+          io
+          symbolic
+          video
+          strings
+        ]))
+      # KDL
+      kdlfmt
+    ]
+    ++ optionals flashprog [
+      # Others
+      flashprog
+      pciutils
+      usbutils
+    ];
 }
