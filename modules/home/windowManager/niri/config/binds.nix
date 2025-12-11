@@ -13,12 +13,13 @@
   launcher = getExe pkgs.walker;
   firefox = getExe pkgs.firefox;
   term = getExe pkgs.wezterm;
-  lock = getExe pkgs.swaylock;
+  lock = getExe pkgs.hyprlock;
   logout = getExe pkgs.wlogout;
 in {
   programs.niri.settings.binds = with config.lib.niri.actions;
     mkMerge [
       {
+        #= Audio
         "XF86AudioMute".action.spawn = [wpctl "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"];
         "XF86AudioMicMute".action.spawn = [wpctl "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"];
         "XF86AudioRaiseVolume".action.spawn = [wpctl "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"];
@@ -29,6 +30,7 @@ in {
         "XF86AudioPrev".action.spawn = [playerctl "previous"];
         "XF86AudioNext".action.spawn = [playerctl "next"];
 
+        #= Launch/Spawn Software
         "Mod+T".action.spawn = [term];
         "Mod+E".action.spawn = [term "-e" "yazi"];
         "Mod+B".action.spawn = [firefox];
@@ -36,8 +38,11 @@ in {
         "Mod+Shift+Q".action.spawn = [lock];
         "Mod+Shift+M".action.spawn = [logout];
 
-        "Print".action = screenshot;
+        #= Screenshots
+        "Print".action.screenshot.show-pointer = true;
+        "Ctrl+Print".action.screenshot-window.write-to-disk = true;
 
+        #= Actions
         "Mod+W".action = toggle-column-tabbed-display;
         "Mod+Shift+W".action = toggle-overview;
         "Mod+Q".action = close-window;
@@ -53,11 +58,15 @@ in {
         "Mod+Period".action = expel-window-from-column;
         "Mod+C".action = center-column;
 
+        #= Screen Mirror (Test) # wl-present mirror eDP-1 --fullscreen-output HDMI-A-1 --fullscreen
+        #"Mod+Shift+M".action.spawn = ["wl-present" "mirror" "eDP-1" "--fullscreen-output" "HDMI-A-1" "--fullscreen"];
+
         #= Focus Windows
         "Mod+H".action = focus-column-left;
         "Mod+L".action = focus-column-right;
         "Mod+K".action = focus-workspace-up;
         "Mod+J".action = focus-workspace-down;
+
         "Mod+Left".action = focus-column-left;
         "Mod+Right".action = focus-column-right;
         "Mod+Down".action = focus-window-down;
@@ -69,12 +78,13 @@ in {
         "Mod+Shift+K".action = move-column-to-workspace-up;
         "Mod+Shift+J".action = move-column-to-workspace-down;
 
+        "Mod+Shift+Ctrl+H".action = move-column-to-monitor-left;
+        "Mod+Shift+Ctrl+L".action = move-column-to-monitor-right;
         "Mod+Shift+Ctrl+K".action = move-column-to-monitor-up;
         "Mod+Shift+Ctrl+J".action = move-column-to-monitor-down;
       }
+      #= Asusctl Aura/RGB Control
       (mkIf asus.enable {
-        # Asusctl Aura/RGB Control
-
         # Rainbow Modes
         "Mod+Alt+R".action.spawn = [asusctl "aura" "rainbow-cycle"];
 

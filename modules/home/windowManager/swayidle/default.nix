@@ -4,31 +4,29 @@
   ...
 }: let
   inherit (lib) getExe;
-  niriOff = "niri msg action power-off-monitors";
-  niriOn = "niri msg action power-on-monitors";
+  minutes = 60;
+  lockCmd = "${pkgs.systemd}/bin/loginctl lock-session";
+  niriOff = "${pkgs.niri}/bin/niri msg action power-off-monitors";
+  niriOn = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+  hyprlockCmd = getExe pkgs.hyprlock;
 in {
   services.swayidle = {
     enable = true;
     events = [
       {
-        event = "before-sleep";
-        command = "${pkgs.swaylock}/bin/swaylock -fF";
-      }
-      {
         event = "lock";
-        command = "lock";
+        command = hyprlockCmd;
       }
     ];
-    #= Timeout in seconds.
     timeouts = [
       {
-        timeout = 30 * 60;
+        timeout = 12 * minutes;
         command = niriOff;
         resumeCommand = niriOn;
       }
       {
-        timeout = 60 * 60;
-        command = getExe pkgs.swaylock;
+        timeout = 15 * minutes;
+        command = lockCmd;
       }
     ];
     extraArgs = ["-w"];

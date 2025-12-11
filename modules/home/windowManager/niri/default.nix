@@ -1,10 +1,11 @@
 {
+  config,
   inputs,
   pkgs,
   lib,
   ...
 }: let
-  inherit (lib) getExe;
+  inherit (lib) mkIf getExe;
 in {
   imports = [
     inputs.niri.homeModules.niri
@@ -28,13 +29,17 @@ in {
     };
   };
 
-  xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-gnome
-    xdg-desktop-portal-gtk
-  ];
+  xdg.portal = {
+    extraPortals = with pkgs;
+      mkIf config.programs.niri.enable [
+        xdg-desktop-portal-gnome
+      ];
+  };
 
   #= Used Packages
   home.packages = with pkgs; [
+    # Wayland Output Mirror Client
+    wl-mirror
     # Prevents swayidle from sleeping while any application is outputting or receiving audio.
     sway-audio-idle-inhibit
     gnome-keyring

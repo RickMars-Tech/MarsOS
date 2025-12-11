@@ -1,4 +1,4 @@
-_: {
+{
   #= Displays
   programs.niri.settings.outputs = {
     "eDP-1" = {
@@ -9,10 +9,10 @@ _: {
       };
       variable-refresh-rate = "on-demand";
       scale = 1.0;
-      position = {
-        x = 0;
-        y = 0;
-      };
+      # position = {
+      #   x = 0;
+      #   y = 0;
+      # };
     };
     "HDMI-A-1" = {
       mode = {
@@ -21,10 +21,10 @@ _: {
         refresh = null;
       };
       scale = 1.0;
-      position = {
-        x = 0;
-        y = -1080;
-      };
+      # position = {
+      #   x = 1280;
+      #   y = 0;
+      # };
     };
     "LVDS-1" = {
       mode = {
@@ -33,10 +33,10 @@ _: {
         refresh = null;
       };
       scale = 1.0;
-      position = {
-        x = 0;
-        y = -768;
-      };
+      # position = {
+      #   x = 0;
+      #   y = -768;
+      # };
     };
   };
 }

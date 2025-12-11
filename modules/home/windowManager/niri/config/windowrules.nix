@@ -1,4 +1,4 @@
-_: {
+{
   programs.niri.settings = {
     layer-rules = [
       #= Wallpaper
@@ -11,11 +11,11 @@ _: {
         place-within-backdrop = true;
       }
       #= Ironbar
-      {
-        matches = [{namespace = "^ironbar$";}];
-        opacity = 0.90;
-        place-within-backdrop = true;
-      }
+      # {
+      #   matches = [{namespace = "^ironbar$";}];
+      #   opacity = 0.90;
+      #   place-within-backdrop = true;
+      # }
     ];
     # See app-id with command = $ niri msg windows
     window-rules = [

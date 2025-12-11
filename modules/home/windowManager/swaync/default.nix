@@ -1,4 +1,4 @@
-_: {
+{
   services.swaync = {
     enable = true;
     settings = {
@@ -12,11 +12,11 @@ _: {
       control-center-margin-bottom = 10;
       control-center-margin-right = 10;
       control-center-margin-left = 10;
-      notification-2fa-action = true;
+      notification-2fa-action = false;
       notification-inline-replies = false;
-      notification-icon-size = 64;
-      notification-body-image-height = 50;
-      notification-body-image-width = 70;
+      notification-icon-size = 42;
+      notification-body-image-height = 30;
+      notification-body-image-width = 20;
     };
   };
 }

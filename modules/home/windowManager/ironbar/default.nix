@@ -1,6 +1,6 @@
 {
   inputs,
-  pkgs,
+  # pkgs,
   ...
 }: {
   imports = [
@@ -10,7 +10,7 @@
   ];
   programs.ironbar = {
     enable = true;
-    package = pkgs.ironbar;
+    # package = pkgs.ironbar;
     systemd = true;
   };
 }

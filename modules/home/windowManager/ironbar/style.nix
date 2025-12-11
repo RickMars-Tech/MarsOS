@@ -2,31 +2,36 @@
   programs.ironbar.style = let
     color = config.stylix.base16Scheme;
     background = color.base00;
+    backgroundLight = color.base01;
+    border = color.base02;
+    text = color.base05;
+    textDim = color.base04;
+    accent = color.base0D;
     urgent = color.base08;
-    gray = color.base01;
-    white = color.base05;
   in
     /*
     css
     */
     ''
+      /* -- Variables de color -- */
       @define-color color_bg ${background};
-      @define-color color_bg_dark ${gray};
-      @define-color color_border ${background};
-      @define-color color_border_active ${background};
-      @define-color color_text ${white};
+      @define-color color_bg_light ${backgroundLight};
+      @define-color color_border ${border};
+      @define-color color_text ${text};
+      @define-color color_text_dim ${textDim};
+      @define-color color_accent ${accent};
       @define-color color_urgent ${urgent};
-      /* -- base styles -- */
 
+      /* -- Estilos base -- */
       * {
-        font-family: Noto Sans Nerd Font, sans-serif;
-        font-size: 16px;
+        font-family: Montserrat, sans-serif;
+        font-size: 13px;
         border: none;
-        border-radius: 0;
+        transition: all 0.2s ease-in-out;
       }
 
-      box, menubar, button {
-        background-color: @color_bg;
+      box, menubar, button, label {
+        background-color: transparent;
         background-image: none;
         box-shadow: none;
       }
@@ -35,239 +40,398 @@
         color: @color_text;
       }
 
-      button:hover {
-        background-color: @color_bg_dark;
-      }
-
-      scale trough {
-        min-width: 1px;
-        min-height: 2px;
-      }
-
+      /* -- Barra principal -- */
       #bar {
-        border-top: 1px solid @color_border;
+        background-color: alpha(@color_bg, 0.95);
+        border-bottom: 1px solid alpha(@color_border, 0.3);
+        padding: 0 8px;
       }
 
-      .popup {
-        border: 1px solid @color_border;
-        padding: 1em;
+      /* -- Botones generales -- */
+      button {
+        border-radius: 8px;
+        padding: 4px 12px;
+        margin: 0 2px;
+        background-color: transparent;
       }
 
-      /* -- bluetooth -- */
-      .popup-bluetooth {
-        min-height: 14em;
-        min-width: 24em;
+      button:hover {
+        background-color: alpha(@color_bg_light, 0.6);
       }
 
-      .popup-bluetooth .header {
-        padding-bottom: 1.0em;
-        margin-bottom: 0.6em;
-        border-bottom: 1px solid @color_border;
+      button:active {
+        background-color: alpha(@color_accent, 0.2);
       }
 
-      .popup-bluetooth .header .label {
-        margin-left: 0.5em;
+      /* -- Tooltips (estilo GNOME) -- */
+      tooltip {
+        background-color: alpha(@color_bg, 0.98);
+        color: @color_text;
+        border: 1px solid alpha(@color_border, 0.5);
+        border-radius: 8px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       }
 
-      .popup-bluetooth .disabled .spinner {
-        min-width: 2.0em;
-        min-height: 2.0em;
-        padding: 0.4em;
+      tooltip label {
+        color: @color_text;
+        padding: 2px;
       }
 
-      .popup-bluetooth .devices .box .device {
-        margin-bottom: 0.4em;
+      /* -- Workspaces -- */
+      .workspaces .item {
+        border-radius: 8px;
+        background-color: transparent;
+        min-width: 30px;
       }
 
-      .popup-bluetooth .devices .icon {
-        min-width: 2.5em;
-        min-height: 2.5em;
-        margin-right: 0.8em;
+      .workspaces .item:hover {
+        background-color: alpha(@color_bg_light, 0.5);
       }
 
-      .popup-bluetooth .devices .box .device .status .footer-label {
-        font-size: 0.8em;
+      .workspaces .item.focused {
+        background-color: alpha(@color_accent, 0.3);
+        color: @color_text;
+        font-weight: 600;
       }
 
-      .popup-bluetooth .devices .box .device .spinner {
-        min-width: 1.5em;
-        min-height: 1.5em;
-        margin: 0.5em;
+      .workspaces .item.urgent {
+        background-color: alpha(@color_urgent, 0.3);
+        color: @color_urgent;
       }
 
-
-      /* -- clipboard -- */
-      .clipboard {
-        margin-left: 5px;
-        font-size: 1.1em;
+      /* -- Focused window -- */
+      .focused {
+        font-weight: 500;
       }
 
-      .popup-clipboard .item {
-        padding-bottom: 0.3em;
-        border-bottom: 1px solid @color_border;
-      }
-
-
-      /* -- clock -- */
+      /* -- Clock -- */
       .clock {
-        font-weight: bold;
-        margin-left: 5px;
+        font-weight: 600;
+        padding: 4px 16px;
+        border-radius: 8px;
+      }
+      .clock:hover {
+        background-color: alpha(@color_bg_light, 0.5);
+      }
+
+      /* -- Popup general -- */
+      .popup {
+        background-color: alpha(@color_bg, 0.98);
+        border: 1px solid alpha(@color_border, 0.5);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      }
+
+      .popup box {
+        background-color: transparent;
+      }
+
+      .popup label {
+        background-color: transparent;
+        color: @color_text;
+      }
+
+      .popup button {
+        background-color: alpha(@color_bg_light, 0.4);
+      }
+
+      /* -- Popup Clock/Calendar -- */
+      .popup-clock {
+        min-width: 300px;
+        background-color: alpha(@color_bg, 0.98);
+      }
+
+      .popup-clock box {
+        background-color: transparent;
       }
 
       .popup-clock .calendar-clock {
         color: @color_text;
         font-size: 2.5em;
-        padding-bottom: 0.1em;
+        font-weight: 300;
+        padding-bottom: 12px;
+        text-align: center;
+        background-color: transparent;
       }
 
       .popup-clock .calendar {
-        background-color: @color_bg;
+        background-color: transparent;
         color: @color_text;
+        padding: 8px;
+        border-radius: 8px;
       }
 
       .popup-clock .calendar .header {
-        padding-top: 1em;
-        border-top: 1px solid @color_border;
-        font-size: 1.5em;
+        padding: 12px 0;
+        border-top: 1px solid alpha(@color_border, 0.3);
+        font-size: 1.3em;
+        font-weight: 500;
+        background-color: transparent;
       }
 
       .popup-clock .calendar:selected {
-        background-color: @color_border_active;
-      }
-
-
-      /* -- launcher -- */
-      .launcher .item {
-        margin-right: 4px;
-      }
-
-      .launcher .ifix examtem:not(.focused):hover {
-        background-color: @color_bg_dark;
-      }
-
-      .launcher .open {
-        border-bottom: 1px solid @color_text;
-      }
-
-      .launcher .focused {
-        border-bottom: 1px solid @color_border_active;
-      }
-
-      .launcher .urgent {
-        border-bottom-color: @color_urgent;
-      }
-
-      .popup-launcher {
-        padding: 0;
-      }
-
-      .popup-launcher .popup-item:not(:first-child) {
-        border-top: 1px solid @color_border;
-      }
-
-
-      /* -- music -- */
-      .music:hover * {
-        background-color: @color_bg_dark;
-      }
-
-      .popup-music .album-art {
-        margin-right: 1em;
-      }
-
-      .popup-music .icon-box {
-        margin-right: 0.4em;
-      }
-
-      .popup-music .title .icon, .popup-music .title .label {
-        font-size: 1.7em;
-      }
-
-      .popup-music .controls *:disabled {
-        color: @color_border;
-      }
-
-      .popup-music .volume .slider slider {
-        border-radius: 100%;
-      }
-
-      .popup-music .volume .icon {
-        margin-left: 4px;
-      }
-
-      .popup-music .progress .slider slider {
-        border-radius: 100%;
-      }
-
-      /* notifications */
-      .notifications .count {
-        font-size: 0.6rem;
-        background-color: @color_text;
+        background-color: @color_accent;
         color: @color_bg;
-        border-radius: 100%;
-        margin-right: 3px;
-        margin-top: 3px;
-        padding-left: 4px;
-        padding-right: 4px;
-        opacity: 0.7;
+        border-radius: 6px;
+        font-weight: 600;
       }
 
-      /* -- script -- */
-      .script {
-        padding-left: 10px;
+      .popup-clock .calendar:indeterminate {
+        color: @color_text_dim;
       }
 
-
-      /* -- sys_info -- */
-      .sysinfo {
-        margin-left: 10px;
+      /* Días de la semana en el calendario */
+      .popup-clock .calendar.day-name {
+        color: @color_text_dim;
+        font-weight: 600;
+        font-size: 11px;
       }
 
-      .sysinfo .item {
-        margin-left: 5px;
+      /* Días de otros meses */
+      .popup-clock .calendar.other-month {
+        color: @color_text_dim;
+        opacity: 0.5;
       }
 
+      /* Día actual */
+      .popup-clock .calendar.today {
+        background-color: alpha(@color_accent, 0.2);
+        color: @color_accent;
+        font-weight: 700;
+        border-radius: 6px;
+      }
 
-      /* -- tray -- */
+      /* -- System Tray -- */
       .tray {
-        margin-left: 10px;
+        margin: 0 4px;
+        background-color: transparent;
+      }
+      .tray box {
+        background-color: transparent;
+      }
+      .tray .item {
+        border-radius: 8px;
+        background-color: transparent;
+      }
+      .tray .item:hover {
+        background-color: alpha(@color_bg_light, 0.5);
+      }
+      .tray .item box {
+        background-color: transparent;
+      }
+      .tray .item image {
+        background-color: transparent;
       }
 
-      /* -- volume -- */
-      .popup-volume .device-box {
-        border-right: 1px solid @color_border;
+      /* -- Clipboard -- */
+      .clipboard {
+        margin: 0 4px;
+        padding: 4px 10px;
+        border-radius: 8px;
+      }
+      .clipboard:hover {
+        background-color: alpha(@color_bg_light, 0.5);
+      }
+      .popup-clipboard {
+        min-width: 350px;
+        max-height: 400px;
+        background-color: alpha(@color_bg, 0.98);
+      }
+      .popup-clipboard box {
+        background-color: transparent;
+      }
+      .popup-clipboard .item {
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        background-color: alpha(@color_bg_light, 0.3);
+        border: 1px solid alpha(@color_border, 0.2);
+      }
+      .popup-clipboard .item:hover {
+        background-color: alpha(@color_bg_light, 0.6);
+      }
+      .popup-clipboard .item label {
+        background-color: transparent;
       }
 
-      /* -- workspaces -- */
-      .workspaces .item.focused {
-        box-shadow: inset 0 -3px;
-        background-color: @color_bg_dark;
+      /* -- Notifications -- */
+      .notifications {
+        border-radius: 8px;
       }
-
-      .workspaces .item.urgent {
+      .notifications .count {
+        font-size: 10px;
+        font-weight: 700;
         background-color: @color_urgent;
+        color: @color_bg;
+        border-radius: 10px;
+        padding: 2px 6px;
+        margin-left: 6px;
+        min-width: 18px;
+        text-align: center;
       }
 
-      .workspaces .item:hover {
-        box-shadow: inset 0 -3px;
+      /* -- Volume -- */
+      .volume {
+        margin: 0 4px;
+        padding: 4px 10px;
+        border-radius: 8px;
+        min-width: 40px;
+      }
+      .volume:hover {
+        background-color: alpha(@color_bg_light, 0.5);
+      }
+      .popup-volume {
+        min-width: 320px;
+        background-color: alpha(@color_bg, 0.98);
+      }
+      .popup-volume box {
+        background-color: transparent;
+      }
+      .popup-volume label {
+        background-color: transparent;
+        color: @color_text;
+        margin-bottom: 8px;
+      }
+      .popup-volume scale {
+        margin: 12px 0;
+      }
+      .popup-volume scale trough {
+        min-height: 6px;
+        min-width: 200px;
+        border-radius: 3px;
+        background-color: alpha(@color_border, 0.5);
+      }
+      .popup-volume scale highlight {
+        background-color: @color_accent;
+        border-radius: 3px;
+      }
+      .popup-volume scale slider {
+        min-width: 16px;
+        min-height: 16px;
+        border-radius: 8px;
+        background-color: @color_text;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .popup-volume scale slider:hover {
+        background-color: @color_accent;
+      }
+      .popup-volume .device-box {
+        border-right: 1px solid alpha(@color_border, 0.3);
+        padding-right: 12px;
+        margin-right: 12px;
+        background-color: transparent;
+      }
+      .popup-volume button {
+        background-color: alpha(@color_bg_light, 0.4);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin: 4px 0;
+      }
+      .popup-volume button:hover {
+        background-color: alpha(@color_bg_light, 0.7);
+      }
+      .popup-volume button label {
+        background-color: transparent;
       }
 
-
-      /* -- custom: power menu -- */
-      .popup-power-menu #header {
-        font-size: 1.4em;
-        padding-bottom: 0.4em;
-        margin-bottom: 0.6em;
-        border-bottom: 1px solid @color_border;
+      /* -- Battery -- */
+      .battery {
+        margin: 0 4px;
+        padding: 4px 10px;
+        border-radius: 8px;
+      }
+      .battery:hover {
+        background-color: alpha(@color_bg_light, 0.5);
+      }
+      .battery.warning {
+        color: @color_urgent;
+      }
+      .battery.critical {
+        background-color: alpha(@color_urgent, 0.3);
+        color: @color_urgent;
+        font-weight: 600;
       }
 
-      .popup-power-menu .power-btn {
-        border: 1px solid @color_border;
-        padding: 0.6em 1em;
+      /* -- Bluetooth -- */
+      .popup-bluetooth {
+        min-height: 300px;
+        min-width: 350px;
+        background-color: alpha(@color_bg, 0.98);
+      }
+      .popup-bluetooth box {
+        background-color: transparent;
+      }
+      .popup-bluetooth .header {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid alpha(@color_border, 0.3);
+        font-weight: 600;
+        background-color: transparent;
+      }
+      .popup-bluetooth .header label {
+        background-color: transparent;
+      }
+      .popup-bluetooth .devices .device {
+        margin-bottom: 8px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: alpha(@color_bg_light, 0.3);
+      }
+      .popup-bluetooth .devices .device:hover {
+        background-color: alpha(@color_bg_light, 0.6);
+      }
+      .popup-bluetooth .devices .device box {
+        background-color: transparent;
+      }
+      .popup-bluetooth .devices .device label {
+        background-color: transparent;
+      }
+      .popup-bluetooth .devices .icon {
+        min-width: 32px;
+        min-height: 32px;
+        margin-right: 12px;
+        background-color: transparent;
       }
 
-      .popup-power-menu #buttons > *:nth-child(1) .power-btn {
-        margin-right: 1em;
+      /* -- Sliders generales -- */
+      scale trough {
+        min-height: 6px;
+        border-radius: 3px;
+        background-color: alpha(@color_border, 0.5);
+      }
+
+      scale highlight {
+        background-color: @color_accent;
+        border-radius: 3px;
+      }
+
+      scale slider {
+        min-width: 14px;
+        min-height: 14px;
+        border-radius: 7px;
+        background-color: @color_text;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      scale slider:hover {
+        background-color: @color_accent;
+      }
+
+      /* -- Scrollbars -- */
+      scrollbar {
+        background-color: transparent;
+      }
+
+      scrollbar slider {
+        background-color: alpha(@color_border, 0.5);
+        border-radius: 8px;
+        min-width: 8px;
+      }
+
+      scrollbar slider:hover {
+        background-color: alpha(@color_border, 0.7);
       }
     '';
 }

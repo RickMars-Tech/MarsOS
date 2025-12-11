@@ -117,7 +117,7 @@ in {
         softness = 100;
       };
       zoom = 0.70;
-      backdrop-color = "transparent";
+      backdrop-color = "00000040"; # transparent Changed for Black Color With 40% of Opacity
     };
 
     prefer-no-csd = true;

@@ -1,4 +1,4 @@
-_: {
+{
   programs.ironbar.config = {
     anchor_to_edges = true;
     position = "top";
@@ -7,22 +7,12 @@ _: {
       # Workspaces
       {
         type = "workspaces";
-        name_map = {
-          "1" = "";
-          "2" = "";
-          "3" = "";
-          Games = "icon:steam";
-          Code = "";
-        };
-        # favorites = ["1" "2" "3"];
         all_monitors = true;
+        sort = "added";
       }
       {
         type = "focused";
         show_icon = false;
-        show_title = true;
-        icon_size = 32;
-        truncate = "end";
       }
     ];
     center = [

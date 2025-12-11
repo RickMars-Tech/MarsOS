@@ -1,6 +1,13 @@
-{config, ...}: let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
+  inherit (lib) getExe;
   color = config.lib.stylix.colors;
   font = config.stylix.fonts.sansSerif.name;
+  lock = getExe pkgs.hyprlock;
 in {
   programs.wlogout = {
     enable = true;
@@ -31,7 +38,7 @@ in {
       }
       {
         "label" = "lock";
-        "action" = "swaylock &";
+        "action" = "${lock} &";
         "text" = "Lock";
         "keybind" = "l";
       }

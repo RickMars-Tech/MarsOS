@@ -1,4 +1,4 @@
-_: {
+{
   services.walker.theme = {
     name = "mars";
     layout = {
