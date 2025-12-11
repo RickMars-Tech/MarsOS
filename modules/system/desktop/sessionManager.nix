@@ -1,13 +1,10 @@
 {
-  # config,
+  config,
   pkgs,
-  # lib,
   ...
 }: let
-  # inherit (lib) mkIf;
   tuigreet = "${pkgs.tuigreet}/bin/tuigreet";
-  niri-session = "${pkgs.niri}/bin/niri";
-  # niri = config.home-manager.programs.niri;
+  niri-session = "${config.programs.niri.package}/bin/niri";
 in {
   #|==< UWSM >==|#
   programs.uwsm = {
@@ -18,7 +15,6 @@ in {
       binPath = niri-session;
     };
   };
-
   #|==< TuiGreet >==|#
   services.greetd = {
     enable = true;
@@ -29,5 +25,4 @@ in {
       };
     };
   };
-  console.keyMap = "la-latin1";
 }

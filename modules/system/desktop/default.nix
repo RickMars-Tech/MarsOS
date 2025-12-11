@@ -1,9 +1,9 @@
 {
   imports = [
     ./dbus.nix
+    ./desktop-pkgs.nix
     ./keyboard.nix
     ./network.nix
-    ./packages.nix
     ./printers.nix
     ./sessionManager.nix
     ./sessionVariables.nix

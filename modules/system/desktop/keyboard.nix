@@ -21,4 +21,5 @@
       }
     ];
   };
+  console.keyMap = "la-latin1";
 }

@@ -12,7 +12,7 @@ in {
       followSystem = true;
       autoImport = true;
     };
-    image = ../../../assets/wallpapers/bocchi-runner-2049.jpg;
+    image = ../../../assets/wallpapers/nix-wall.png;
 
     polarity = "dark";
 
@@ -21,7 +21,7 @@ in {
       base00 = "#000000"; # (Negro) Background color
       base01 = "#1A1A1A"; # (Negro/Gris) Lighter Background
       base02 = "#1F1F1F"; # (Gris Oscuro) Selection Background
-      base03 = "#2B2B2B"; # (Gris )Comments, Invisibles, Line Highlighting
+      base03 = "#6272a4"; # (Gris )Comments, Invisibles, Line Highlighting
       base04 = "#606060"; # (Gris) Dark Foreground
       base05 = "#C7C7C7"; # (White) Default Foreground, Caret, Delimiters, Operators
       base06 = "#C0C0C0"; # (White) Light Foreground
@@ -38,7 +38,7 @@ in {
 
     targets = {
       plymouth.enable = mkDefault false;
-      gtk.enable = true;
+      # gtk.enable = true;
     };
 
     cursor = {
@@ -87,7 +87,7 @@ in {
     {
       stylix = {
         targets = {
-          # gtk.enable = true;
+          gtk.enable = true;
           firefox = {
             enable = true;
             profileNames = [
