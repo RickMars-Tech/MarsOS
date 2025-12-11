@@ -1,6 +1,6 @@
 let
   # Función helper para comandos de Yazi
-  yaziCommand = chooserFile: directory: [
+  yazi = chooserFile: directory: [
     ":sh rm -f ${chooserFile}"
     ":insert-output yazi '${directory}' --chooser-file=${chooserFile}"
     ":insert-output echo '\\x1b[?1049h\\x1b[?2004h' > /dev/tty"
@@ -23,8 +23,8 @@ in {
         "," = ":config-reload";
 
         # File operations con Yazi
-        e = yaziCommand "/tmp/helix-yazi-current" "%{buffer_name}";
-        E = yaziCommand "/tmp/helix-yazi-workspace" "%{workspace_directory}";
+        e = yazi "/tmp/helix-yazi-current" "%{buffer_name}";
+        E = yazi "/tmp/helix-yazi-workspace" "%{workspace_directory}";
 
         # Git operations
         g = {

@@ -5,15 +5,6 @@
     ./keybindings.nix
   ];
 
-  home.packages = with pkgs; [
-    # Herramientas generales
-    fd
-    ripgrep
-    tree-sitter
-    # Git para mejor integración
-    gitui
-  ];
-
   programs.helix = {
     package = pkgs.helix;
     enable = true;
