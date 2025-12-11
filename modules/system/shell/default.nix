@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./aliases.nix
     ./bat.nix
     ./fish.nix
     ./skim.nix
@@ -12,11 +13,8 @@
     gping # Ping, but with a graph
     bottom # Process/System Monitor
     ripgrep # Extended Grep
-    # bat # Cat Clone with Syntax Highlighting
     eza # Replacement for ls
     xcp # Extended CP
-    # zoxide # Fast cd command
-    # skim # CLI Fuzzy Finder
     dust # Like du but more intuitive
     duf # Disk Usage/Free Utility
     trashy # Alternative to rm and trash-cli

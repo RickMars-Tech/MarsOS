@@ -1,6 +1,10 @@
 {pkgs, ...}: {
   programs.bat = {
     enable = true;
+    extraPackages = with pkgs.bat-extras; [
+      batdiff
+      batman
+      prettybat
+    ];
   };
-  environment.systemPackages = with pkgs; [bat-extras.batman];
 }
