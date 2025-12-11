@@ -1,14 +1,10 @@
 <h1 align="center">:snowflake: MarsOS :snowflake:</h1>
 <p align="center"> 
  MarsOS is a simple way to replicate my setup on any NixOS system via a Flake.
-
 </p>
 
-</div>
-
-![](./assets/niri-overview.png)
-
-![](./assets/niri-term.png)
+![Niri Overview](./assets/niri-overview.png)
+![Niri Terminal](./assets/niri-term.png)
 
 - Wallpaper: [Bochi Rock Linux](https://imgur.com/bochi-rock-linux-wallpaper-mO5tavs)
 - OG Wallpaper: [Bocchi Runner 2049 by Carlo Montie](https://www.pixiv.net/en/artworks/108083186) 
@@ -20,8 +16,8 @@
 | --------------------------- | ----------------------------------------------- |
 | **Window Manager**          | [Niri][Niri]                                    |
 | **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]           |
-| **Bar**                     | [Ironbar][Ironbar] + [BongoCat][BongoCat]       |
-| **Application Launcher**    | [Fuzzel][Fuzzel]                                |
+| **Bar**                     | [Ironbar][Ironbar]                              |
+| **Application Launcher**    | [Walker][Walker]                                |
 | **Notification Daemon**     | [SwayNC][SwayNC]                                |
 | **Session Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]         |
 | **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]   |
@@ -35,50 +31,76 @@
 
 </details>
 
-# Guide to Setup
-<br>
 
-Use Git with to clone the Repo:
+## Estructura de directorios resultante:
+```
+MarsOS/
+├── assets
+│   ├── ascii-art
+│   └── wallpapers
+├── hosts/
+│   ├── {host}
+│   │   ├── default.nix
+│   │   └── disko.nix
+│   ├── host.md
+│   └── config.md
+├── modules/
+├── flake.nix
+├── flake.lock
+└── shell.nix
+   ```
+
+## Installation Guide
+
+### Prerequisites
+- A bootable NixOS ISO (Minimal installation recommended)
+- Internet connection
+
+### Steps
+
+1. **Clone the repository:**
 ```bash
-nix run nixpkgs#git -- clone https://github.com/RickMars-Tech/MarsOS.git
+   nix run nixpkgs#git -- clone https://github.com/RickMars-Tech/MarsOS.git
 ```
 
-Update the Flake(Optional):
+2. **Navigate to the directory and apply Disko formatting:**
 ```bash
-sudo nix flake update
+   cd MarsOS/
+   sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount hosts/<host>/disko.nix
 ```
+   > **Note:** Replace `<host>` with your actual hostname (e.g., `boltz`, `rift`, or `crest`)
 
-Change Directorie and Generate Hardware Config:
+3. **Copy the Flake to `/mnt/etc/nixos/` and build the system:**
 ```bash
-cd MarsOS/
-sudo nixos-generate-config --show-hardware-config > ./hosts/{Host-Directory}/hardware.nix
+   sudo mkdir -p /mnt/etc/nixos
+   sudo cp -r ~/MarsOS /mnt/etc/nixos/
+   sudo nixos-install --flake /mnt/etc/nixos/MarsOS#<host>
 ```
+   > **Note:** Replace `<host>` with your chosen hostname
 
-Rebuild System:
-```bash
-sudo nixos-rebuild boot --flake .#{host}
-```
+4. **Reboot and enjoy!**
 
-<br>
+## Documentation
 
+- **[Creating Custom Hosts](./hosts/host.md)** - Learn how to create your own host configurations
+- **[Configuration Options](./hosts/config.md)** - Complete reference of all Mars modules and options
 
-# Important.
-1. This Flake is created specifically for my systems (boltz and rift), you can create your own configuration through the options I create, editing configuration files and/or creating your own modifications, feel free to copy/take the configurations you want.
-2. I use the Default Boot Loader Systemd-boot, I have no plans to create modules/configurations for GRUB, so you will have to configure it yourself if you want to use it.
-3. Preferably Install a Minimal environment without DE.
+## Important Notes
 
+1. **Personal Configuration:** This Flake is specifically tailored for my systems (boltz, rift, and crest). You're welcome to use it as a base, modify the configuration files, or copy individual components that suit your needs.
 
-# References
+2. **Boot Loader:** This configuration uses systemd-boot and Lanzaboote as the default boot loader. GRUB support is not included, so you'll need to configure it manually if you prefer GRUB.
 
-Configurations that have inspired and taught me a lot (Sorry for stealing from you guys):
+3. **Installation Environment:** For best results, install from a minimal NixOS environment without a pre-installed desktop environment.
 
-**[Gvolpe]**
+## Credits & References
 
-**[Tyler Kelley]**
+Special thanks to these excellent configurations that inspired and taught me so much:
 
-**[Liassica]**
-
-**[Ryan Yin]**
+- **[Gvolpe]** - Zaphkiel configuration
+- **[Tyler Kelley]** - ZaneyOS
+- **[Liassica]** - NixOS config
+- **[Ryan Yin]** - NixOS and Flakes book
 
 <!----------------------------------{ Thanks }--------------------------------->
 [Gvolpe]: https://github.com/Rexcrazy804/Zaphkiel
@@ -90,9 +112,8 @@ Configurations that have inspired and taught me a lot (Sorry for stealing from y
 [Niri]: https://github.com/YaLTeR/niri
 [Wezterm]: https://wezterm.org/
 [Ironbar]: https://github.com/JakeStanger/ironbar
-[BongoCat]: https://github.com/saatvik333/wayland-bongocat
 [Zellij]: https://zellij.dev/
-[Fuzzel]: https://codeberg.org/dnkl/fuzzel
+[Walker]: https://github.com/abenz1267/walker
 [SwayNC]: https://github.com/ErikReider/SwayNotificationCenter
 [GreetD]: https://sr.ht/~kennylevinsen/greetd/
 [TuiGreet]: https://github.com/apognu/tuigreet
@@ -107,4 +128,3 @@ Configurations that have inspired and taught me a lot (Sorry for stealing from y
 [Nerd fonts]: https://www.nerdfonts.com/
 [IMV]: https://sr.ht/~exec64/imv/
 [MPV]: https://mpv.io/
-[Nix-ArtWork]: https://github.com/NixOS/nixos-artwork
