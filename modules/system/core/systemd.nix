@@ -4,14 +4,14 @@
   lib,
   ...
 }: let
-  inherit (lib) optionals mkDefault mkForce mkIf;
+  inherit (lib) optionals mkForce mkIf;
   pci-latency = pkgs.callPackage ../../../pkgs/gamingScripts/pciLatency.nix {};
   amd = config.mars.graphics.amd;
   gaming = config.mars.gaming;
   greetd = config.services.greetd;
 in {
   systemd = {
-    user.services.niri-flake-polkit.enable = mkDefault false;
+    user.services.niri-flake-polkit.enable = mkIf config.security.soteria.enable false;
     services = {
       systemd-udev-settle.enable = false; # Skip waiting for udev
       NetworkManager-wait-online.wantedBy = mkForce []; # Faster Boot Times
