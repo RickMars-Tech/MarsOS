@@ -21,7 +21,7 @@ in {
         "--force-grab-cursor"
         "--expose-wayland" #= Support Wayland Clients
         "--rt" #= Use Realtime Scheduling
-        "--adaptive-sync" #= Vrr
+        # "--adaptive-sync" #= Vrr
       ];
     };
   };
