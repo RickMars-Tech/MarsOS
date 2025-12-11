@@ -28,7 +28,7 @@ in {
     #= PC monitoring
     cpu-x
     clinfo
-    glxinfo
+    #glxinfo
     hardinfo2
     hwinfo
     #= Multimedia Codecs & Libs

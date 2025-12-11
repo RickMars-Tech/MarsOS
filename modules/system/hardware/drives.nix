@@ -17,41 +17,6 @@
       && builtins.readFile "/sys/block/${dev}/queue/rotational" == "0\n")
     (builtins.attrNames (builtins.readDir /sys/block));
 in {
-  #|==< FileSystem >==|#
-  # Nota: Con Disko, las opciones de montaje ya están configuradas
-  # en disko-config.nix, pero podemos añadir configuraciones adicionales aquí
-
-  # fileSystems = mkMerge [
-  #   {
-  #     # Tmp Partition - tmpfs en RAM para mejor rendimiento
-  #     "/tmp" = {
-  #       device = "tmpfs";
-  #       fsType = "tmpfs";
-  #       options = [
-  #         "size=8G" # Aumentado a 8G para compilaciones grandes
-  #         "noatime"
-  #         "nodev"
-  #         "nosuid"
-  #         "noexec"
-  #         "mode=1777"
-  #       ];
-  #     };
-
-  #     # /var/tmp - más persistente que /tmp
-  #     "/var/tmp" = mkIf (!rootIsBtrfs) {
-  #       device = "tmpfs";
-  #       fsType = "tmpfs";
-  #       options = [
-  #         "size=4G"
-  #         "noatime"
-  #         "nodev"
-  #         "nosuid"
-  #         "mode=1777"
-  #       ];
-  #     };
-  #   }
-  # ];
-
   # BTRFS Auto-Scrub - verificación de integridad mensual
   services.btrfs.autoScrub = mkIf rootIsBtrfs {
     enable = true;
@@ -91,40 +56,17 @@ in {
     extraArgs = [
       "-g" # Mata todo el grupo de procesos
       "--avoid"
-      "(^|/)(init|systemd|Xorg|sway|waybar|kitty|alacritty|foot)$"
+      "(^|/)(init|systemd|wayland|niri|ironbar|wezterm|steam)$"
       "--prefer"
-      "(^|/)(firefox|chromium|chrome|electron|slack|discord|teams|java|node)$"
+      "(^|/)(firefox|chromium|chrome|electron|slack|discord)$"
     ];
   };
 
-  #|==< Swap Configuration >==|#
-
-  # Parámetros de swap optimizados
-  boot.kernel.sysctl = {
-    # Reduce el uso de swap (prefiere RAM)
-    "vm.swappiness" = mkDefault 10;
-
-    # Mejora el rendimiento cuando se usa swap
-    "vm.vfs_cache_pressure" = mkDefault 50;
-
-    # Previene OOM matando procesos aleatorios
-    "vm.overcommit_memory" = mkDefault 1;
-
-    # Dirty pages - optimiza escritura a disco
-    "vm.dirty_ratio" = mkDefault 10;
-    "vm.dirty_background_ratio" = mkDefault 5;
-
-    # Para BTRFS específicamente
-    "vm.dirty_writeback_centisecs" = mkIf rootIsBtrfs (mkDefault 1500);
-  };
-
-  #|==< System Packages >==|#
-
   environment.systemPackages = with pkgs;
     [
+      usbutils
       # Disk management tools
       caligula # TUI para disk imaging
-      gnome-disk-utility # GUI disk manager
       baobab # Análisis de uso de disco
       woeusb # Flash Windows ISO
       gparted # Particionamiento avanzado
@@ -145,9 +87,15 @@ in {
       nvme-cli # Herramientas específicas para NVMe
     ];
 
-  #|==< Storage Services >==|#
-  # UDisks2
-  services.udisks2.enable = true;
+  #|==< Storage >==|#
+  # UDisks2 & Automount Devices
+  services = {
+    udisks2.enable = true;
+    gvfs.enable = true;
+    devmon.enable = true;
+  };
+  # GUI disk manager
+  programs.gnome-disks.enable = true;
 
   # SMART for SSD/NVMe
   services.smartd = mkIf hasSSD {
