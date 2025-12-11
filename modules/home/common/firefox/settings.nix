@@ -1,10 +1,20 @@
 {
+  osConfig,
+  lib,
+  ...
+}: let
+  inherit (lib) mkIf;
+in {
   programs.firefox.profiles.default.settings = {
     # Disable AI Trash
     "browser.ml.chat.enabled" = false; # Disable AI Chats
     "browser.ml.chat.hideLocalhost" = false;
     "browser.ml.chat.menu" = false;
     "browser.tabs.groups.smart.enabled" = false;
+
+    # Speed up
+    "gfx.webrender.layer-compositor" = true;
+    "media.wmf.zero-copy-nv12-textures-force-enable" = mkIf osConfig.mars.graphics.amd.enable true;
 
     # Harware Acceleration
     "gfx.webrender.all" = true;
@@ -94,7 +104,6 @@
     # **************************************************************************
 
     #TRACKING PROTECTION
-
     "browser.contentblocking.category" = "strict";
     "browser.download.start_downloads_in_tmp_dir" = true;
     "browser.helperApps.deleteTempFileOnExit" = true;
@@ -102,26 +111,17 @@
     "privacy.globalprivacycontrol.enabled" = true;
 
     #OCSP & CERTS / HPKP
-
     "security.OCSP.enabled" = 0;
     "security.pki.crlite_mode" = 2;
 
     #SSL / TLS
-
     "security.ssl.treat_unsafe_negotiation_as_broken" = true;
     "browser.xul.error_pages.expert_bad_cert" = true;
     "security.tls.enable_0rtt_data" = false;
 
     #DISK AVOIDANCE
-
     "browser.privatebrowsing.forceMediaMemoryCache" = true;
     "browser.sessionstore.interval" = 60000;
-
-    /**
-    SHUTDOWN & SANITIZING **
-    */
-    # "browser.privatebrowsing.resetPBM.enabled" = true;
-    # "privacy.history.custom" = true;
 
     /**
     SEARCH / URL BAR **
@@ -134,14 +134,6 @@
     "browser.urlbar.groupLabels.enabled" = false;
     "browser.formfill.enable" = false;
     "network.IDN_show_punycode" = true;
-
-    /**
-    PASSWORDS **
-    */
-    # "signon.formlessCapture.enabled" = false;
-    # "signon.privateBrowsingCapture.enabled" = false;
-    # "network.auth.subresource-http-auth-allow" = 1;
-    # "editor.truncate_user_pastes" = false;
 
     /**
     MIXED CONTENT + CROSS-SITE **
