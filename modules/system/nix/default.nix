@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  pkgs,
   self,
   lib,
   ...
@@ -18,19 +19,21 @@
   nixTag = config.system.nixos.tags;
   nixVersion = config.system.nixos.version;
 in {
-  imports = [
-    ./cache.nix
-    ./nh.nix
-    ./nix-ld.nix
-  ];
+  imports = [./cache.nix ./nh.nix];
   #= Enable Nix-Shell, Flakes and More...
   nix = {
+    #= Daemon
+    daemonIOSchedPriority = mkDefault 7;
+    daemonCPUSchedPolicy = mkDefault "batch";
+    daemonIOSchedClass = mkDefault "idle";
+
+    package = pkgs.lixPackageSets.stable.lix;
     channel.enable = false;
     registry = registry; # Registry for legacy nix commands
     nixPath = nixPath; # Pin nixpkgs flake to system nixpkgs
     settings = {
       auto-optimise-store = true;
-      download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
+      # download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
       experimental-features = [
         "nix-command"
         "flakes"
