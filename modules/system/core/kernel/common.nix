@@ -3,9 +3,10 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkMerge optionals;
+  inherit (lib) mkIf mkMerge mkDefault optionals;
   gaming = config.mars.gaming;
   plymouth = config.boot.plymouth;
+  rootIsBtrfs = config.fileSystems."/".fsType or "" == "btrfs";
 in {
   boot = {
     supportedFilesystems = ["ntfs"];
@@ -41,6 +42,22 @@ in {
 
     kernel.sysctl = mkMerge [
       {
+        # Reduce el uso de swap (prefiere RAM)
+        "vm.swappiness" = mkDefault 10;
+
+        # Mejora el rendimiento cuando se usa swap
+        "vm.vfs_cache_pressure" = mkDefault 50;
+
+        # Previene OOM matando procesos aleatorios
+        "vm.overcommit_memory" = mkDefault 1;
+
+        # Dirty pages - optimiza escritura a disco
+        "vm.dirty_ratio" = mkDefault 10;
+        "vm.dirty_background_ratio" = mkDefault 5;
+
+        # btrfs
+        "vm.dirty_writeback_centisecs" = mkIf rootIsBtrfs (mkDefault 1500);
+
         "net.core.default_qdisc" = "cake"; # Mejor QoS
         # Aumentar buffers para mejor throughput
         "net.core.rmem_max" = 134217728;
@@ -71,26 +88,16 @@ in {
           "fs.file-max" = 209752;
           "kernel.split_lock_mitigate" = 0;
           "net.ipv4.tcp_fin_timeout" = 5;
-          "vm.dirty_writeback_centisecs" = 1500;
+          # "vm.dirty_writeback_centisecs" = 1500;
           "vm.page-cluster" = 0;
           # https://wiki.archlinux.org/title/Gaming#Make_the_changes_permanent
           "vm.compaction_proactiveness" = 0;
           "vm.watermark_boost_factor" = 1;
           "vm.watermark_scale_factor" = 250;
-          "vm.swappiness" = 30;
           "vm.zone_reclaim_mode" = 0;
-
           "kernel.sched_child_runs_first" = 0;
           "kernel.sched_autogroup_enabled" = 1;
-          # Evita que el sistema se bloquee bajo alta carga
-          "vm.overcommit_memory" = 0;
           "vm.oom-kill" = 1; # Activa el OOM killer (necesario)
-
-          # https://wiki.archlinux.org/title/Sysctl#Virtual_memory
-          "vm.dirty_ratio" = 10;
-          "vm.dirty_background_ratio" = 5;
-          # VFS cache
-          "vm.vfs_cache_pressure" = 20;
         })
     ];
     blacklistedKernelModules = [
@@ -131,6 +138,8 @@ in {
       "thunderbolt"
       #= Vivid testing driver
       "vivid"
+      #= ALWAYS nouveau should be used instead.
+      "nvidiafb"
       #= Modules that are disabled in hardened but not the default kernel
       "hwpoison_inject"
       "punit_atom_debug"

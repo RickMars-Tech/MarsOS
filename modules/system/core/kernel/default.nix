@@ -18,7 +18,7 @@ in {
   };
 
   config = {
-    #|==< Nyx Kernel >==|#
+    #|==< Kernel >==|#
     boot.kernelPackages =
       if version == "latest"
       then pkgs.linuxPackages_latest
