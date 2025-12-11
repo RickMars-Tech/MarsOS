@@ -1,19 +1,29 @@
 #|==< Desktop PC with Integrated AMD Gpu >==|#
-_: {
+{
   imports = [
-    # Include the results of the hardware scan.
-    ./hardware.nix
+    ./disko.nix
     ../../modules/system/default.nix
   ];
 
   # Hostname
-  networking.hostName = "rift";
+  networking.hostName = "crest";
 
   #|==< Mars Config >==|#
   mars = {
+    boot = {
+      secureBoot = true;
+      plymouth = true;
+      kernel.version = "latest";
+    };
+
+    #= Enable Doas
+    security.doas = true;
+
+    #= Hardware
     cpu.amd.enable = true;
     graphics = {
       enable = true;
+      #= AMD/RADEON
       amd = {
         enable = true;
         vulkan = true;
@@ -21,13 +31,33 @@ _: {
         compute.enable = false;
       };
     };
+
+    #= Desktop
+    desktop.graphics = true; # include Graphics/Creation tools like OBS and Gimp
+
+    #= Development
+    dev = {
+      git = {
+        enable = true;
+        username = "RickMars-Tech";
+        email = "rickmars117@proton.me";
+      };
+      languages = {
+        nix = true;
+        python = true;
+        octave = true;
+      };
+    };
+
+    #= Gaming
     gaming = {
       enable = true;
       gamemode = {
         enable = true;
-        amdOptimizations = true;
-        nvidiaOptimizations = false;
+        amdOptimizations = false;
+        nvidiaOptimizations = true;
       };
+      gamescope.enable = true;
       minecraft = {
         prismlauncher.enable = true;
         extraJavaPackages.enable = true;
