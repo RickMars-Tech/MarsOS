@@ -1,42 +1,18 @@
 {
-  description = "A Demostration of The Power of Nix";
+  description = "A Demonstration of The Power of Nix";
 
   inputs = {
     # Core
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # System tools
+    # Secure Boot
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.3";
+      url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Declarative Disk Partitioning and Formatting
     disko = {
       url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Home & Theming
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    stylix = {
-      url = "github:nix-community/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Window Manager & Extensions
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    ironbar = {
-      # url = "github:JakeStanger/ironbar/v0.17.1";
-      url = "github:JakeStanger/ironbar";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    firefox-addons = {
-      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -46,39 +22,29 @@
     nixpkgs,
     ...
   } @ inputs: let
-    system = "x86_64-linux";
-    username = "rick";
-    fullname = "Rick";
+    commonConfig = import ./common.nix;
+
+    lib = nixpkgs.lib.extend (final: _: {
+      toKDL = import ./lib/to-kdl.nix {lib = final;};
+    });
 
     commonArgs = {
-      inherit system username fullname inputs self;
+      inherit (commonConfig) system username fullname;
+      inherit inputs self;
     };
 
     baseModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.disko.nixosModules.disko
-      inputs.stylix.nixosModules.stylix
-      inputs.home-manager.nixosModules.home-manager
-      ./modules/system
-      {
-        nixpkgs = {
-          # hostPlatform = system;
-          config.allowUnfree = true;
-          overlays = [inputs.niri.overlays.niri];
-        };
-        home-manager = {
-          useGlobalPkgs = false;
-          useUserPackages = true;
-          users.${username} = import ./modules/home;
-          extraSpecialArgs = commonArgs;
-        };
-      }
+      ./modules
+      {nixpkgs.config.allowUnfree = true;}
     ];
 
     mkHost = hostname: extraModules:
       nixpkgs.lib.nixosSystem {
-        specialArgs = commonArgs;
-        system = system;
+        inherit lib;
+        specialArgs = commonArgs // {inherit inputs;};
+        system = commonConfig.system;
         modules = baseModules ++ [./hosts/${hostname}] ++ extraModules;
       };
 
@@ -91,8 +57,6 @@
   in {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
 
-    # stdenv.hostPlatform.system = system;
-
-    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+    formatter.${commonConfig.system} = nixpkgs.legacyPackages.${commonConfig.system}.alejandra;
   };
 }
