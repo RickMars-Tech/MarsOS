@@ -10,10 +10,10 @@
   ...
 }: let
   pname = "geforce-infinity";
-  version = "1.1.3";
+  version = "1.2.0";
   src = fetchurl {
     url = "https://github.com/AstralVixen/GeForce-Infinity/releases/download/${version}/GeForceInfinity-linux-${version}-x86_64.AppImage";
-    sha256 = "sha256-C2bHMOWfYVJ1vpQlbq0KWqQRqXkT19+W+q5No9G4l6Q=";
+    sha256 = "sha256-OjfbHcuwPpMEnZYYiglKSg9ntz1qY2VHJoQObE0PTr0=";
   };
   appimageContents = appimageTools.extractType2 {inherit pname version src;};
 in
