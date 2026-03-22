@@ -21,15 +21,16 @@ This documentation is a work in progress. New Mars modules and options are being
 
 - [Boot Options](#boot-options-marsboot)
 - [Security Options](#security-options-marssecurity)
-- [Hardware Options](#hardware-options)
-  - [ASUS Specific](#asus-specific-marsasus)
-  - [CPU Configuration](#cpu-configuration-marscpu)
-  - [Laptop Optimizations](#laptop-optimizations-marslaptopoptimizations)
-- [Graphics Options](#graphics-options-marsgraphics)
-  - [AMD/RADEON](#amdradeon-marsgraphicsamd)
-  - [NVIDIA Open Source](#nvidia-open-source-marsgraphicsnvidiafree)
-  - [NVIDIA Proprietary](#nvidia-proprietary-marsgraphicsnvidiapro)
-  - [NVIDIA Prime](#nvidia-prime-marsgraphicsnvidiaroproprime)
+- [Hardware Options](#hardware-options-marshardware)
+  - [ASUS Specific](#asus-specific-marshardwareasus)
+  - [CPU Configuration](#cpu-configuration-marshardwarecpu)
+  - [Laptop Optimizations](#laptop-optimizations-marshardwarelaptopoptimizations)
+- [Graphics Options](#graphics-options-marshardwaregraphics)
+  - [AMD/RADEON](#amdradeon-marshardwaregraphicsamd)
+  - [NVIDIA Open Source](#nvidia-open-source-marshardwaregraphicsnvidiafree)
+  - [NVIDIA Proprietary](#nvidia-proprietary-marshardwaregraphicsnvidiapro)
+  - [NVIDIA Prime](#nvidia-prime-marshardwaregraphicsnvidiaproprime)
+- [Shell Options](#shell-options-marsshell)
 - [Desktop Options](#desktop-options-marsdesktop)
 - [Development Options](#development-options-marsdev)
 - [Gaming Options](#gaming-options-marsgaming)
@@ -75,9 +76,9 @@ mars.security.doas = true;
 
 ---
 
-## Hardware Options
+## Hardware Options (`mars.hardware`)
 
-### ASUS Specific (`mars.asus`)
+### ASUS Specific (`mars.hardware.asus`)
 
 ASUS laptop-specific configurations and optimizations.
 
@@ -89,7 +90,7 @@ ASUS laptop-specific configurations and optimizations.
 
 **Example:**
 ```nix
-mars.asus = {
+mars.hardware.asus = {
   enable = true;
   battery.chargeUpto = 80;
 };
@@ -97,7 +98,7 @@ mars.asus = {
 
 > **Tip:** Setting charge limit to 80% can significantly extend battery lifespan.
 
-### CPU Configuration (`mars.cpu`)
+### CPU Configuration (`mars.hardware.cpu`)
 
 CPU vendor-specific optimizations.
 
@@ -108,12 +109,12 @@ CPU vendor-specific optimizations.
 
 **Example:**
 ```nix
-mars.cpu.amd.enable = true;
+mars.hardware.cpu.amd.enable = true;
 ```
 
 > **Note:** Only enable the option matching your CPU vendor.
 
-### Laptop Optimizations (`mars.laptopOptimizations`)
+### Laptop Optimizations (`mars.hardware.laptopOptimizations`)
 
 Power management and laptop-specific tweaks.
 
@@ -123,14 +124,14 @@ Power management and laptop-specific tweaks.
 
 **Example:**
 ```nix
-mars.laptopOptimizations = true;
+mars.hardware.laptopOptimizations = true;
 ```
 
 > **Includes:** TLP, auto-cpufreq, powertop optimizations, and laptop-mode-tools.
 
 ---
 
-## Graphics Options (`mars.graphics`)
+## Graphics Options (`mars.hardware.graphics`)
 
 Configure graphics drivers and GPU-specific settings.
 
@@ -138,31 +139,30 @@ Configure graphics drivers and GPU-specific settings.
 |--------|------|---------|-------------|
 | `enable` | boolean | `false` | Enable graphics drivers |
 
-### AMD/RADEON (`mars.graphics.amd`)
+### AMD/RADEON (`mars.hardware.graphics.amd`)
 
 AMD/RADEON graphics driver configuration.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `enable` | boolean | `false` | Enable AMD graphics drivers |
-| `vulkan` | boolean | `false` | Enable Vulkan support |
-| `opengl` | boolean | `false` | Enable OpenGL support |
-| `compute.enable` | boolean | `false` | Enable ROCm for compute workloads |
+| `compute.enable` | boolean | `false` | Enable compute/AI optimizations |
+| `compute.rocm` | boolean | `false` | Enable ROCm platform support |
+| `compute.openCL` | boolean | `false` | Enable OpenCL support |
+| `compute.hip` | boolean | `false` | Enable HIP runtime support |
 
 **Example:**
 ```nix
-mars.graphics = {
+mars.hardware.graphics = {
   enable = true;
   amd = {
     enable = true;
-    vulkan = true;
-    opengl = true;
     compute.enable = false;  # Enable for machine learning/compute
   };
 };
 ```
 
-### NVIDIA Open Source (`mars.graphics.nvidiaFree`)
+### NVIDIA Open Source (`mars.hardware.graphics.nvidiaFree`)
 
 Open-source NVIDIA driver (Nouveau).
 
@@ -172,7 +172,7 @@ Open-source NVIDIA driver (Nouveau).
 
 **Example:**
 ```nix
-mars.graphics = {
+mars.hardware.graphics = {
   enable = true;
   nvidiaFree.enable = true;
 };
@@ -180,7 +180,7 @@ mars.graphics = {
 
 > **Note:** Performance is generally lower than proprietary drivers.
 
-### NVIDIA Proprietary (`mars.graphics.nvidiaPro`)
+### NVIDIA Proprietary (`mars.hardware.graphics.nvidiaPro`)
 
 Proprietary NVIDIA driver configuration.
 
@@ -193,7 +193,7 @@ Proprietary NVIDIA driver configuration.
 
 **Example:**
 ```nix
-mars.graphics = {
+mars.hardware.graphics = {
   enable = true;
   nvidiaPro = {
     enable = true;
@@ -204,7 +204,7 @@ mars.graphics = {
 };
 ```
 
-### NVIDIA Prime (`mars.graphics.nvidiaPro.prime`)
+### NVIDIA Prime (`mars.hardware.graphics.nvidiaPro.prime`)
 
 NVIDIA Prime configuration for hybrid graphics (laptops with iGPU + dGPU).
 
@@ -217,12 +217,10 @@ NVIDIA Prime configuration for hybrid graphics (laptops with iGPU + dGPU).
 
 **Example:**
 ```nix
-mars.graphics = {
+mars.hardware.graphics = {
   enable = true;
   amd = {
     enable = true;
-    vulkan = true;
-    opengl = true;
   };
   nvidiaPro = {
     enable = true;
@@ -263,6 +261,22 @@ Desktop environment and productivity tools.
 **Example:**
 ```nix
 mars.desktop.graphics = true;
+```
+
+---
+
+## Shell Options (`mars.shell`)
+
+Shell configuration options.
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `bash` | boolean | `true` | Enable Bash as the default shell |
+| `fish` | boolean | `false` | Enable Fish shell (overrides bash if enabled) |
+
+**Example:**
+```nix
+mars.shell.fish = true;
 ```
 
 ---
@@ -309,12 +323,37 @@ mars.dev = {
 
 ## Gaming Options (`mars.gaming`)
 
-Gaming-related packages and optimizations.
+Gaming-related packages and optimizations with automatic performance tuning.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `enable` | boolean | `false` | Enable gaming packages and optimizations |
 | `extra-gaming-packages` | boolean | `false` | Include additional gaming tools and emulators |
+
+### Gaming Performance Optimizations
+
+When `mars.gaming.enable = true`, the following optimizations are automatically applied:
+
+**Environment Variables:**
+- `DXVK_STATE_CACHE = "1"` - Enables shader caching for Proton/Wine games
+- `DXVK_STATE_CACHE_PATH = "$HOME/.cache/dxvk"` - Shader cache location
+- `DXVK_HUD = "compiler"` - Shows shader compilation info
+- `__GL_THREADED_OPTIMIZATIONS = "1"` - Multi-threaded OpenGL rendering
+- `__GL_SHADER_DISK_CACHE = "1"` - OpenGL shader disk cache
+- `RADV_PERFTEST = "gpl,nggc,sam"` - AMD experimental features (when AMD GPU enabled)
+
+**Included Packages:**
+- **MangoHUD** - Performance overlay (FPS, temps, GPU/CPU usage)
+- **GOverlay** - GUI for MangoHUD configuration
+- **libstrangle** - Frame rate limiter
+- **lm_sensors** - Hardware monitoring
+- **vkBasalt** - Vulkan post-processing (sharpening, CAS, color correction)
+
+**Kernel Optimizations (when gaming enabled):**
+- `tsc=reliable` - Faster timekeeping
+- `clocksource=tsc` - Use TSC for timing
+- `preempt=full` - Full preemption for lower latency
+- Additional sysctl tuning from CachyOS
 
 ### Gamemode (`mars.gaming.gamemode`)
 
@@ -326,13 +365,51 @@ Feral GameMode for performance optimization during gaming.
 | `amdOptimizations` | boolean | `false` | Enable AMD-specific optimizations |
 | `nvidiaOptimizations` | boolean | `false` | Enable NVIDIA-specific optimizations |
 
+**What GameMode Does:**
+- Sets CPU governor to `performance` for maximum clock speeds
+- Increases I/O priority to 0 (highest) for game processes
+- Manages integrated GPU power balance intelligently
+- Applies GPU-specific optimizations (AMD/NVIDIA)
+- Optional ASUS laptop profile switching (Performance mode)
+
+**Example:**
+```nix
+mars.gaming.gamemode = {
+  enable = true;
+  nvidiaOptimizations = true;  # or amdOptimizations
+};
+```
+
+> **Note:** GameMode also includes automatic renice (priority 10), screensaver inhibit, and split-lock mitigation disable.
+
 ### Gamescope (`mars.gaming.gamescope`)
 
-Micro-compositor for gaming.
+Micro-compositor for gaming with built-in frame limiting and scaling.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `enable` | boolean | `false` | Enable Gamescope compositor |
+
+**Features:**
+- MangoHUD integration via `--mangoapp`
+- Vulkan rendering preferred over OpenGL
+- Realtime scheduling for reduced input latency
+- Wayland client support
+- Optional adaptive sync (VRR/FreeSync)
+
+**Usage:**
+```bash
+# Launch a game through Gamescope
+gamescope -W 1920 -H 1080 -r 144 -- game_executable
+
+# In Steam, add to launch options:
+gamescope -f -- %command%
+```
+
+**Example:**
+```nix
+mars.gaming.gamescope.enable = true;
+```
 
 ### Minecraft (`mars.gaming.minecraft`)
 
@@ -405,30 +482,33 @@ Here's a complete example combining multiple Mars modules:
     security.doas = true;
 
     # Hardware
-    cpu.amd.enable = true;
-    
-    graphics = {
-      enable = true;
-      amd = {
+    hardware = {
+      rootSSD = true;
+      cpu.amd.enable = true;
+      graphics = {
         enable = true;
-        vulkan = true;
-        opengl = true;
-      };
-      nvidiaPro = {
-        enable = true;
-        nvenc = true;
-        driver = "stable";
-        prime = {
+        amd = {
           enable = true;
-          igpu = {
-            vendor = "amd";
-            port = "PCI:35:0:0";
-          };
-          dgpu.port = "PCI:1:0:0";
         };
-        wayland-fixes = true;
+        nvidiaPro = {
+          enable = true;
+          nvenc = true;
+          driver = "stable";
+          prime = {
+            enable = true;
+            igpu = {
+              vendor = "amd";
+              port = "PCI:35:0:0";
+            };
+            dgpu.port = "PCI:1:0:0";
+          };
+          wayland-fixes = true;
+        };
       };
     };
+
+    # Shell
+    shell.fish = true;
 
     # Desktop
     desktop.graphics = true;
@@ -443,7 +523,6 @@ Here's a complete example combining multiple Mars modules:
       languages = {
         nix = true;
         python = true;
-        rust = true;
       };
     };
 
@@ -454,6 +533,7 @@ Here's a complete example combining multiple Mars modules:
         enable = true;
         nvidiaOptimizations = true;
       };
+      gamescope.enable = true;
       steam = {
         enable = true;
         hardware-rules = true;

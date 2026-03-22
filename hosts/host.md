@@ -126,16 +126,21 @@ This is your main host configuration file:
     };
 
     # Hardware configuration
-    cpu.amd.enable = true;  # or cpu.intel.enable = true
-    
-    graphics = {
-      enable = true;
-      amd = {
+    hardware = {
+      cpu.amd.enable = true;  # or cpu.intel.enable = true
+      graphics = {
         enable = true;
-        vulkan = true;
-        opengl = true;
+        amd = {
+          enable = true;
+        };
       };
     };
+
+    # Shell
+    shell.fish = true;
+
+    # Desktop
+    desktop.graphics = true;
 
     # Optional: Gaming
     gaming.enable = true;
@@ -214,17 +219,20 @@ sudo nixos-install --flake /mnt/etc/nixos/MarsOS#your-hostname
       plymouth = true;
     };
 
-    cpu.amd.enable = true;
-    
-    graphics = {
-      enable = true;
-      nvidiaPro = {
+    hardware = {
+      cpu.amd.enable = true;
+      graphics = {
         enable = true;
-        driver = "stable";
-        nvenc = true;
-        wayland-fixes = true;
+        nvidiaPro = {
+          enable = true;
+          driver = "stable";
+          nvenc = true;
+          wayland-fixes = true;
+        };
       };
     };
+
+    desktop.graphics = true;
 
     gaming = {
       enable = true;
@@ -235,8 +243,6 @@ sudo nixos-install --flake /mnt/etc/nixos/MarsOS#your-hostname
       steam.enable = true;
       gamescope.enable = true;
     };
-
-    desktop.graphics = true;
   };
 
   system.stateVersion = "25.11";
@@ -259,12 +265,13 @@ sudo nixos-install --flake /mnt/etc/nixos/MarsOS#your-hostname
       plymouth = true;
     };
 
-    laptopOptimizations = true;
-    cpu.intel.enable = true;
-    
-    graphics = {
-      enable = true;
-      intel.enable = true;
+    hardware = {
+      laptopOptimizations = true;
+      cpu.intel.enable = true;
+      graphics = {
+        enable = true;
+        intel.enable = true;
+      };
     };
 
     dev = {
@@ -304,33 +311,31 @@ sudo nixos-install --flake /mnt/etc/nixos/MarsOS#your-hostname
 
     security.doas = true;
 
-    asus = {
-      enable = true;
-      battery.chargeUpto = 80;
-    };
-
-    laptopOptimizations = true;
-    cpu.amd.enable = true;
-
-    graphics = {
-      enable = true;
-      amd = {
+    hardware = {
+      asus = {
         enable = true;
-        vulkan = true;
-        opengl = true;
+        battery.chargeUpto = 80;
       };
-      nvidiaPro = {
+      laptopOptimizations = true;
+      cpu.amd.enable = true;
+      graphics = {
         enable = true;
-        driver = "beta";
-        prime = {
+        amd = {
           enable = true;
-          igpu = {
-            vendor = "amd";
-            port = "PCI:35:0:0";
-          };
-          dgpu.port = "PCI:1:0:0";
         };
-        wayland-fixes = true;
+        nvidiaPro = {
+          enable = true;
+          driver = "beta";
+          prime = {
+            enable = true;
+            igpu = {
+              vendor = "amd";
+              port = "PCI:35:0:0";
+            };
+            dgpu.port = "PCI:1:0:0";
+          };
+          wayland-fixes = true;
+        };
       };
     };
 

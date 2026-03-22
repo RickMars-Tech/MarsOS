@@ -1,82 +1,92 @@
 <h1 align="center">:snowflake: MarsOS :snowflake:</h1>
-<p align="center"> 
- MarsOS is a simple way to replicate my setup on any NixOS system via a Flake.
+<p align="center">
+   MarsOS is a simple way to replicate my setup on any NixOS system via a Flake.
 </p>
 
-![Niri Overview](./assets/niri-overview.png)
-![Niri Terminal](./assets/niri-term.png)
+![Niri Desktop](./assets/desk-img/desktop2.png)
+![Niri Term](./assets/desk-img/term.png)
+![Niri Bar](./assets/desk-img/bar.png)
 
-- Wallpaper: [Bochi Rock Linux](https://imgur.com/bochi-rock-linux-wallpaper-mO5tavs)
-- OG Wallpaper: [Bocchi Runner 2049 by Carlo Montie](https://www.pixiv.net/en/artworks/108083186) 
+- Wallpaper: [Bloom Dark by dpcdpc11](https://www.reddit.com/r/wallpapers/comments/102bz2o/bloom_dark_by_dpcdpc11_5120x2880/?tl=es-419)
+
+## Design Philosophy
+
+Based on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund]'s [nixos-template][nixos-template] Configuration Structure, with a Full NixOS approach without relying on Home-Manager, preferring to use custom modules for software such as Niri or for simpler hardware configurations without relying on so many inputs in the Flake
 
 <details>
 <summary>Environment Software</summary>
 
-|                             | NixOS(Wayland)                                  |
-| --------------------------- | ----------------------------------------------- |
-| **Window Manager**          | [Niri][Niri]                                    |
-| **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]           |
-| **Bar**                     | [Ironbar][Ironbar]                              |
-| **Application Launcher**    | [Walker][Walker]                                |
-| **Notification Daemon**     | [SwayNC][SwayNC]                                |
-| **Session Manager**         | [GreetD][GreetD] + [TuiGreet][TuiGreet]         |
-| **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]   |
-| **System Resource Monitor** | [Bottom][Bottom] & [Zenith][Zenith]             |
-| **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]             |
-| **Shell**                   | [Fish][Fish]                                    |
-| **Text Editor**             | [Helix][Helix]                                  |
-| **Fonts**                   | [Nerd fonts][Nerd fonts]                        |
-| **Image Viewer**            | [IMV][IMV]                                      |
-| **Multimedia Player**       | [MPV][MPV]                                      |
+|                             | Full Wayland Btw                                    |
+| --------------------------- | --------------------------------------------------- |
+| **Window Manager**          | [Niri][Niri] + [Noctalia][Noctalia]                 |
+| **Session Manager**         | [SDDM][SDDM] + [SDDM-Astronaut][SDDM-Astronaut]     |
+| **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]               |
+| **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]       |
+| **System Resource Monitor** | [Bottom][Bottom] & [Mission Center][Mission Center] |
+| **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]                 |
+| **Polkit**                  | [Soteria][Soteria]                                  |
+| **Shell**                   | [Fish][Fish] + [Starship][Starship]                 |
+| **Text Editor**             | [Helix][Helix]                                      |
+| **Fonts**                   | [Nerd fonts][Nerd fonts]                            |
+| **Image Viewer**            | [Swayimg][Swayimg]                                  |
+| **Multimedia Player**       | [MPV][MPV]                                          |
 
 </details>
 
+<details>
+<summary>Flake Directory Structure</summary>
 
-## Estructura de directorios resultante:
 ```
 MarsOS/
-├── assets
+├── assets/
 │   ├── ascii-art
-│   └── wallpapers
-├── hosts/
-│   ├── {host}
-│   │   ├── default.nix
-│   │   └── disko.nix
+│   └── wallpapers/
+├── hosts/{host}/
+│   │     ├── default.nix
+│   │     └── disko.nix
 │   ├── host.md
 │   └── config.md
 ├── modules/
 ├── flake.nix
 ├── flake.lock
 └── shell.nix
-   ```
+```
+
+</details>
 
 ## Installation Guide
 
 ### Prerequisites
+
 - A bootable NixOS ISO (Minimal installation recommended)
 - Internet connection
 
 ### Steps
 
 1. **Clone the repository:**
+
 ```bash
    nix run nixpkgs#git -- clone https://github.com/RickMars-Tech/MarsOS.git
 ```
 
 2. **Navigate to the directory and apply Disko formatting:**
+
 ```bash
    cd MarsOS/
    sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount hosts/<host>/disko.nix
 ```
-   > **Note:** Replace `<host>` with your actual hostname (e.g., `boltz`, `rift`, or `crest`)
+
+> **Note:** Replace `<host>` with your actual hostname (e.g., `boltz`, `rift`, or `crest`)
 
 3. **Copy the Flake to `/mnt/etc/nixos/` and build the system:**
+
 ```bash
    sudo mkdir -p /mnt/etc/nixos
    sudo cp -r ~/MarsOS /mnt/etc/nixos/
    sudo nixos-install --flake /mnt/etc/nixos/MarsOS#<host>
 ```
-   > **Note:** Replace `<host>` with your chosen hostname
+
+> **Note:** Replace `<host>` with your chosen hostname
 
 4. **Reboot and enjoy!**
 
@@ -97,34 +107,42 @@ MarsOS/
 
 Special thanks to these excellent configurations that inspired and taught me so much:
 
-- **[Gvolpe]** - Zaphkiel configuration
-- **[Tyler Kelley]** - ZaneyOS
-- **[Liassica]** - NixOS config
-- **[Ryan Yin]** - NixOS and Flakes book
+- **[Gvolpe]** - Zaphkiel configuration.
+- **[Tyler Kelley]** - ZaneyOS.
+- **[Liassica]** - NixOS config.
+- **[Ryan Yin]** - NixOS and Flakes book.
+- **[shin]** - An elegant NixOS environment designed.
+- **[nixos-template]** - A template to start you nixos journey.
 
 <!----------------------------------{ Thanks }--------------------------------->
+
 [Gvolpe]: https://github.com/Rexcrazy804/Zaphkiel
 [Tyler Kelley]: https://gitlab.com/Zaney/zaneyos
 [Liassica]: https://codeberg.org/Liassica/nixos-config
 [Ryan Yin]: https://github.com/ryan4yin/nixos-and-flakes-book
+[linuxmobile]: https://github.com/linuxmobile
+[shin]: https://github.com/linuxmobile/shin
+[olafkfreund]: https://github.com/olafkfreund
+[nixos-template]: https://github.com/olafkfreund/nixos-template
 
 <!--------------------------------{ Components }------------------------------->
+
 [Niri]: https://github.com/YaLTeR/niri
+[Noctalia]: https://noctalia.dev/
 [Wezterm]: https://wezterm.org/
-[Ironbar]: https://github.com/JakeStanger/ironbar
 [Zellij]: https://zellij.dev/
-[Walker]: https://github.com/abenz1267/walker
-[SwayNC]: https://github.com/ErikReider/SwayNotificationCenter
-[GreetD]: https://sr.ht/~kennylevinsen/greetd/
-[TuiGreet]: https://github.com/apognu/tuigreet
+[SDDM]: https://github.com/sddm/sddm
+[SDDM-Astronaut]: https://github.com/Keyitdev/sddm-astronaut-theme
 [IWD]: https://git.kernel.org/pub/scm/network/wireless/iwd.git
 [NetworkManager]: https://gitlab.freedesktop.org/NetworkManager/NetworkManager
 [Bottom]: https://github.com/ClementTsang/bottom
-[Zenith]: https://github.com/bvaisvil/zenith
+[Mission Center]: https://gitlab.com/mission-center-devs/mission-center
 [Yazi]: https://github.com/sxyazi/yazi
 [Nautilus]: https://apps.gnome.org/Nautilus/
+[Soteria]: https://github.com/ImVaskel/soteria
 [Fish]: https://fishshell.com/
+[Starship]: https://starship.rs/
 [Helix]: https://helix-editor.com/
 [Nerd fonts]: https://www.nerdfonts.com/
-[IMV]: https://sr.ht/~exec64/imv/
+[Swayimg]: https://github.com/artemsen/swayimg
 [MPV]: https://mpv.io/
