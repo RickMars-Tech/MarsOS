@@ -20,14 +20,6 @@
                 mountOptions = ["umask=0077"];
               };
             };
-            swap = {
-              priority = 2;
-              size = "4G";
-              content = {
-                type = "swap";
-                resumeDevice = true;
-              };
-            };
             root = {
               priority = 3;
               size = "100%";
@@ -59,14 +51,6 @@
                       "noatime"
                       "space_cache=v2"
                       "ssd"
-                    ];
-                  };
-                  # Subvolumen para snapshots (opcional pero recomendado)
-                  "/.snapshots" = {
-                    mountpoint = "/.snapshots";
-                    mountOptions = [
-                      "compress=zstd:3"
-                      "noatime"
                     ];
                   };
                   # Subvolumen para logs (opcional)
