@@ -6,6 +6,7 @@
 }: let
   inherit (lib) mkOption types;
   version = config.mars.boot.kernel.version;
+  gaming = config.mars.gaming;
 in {
   imports = [./common.nix];
 
@@ -18,23 +19,19 @@ in {
   };
 
   config = {
-    #|==< Kernel >==|#
+    # Kernel
     boot.kernelPackages =
       if version == "latest"
       then pkgs.linuxPackages_latest
-      else if version == "stable"
-      then pkgs.linuxPackages
       else if version == "rc"
-      then pkgs.linux_testing
-      else pkgs.linuxPackages;
+      then pkgs.linuxPackages_testing
+      else pkgs.linuxPackages; # stable its default
 
-    #|==< Scheduler SCX >==|#
+    # Scheduler SCX
     services.scx = {
-      enable = true;
+      enable = gaming.enable;
       package = pkgs.scx.rustscheds;
       scheduler = "scx_lavd";
     };
-
-    services.fwupd.enable = true;
   };
 }

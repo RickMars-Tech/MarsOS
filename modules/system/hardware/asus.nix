@@ -4,26 +4,26 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkForce mkEnableOption;
+  inherit (lib) types mkIf mkForce mkEnableOption;
   p = pkgs.writeScriptBin "charge-upto" ''
     #!${pkgs.bash}/bin/bash
     echo ''${1:-100} > /sys/class/power_supply/BAT?/charge_control_end_threshold
   '';
-  asus = config.mars.asus;
-  battery = config.mars.asus.battery;
+  asus = config.mars.hardware.asus;
+  battery = config.mars.hardware.asus.battery;
 in {
-  options.mars.asus = {
+  options.mars.hardware.asus = {
     enable = mkEnableOption "Asus Configs" // {default = false;};
     battery = {
       chargeUpto = lib.mkOption {
         description = "Maximum level of charge for your battery, as a percentage.";
         default = 100;
-        type = lib.types.int;
+        type = types.int;
       };
       enableChargeUptoScript = lib.mkOption {
         description = "Whether to add charge-upto to environment.systemPackages. `charge-upto 75` temporarily sets the charge limit to 75%.";
         default = true;
-        type = lib.types.bool;
+        type = types.bool;
       };
     };
     gamemode.enable = mkEnableOption "Integrate with gamemode for gaming performance" // {default = false;};
@@ -32,15 +32,18 @@ in {
   config = mkIf asus.enable {
     boot = {
       kernelModules = ["asus-wmi"];
-      kernelParams = ["acpi_backlight="];
+      kernelParams = [
+        "acpi_backlight="
+        "acpi_osi=!"
+        "acpi_osi=\"Windows 2020\""
+      ];
     };
     services.asusd = {
       enable = true;
-      enableUserService = true;
       package = pkgs.asusctl;
     };
 
-    #= Battery
+    # Battery
     environment.systemPackages = mkIf battery.enableChargeUptoScript [p];
     systemd.services.battery-charge-threshold = {
       wantedBy = [
@@ -65,8 +68,8 @@ in {
       };
     };
 
-    #= make problems with Nouveau and its not needed for Nvidia Privative Driver
-    # and for some reason, its enabled by asusd
+    # make problems with Nouveau and its not needed for Nvidia Privative Driver
+    # and for some reason, asusd enable it
     services.supergfxd.enable = mkForce false;
   };
 }

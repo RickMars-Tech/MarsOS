@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   #= Pipewire
-  security.rtkit.enable = false; # Real-Time Priority to Processes.
   services.pipewire = {
     enable = true;
     audio.enable = true; # Use as primary sound server
@@ -12,15 +11,11 @@
     jack.enable = true;
 
     extraConfig = {
-      pipewire."91-low-latency" = {
-        context.properties = {
-          default.clock = {
-            rate = 48000;
-            quantum = 32;
-            min-quantum = 32;
-            max-quantum = 32;
-          };
-        };
+      pipewire."91-low-latency".context.properties.default.clock = {
+        rate = 48000;
+        quantum = 32;
+        min-quantum = 32;
+        max-quantum = 32;
       };
       pipewire-pulse."92-low-latency" = {
         context.modules = [

@@ -5,9 +5,9 @@
 }: let
   inherit (lib) mkIf mkEnableOption;
 in {
-  options.mars.cpu.amd.enable = mkEnableOption "amd cpu";
+  options.mars.hardware.cpu.amd.enable = mkEnableOption "amd cpu";
 
-  config = mkIf (config.mars.cpu.amd.enable) {
+  config = mkIf (config.mars.hardware.cpu.amd.enable) {
     # Enable microcode updates for AMD CPUs
     hardware.cpu.amd.updateMicrocode = true;
     boot = {
@@ -16,10 +16,8 @@ in {
         "zenpower"
       ];
       kernelParams = [
-        "amd_pstate=active"
-        # IOMMU support for compute workloads
-        "amd_iommu=on"
-        "iommu=pt"
+        "amd_pstate=active" # Enable AMD P-state CPU scaling driver
+        # "iommu=pt"
       ];
       extraModulePackages = with config.boot.kernelPackages; [zenpower];
       blacklistedKernelModules = [

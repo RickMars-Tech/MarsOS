@@ -7,43 +7,41 @@
   inherit (lib) mkEnableOption mkIf;
 in {
   options.mars.boot = {
-    lanzaboot = mkEnableOption "Enable Secure Boot";
+    secureBoot = mkEnableOption "Enable Secure Boot";
     plymouth = mkEnableOption "Enable Plymouth";
   };
   config = {
     boot = {
-      #|==< Secure Boot >==|#
+      # Secure Boot (NOT Recomended)
       lanzaboote = {
-        enable = config.mars.boot.lanzaboot;
+        enable = config.mars.boot.secureBoot;
+        autoGenerateKeys.enable = true;
+        autoEnrollKeys = {
+          includeMicrosoftKeys = true;
+          autoReboot = true;
+        };
         pkiBundle = "/var/lib/sbctl";
       };
       loader = {
-        systemd-boot.enable = !config.mars.boot.lanzaboot; # Lanzaboote currently replaces the systemd-boot module.
+        systemd-boot = {
+          enable = !config.mars.boot.secureBoot;
+          memtest86.enable = true;
+        };
         efi.canTouchEfiVariables = false;
         timeout = 5;
       };
       initrd = {
         enable = true;
         verbose = false;
-        #= Compession
         compressor = "zstd";
-        compressorArgs = ["-22" "-T0" "--long" "--ultra"];
+        compressorArgs = ["-10" "-T0"];
       };
-      consoleLogLevel = 4; # Default
+      consoleLogLevel = 3;
 
-      #|==< Plymouth >==|#
-      plymouth = {
-        enable = config.mars.boot.plymouth;
-        theme = "hexagon_dots";
-        themePackages = with pkgs; [
-          # By default we would install all themes
-          (adi1090x-plymouth-themes.override {
-            selected_themes = ["hexagon_dots"];
-          })
-        ];
-      };
+      # Plymouth
+      plymouth.enable = config.mars.boot.plymouth;
     };
-    # For debugging and troubleshooting Secure Boot.
-    environment.systemPackages = with pkgs; mkIf config.mars.boot.lanzaboot [sbctl];
+    # For debugging and troubleshooting Secure Boot
+    environment.systemPackages = with pkgs; mkIf config.mars.boot.secureBoot [sbctl];
   };
 }

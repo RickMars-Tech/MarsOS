@@ -7,31 +7,35 @@
 in {
   imports = [
     ./asus.nix
-    ./audio/default.nix
-    ./cpu/default.nix
-    ./graphics/default.nix
+    ./audio
+    ./cpu
+    ./graphics
     ./drives.nix
     ./powerManagement.nix
     ./thinkpad.nix
   ];
 
   hardware = {
-    enableAllFirmware = mkDefault true; # Enable Properitary Firmware
+    enableAllFirmware = mkDefault true; # Enable Proprietary Firmware
     enableAllHardware = mkDefault true;
-    enableRedistributableFirmware = mkForce true; # Lemme update my CPU Microcode, alr?!
-    firmware = with pkgs; [
-      linux-firmware
-    ];
+    enableRedistributableFirmware = mkForce true; # Allow CPU microcode updates
+    firmware = with pkgs; [linux-firmware];
     firmwareCompression = "zstd";
   };
   environment.systemPackages = with pkgs; [
-    #= PC monitoring
+    # Redragon Mouses
+    mouse_m908
+    # PC monitoring
+    mission-center
+    zenmonitor
+    nvtopPackages.full
+    lshw
     cpu-x
     clinfo
-    #glxinfo
     hardinfo2
     hwinfo
-    #= Multimedia Codecs & Libs
+    cpuid
+    # Multimedia Codecs & Libs
     openh264
     x264
     # H.265/HEVC

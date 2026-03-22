@@ -1,8 +1,0 @@
-{
-  imports = [
-    ./layout.nix
-    ./settings.nix
-  ];
-
-  programs.zellij.enable = true;
-}

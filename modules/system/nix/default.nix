@@ -19,7 +19,11 @@
   nixTag = config.system.nixos.tags;
   nixVersion = config.system.nixos.version;
 in {
-  imports = [./cache.nix ./nh.nix];
+  imports = [
+    ./cache.nix
+    ./nh.nix
+    ./nix-ld.nix
+  ];
   #= Enable Nix-Shell, Flakes and More...
   nix = {
     #= Daemon
@@ -27,13 +31,12 @@ in {
     daemonCPUSchedPolicy = mkDefault "batch";
     daemonIOSchedClass = mkDefault "idle";
 
-    package = pkgs.lixPackageSets.stable.lix;
+    package = pkgs.nix;
     channel.enable = false;
     registry = registry; # Registry for legacy nix commands
     nixPath = nixPath; # Pin nixpkgs flake to system nixpkgs
     settings = {
       auto-optimise-store = true;
-      # download-buffer-size = 524288000; # Increases the Download Buffer to prevent it from filling up
       experimental-features = [
         "nix-command"
         "flakes"
@@ -69,7 +72,8 @@ in {
     };
   };
   system = {
-    rebuild.enableNg = mkDefault true;
+    # rebuild.enableNg = mkDefault true;
+    # nixos-init.enable = true;
 
     #= Better nixos generation label
     # https://www.reddit.com/r/NixOS/comments/16t2njf/small_trick_for_people_using_nixos_with_flakes/

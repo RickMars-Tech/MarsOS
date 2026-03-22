@@ -5,9 +5,9 @@
 }: let
   inherit (lib) mkIf mkEnableOption;
 in {
-  options.mars.cpu.intel.enable = mkEnableOption "Intel cpu Config";
+  options.mars.hardware.cpu.intel.enable = mkEnableOption "Intel cpu Config";
 
-  config = mkIf (config.mars.cpu.intel.enable) {
+  config = mkIf (config.mars.hardware.cpu.intel.enable) {
     hardware.cpu.intel.updateMicrocode = true;
     services.throttled.enable = true;
     boot = {

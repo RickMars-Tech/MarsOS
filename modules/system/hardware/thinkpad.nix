@@ -6,9 +6,9 @@
 }: let
   inherit (lib) mkEnableOption mkDefault mkIf;
 in {
-  options.mars.thinkpad.enable = mkEnableOption "Thinkpad Configs" // {default = false;};
+  options.mars.hardware.thinkpad.enable = mkEnableOption "Thinkpad Configs" // {default = false;};
 
-  config = mkIf (config.mars.thinkpad.enable) {
+  config = mkIf (config.mars.hardware.thinkpad.enable) {
     boot.kernelModules = ["thinkpad-acpi"];
     hardware.trackpoint = {
       enable = mkDefault true;

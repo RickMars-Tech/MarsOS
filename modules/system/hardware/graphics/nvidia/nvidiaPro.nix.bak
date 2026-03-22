@@ -1,0 +1,240 @@
+# Remember, PRO is not for Professional, it is for Proprietary
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
+  inherit
+    (lib)
+    mkEnableOption
+    mkOption
+    optionals
+    /*
+    mkForce
+    */
+    mkMerge
+    mkIf
+    types
+    ;
+  graphics = config.mars.hardware.graphics;
+  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
+  nvidiaFree = config.mars.hardware.graphics.nvidiaFree;
+in {
+  options.mars.hardware.graphics.nvidiaPro = {
+    enable = mkEnableOption "nVidia graphics" // {default = false;};
+    nvenc = mkEnableOption "NVENC video encoding" // {default = false;};
+    # vulkan = mkEnableOption "Vulkan Support" // {default = true;};
+    # opengl = mkEnableOption "OpenGL Support" // {default = true;};
+    driver = mkOption {
+      type = types.enum ["latest" "stable" "beta" "vulkan" "production" "legacy_470" "legacy_390"];
+      default = "stable";
+      description = "NVIDIA driver version to use";
+    };
+    compute = {
+      enable = mkEnableOption "compute/AI optimizations" // {default = false;};
+      cuda = mkEnableOption "CUDA support" // {default = false;};
+      tensorrt = mkEnableOption "TensorRT support" // {default = false;};
+    };
+    prime = {
+      enable = mkEnableOption "optimus prime";
+      igpu = {
+        vendor = mkOption {
+          type = types.enum ["amd" "intel"];
+          default = "amd";
+        };
+        port = mkOption {
+          default = "";
+          description = "Bus Port of igpu";
+        };
+      };
+      dgpu.port = mkOption {
+        default = "";
+        description = "Bus Port of dgpu";
+      };
+    };
+    wayland-fixes = mkEnableOption "Wayland VRAM Consumption Fixes";
+  };
+
+  config = mkIf (graphics.enable && nvidiaPro.enable) (let
+    nvidiaPackage =
+      if nvidiaPro.driver == "stable"
+      then config.boot.kernelPackages.nvidiaPackages.stable
+      else if nvidiaPro.driver == "beta"
+      then config.boot.kernelPackages.nvidiaPackages.beta
+      else if nvidiaPro.driver == "production"
+      then config.boot.kernelPackages.nvidiaPackages.production
+      else if nvidiaPro.driver == "vulkan"
+      then config.boot.kernelPackages.nvidiaPackages.vulkan_beta
+      else if nvidiaPro.driver == "legacy_470"
+      then config.boot.kernelPackages.nvidiaPackages.legacy_470
+      else if nvidiaPro.driver == "legacy_390"
+      then config.boot.kernelPackages.nvidiaPackages.legacy_390
+      else if nvidiaPro.driver == "latest"
+      then
+        config.boot.kernelPackages.nvidiaPackages.mkDriver {
+          version = "595.45.04";
+          sha256_64bit = "sha256-zUllSSRsuio7dSkcbBTuxF+dN12d6jEPE0WgGvVOj14=";
+          sha256_aarch64 = "sha256-jl6lQWsgF6ya22sAhYPpERJ9r+wjnWzbGnINDpUMzsk=";
+          openSha256 = "sha256-uqNfImwTKhK8gncUdP1TPp0D6Gog4MSeIJMZQiJWDoE=";
+          settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+          persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
+        }
+      else config.boot.kernelPackages.nvidiaPackages.stable;
+  in {
+    assertions = [
+      {
+        assertion = nvidiaPro.prime.dgpu.port != null && nvidiaPro.prime.dgpu.port != "";
+        message = "NVIDIA dGPU BusID must be specified for hybrid mode";
+      }
+      {
+        assertion = nvidiaPro.prime.igpu.port != null && nvidiaPro.prime.igpu.port != "";
+        message = "iGPU BusID must be specified for hybrid mode";
+      }
+    ];
+
+    boot = {
+      kernelParams =
+        optionals nvidiaPro.enable [
+          "nvidia-drm.modeset=1"
+          "nvidia-drm.fbdev=1"
+          "nvidia.NVreg_UsePageAttributeTable=1"
+          "nvidia.NVreg_InitializeSystemMemoryAllocations=0"
+          "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1"
+        ]
+        ++ optionals (nvidiaPro.enable && !nvidiaPro.prime.enable) [
+          "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+        ];
+      kernelModules =
+        optionals nvidiaPro.enable [
+          "nvidia"
+          "nvidia_modeset"
+          "nvidia_uvm"
+          "nvidia_drm"
+        ]
+        ++ optionals (nvidiaPro.enable && nvidiaPro.prime.enable) [
+          "nvidia_wmi_ec_backlight"
+        ];
+      blacklistedKernelModules = optionals nvidiaPro.enable [
+        "nouveau"
+      ];
+    };
+
+    services.xserver = {
+      enable = nvidiaPro.enable && !nvidiaFree.enable;
+      videoDrivers = ["nvidia"] ++ optionals nvidiaPro.prime.enable ["modesetting"];
+    };
+
+    environment.systemPackages = with pkgs;
+      [
+        zenith-nvidia
+        egl-wayland
+        eglexternalplatform
+        libGL
+        vdpauinfo
+        libvdpau-va-gl
+        libva-vdpau-driver
+        libva-utils
+        nvidia-system-monitor-qt
+      ]
+      # ++ optionals nvidiaPro.vulkan [
+      #   vulkan-loader
+      #   vulkan-validation-layers
+      #   vulkan-tools
+      # ]
+      ++ optionals nvidiaPro.compute.enable [
+        cudatoolkit
+        cudaPackages.nsight_compute
+        cudaPackages.nsight_systems
+      ]
+      ++ optionals (nvidiaPro.compute.enable && nvidiaPro.compute.tensorrt) [];
+
+    environment.sessionVariables = mkMerge [
+      {
+        __GL_SHADER_DISK_CACHE_SIZE = 12000000000;
+        __GL_SHADER_DISK_CACHE = "1";
+        __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
+        __GL_THREADED_OPTIMIZATIONS = "1";
+        LIBVA_DRIVER_NAME = mkIf nvidiaPro.nvenc "nvidia";
+      }
+      {
+        NIXOS_OZONE_WL = "1";
+        GBM_BACKEND = "nvidia-drm";
+        GBM_BACKENDS_PATH = "/run/opengl-driver/lib/gbm";
+        # __EGL_VENDOR_LIBRARY_FILENAMES = "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json";
+        __GL_GSYNC_ALLOWED = "0";
+        __GL_VRR_ALLOWED = "0";
+        __GL_THREADED_OPTIMIZATION = "1";
+        __GL_SHADER_CACHE = "1";
+        DISABLE_QT5_COMPAT = "0";
+        ANKI_WAYLAND = "1";
+        DIRENV_LOG_FORMAT = "";
+        WLR_DRM_NO_ATOMIC = "1";
+        # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+        # LIBVA_DRIVER_NAME = "nvidia";
+        QT_QPA_PLATFORM = "wayland";
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+        # QT_QPA_PLATFORMTHEME = "qt5ct";
+        # MOZ_ENABLE_WAYLAND = "1";
+        WLR_BACKEND = "vulkan";
+        # WLR_NO_HARDWARE_CURSORS = "1";
+        XDG_SESSION_TYPE = "wayland";
+        CLUTTER_BACKEND = "wayland";
+        # WLR_DRM_DEVICES = "/dev/dri/card2:/dev/dri/card1";
+        # VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+      }
+    ];
+
+    hardware.nvidia = {
+      videoAcceleration = true;
+      modesetting.enable = true;
+      dynamicBoost.enable = true;
+      powerManagement = {
+        enable = true;
+        # finegrained = mkForce false;
+      };
+      # Open Kernel Module Only If >= 560 (Ada Lovelace+)
+      open = lib.versionAtLeast nvidiaPackage.version "560";
+      gsp.enable = true;
+      nvidiaSettings = true;
+      package = nvidiaPackage;
+      prime = mkIf nvidiaPro.prime.enable {
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+          offloadCmdMainProgram = "prime-run";
+        };
+        amdgpuBusId = mkIf (nvidiaPro.prime.igpu.vendor == "amd") nvidiaPro.prime.igpu.port;
+        intelBusId = mkIf (nvidiaPro.prime.igpu.vendor == "intel") nvidiaPro.prime.igpu.port;
+        nvidiaBusId = nvidiaPro.prime.dgpu.port;
+      };
+    };
+
+    environment.etc = mkIf nvidiaPro.wayland-fixes {
+      "nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" = {
+        text = builtins.toJSON {
+          rules = [
+            {
+              pattern = {
+                feature = "procname";
+                matches = ["niri" "sway" "hyprland" "weston" "mutter"];
+              };
+              profile = "Limit free buffer pool on Wayland compositors";
+            }
+          ];
+          profiles = [
+            {
+              name = "Limit free buffer pool on Wayland compositors";
+              settings = [
+                {
+                  key = "GLVidHeapReuseRatio";
+                  value = 0;
+                }
+              ];
+            }
+          ];
+        };
+      };
+    };
+  });
+}

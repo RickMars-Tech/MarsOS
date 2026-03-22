@@ -5,20 +5,19 @@
   ...
 }: let
   inherit (lib) mkIf optionals mkEnableOption;
-  graphics = config.mars.graphics;
+  graphics = config.mars.hardware.graphics;
   intel = graphics.intel;
   amd = graphics.amd;
   nvidiaPro = graphics.nvidiaPro;
   nvidiaFree = graphics.nvidiaFree;
 in {
   imports = [
-    ./amd.nix
-    ./nvidiaPro.nix
-    ./nvidiaFree.nix
-    ./intel.nix
+    ./amd
+    ./nvidia
+    ./intel
   ];
 
-  options.mars.graphics.enable = mkEnableOption "Enable graphics" // {default = true;};
+  options.mars.hardware.graphics.enable = mkEnableOption "Enable graphics" // {default = true;};
 
   config = mkIf graphics.enable {
     # Validaciones para configuraciones híbridas
@@ -35,26 +34,31 @@ in {
 
     # Sistemas híbridos (usar con DRI_PRIME=1 o prime-run command)
     # Por defecto usa la iGPU, DRI_PRIME=1||prime-run usa la dGPU
-    warnings =
-      (optionals (nvidiaFree.enable && amd.enable) [
-        "Hybrid graphics detected: Nvidia(Nouveau) + AMD. Use DRI_PRIME=1 to run applications on dGPU."
-      ])
-      ++ (optionals (nvidiaFree.enable && intel.enable) [
-        "Hybrid graphics detected: Nvidia(Nouveau) + Intel. Use DRI_PRIME=1 to run applications on dGPU."
-      ])
-      ++ (optionals (nvidiaPro.enable && amd.enable) [
-        "Hybrid graphics detected: Nvidia(Privative Driver) + AMD. Use prime-run to run applications on dGPU."
-      ])
-      ++ (optionals (nvidiaPro.enable && intel.enable) [
-        "Hybrid graphics detected: Nvidia(Privative Driver) + Intel. Use prime-run to run applications on dGPU."
-      ]);
-
-    #= Linux GPU Configuration Tool for AMD and NVIDIA
-    services.lact.enable = nvidiaFree.enable || nvidiaPro.enable || amd.enable;
+    warnings = let
+      hybridConfigs = [
+        {
+          cond = nvidiaFree.enable && amd.enable;
+          msg = "Hybrid graphics detected: Nvidia(Nouveau) + AMD. Use DRI_PRIME=1 to run applications on dGPU.";
+        }
+        {
+          cond = nvidiaFree.enable && intel.enable;
+          msg = "Hybrid graphics detected: Nvidia(Nouveau) + Intel. Use DRI_PRIME=1 to run applications on dGPU.";
+        }
+        {
+          cond = nvidiaPro.enable && amd.enable;
+          msg = "Hybrid graphics detected: Nvidia(Privative Driver) + AMD. Use prime-run to run applications on dGPU.";
+        }
+        {
+          cond = nvidiaPro.enable && intel.enable;
+          msg = "Hybrid graphics detected: Nvidia(Privative Driver) + Intel. Use prime-run to run applications on dGPU.";
+        }
+      ];
+    in
+      lib.flatten (map (cfg: optionals cfg.cond [cfg.msg]) hybridConfigs);
 
     hardware = {
       # AMD GPU initrd
-      amdgpu.initrd.enable = amd.enable;
+      # amdgpu.initrd.enable = amd.enable;
 
       # Intel GPU tools
       intel-gpu-tools.enable = intel.enable;
@@ -65,26 +69,23 @@ in {
 
         extraPackages = with pkgs;
           [
-            # Base Mesa drivers
             mesa
+            mesa-demos
+            mesa-gl-headers
             libdrm
-          ]
-          #|==< AMD/Radeon >==|#
-          ++ optionals (amd.enable && amd.vulkan) [
+            libgbm
+            libGL
             vulkan-loader
             vulkan-validation-layers
             vulkan-tools
             vulkan-extension-layer
-          ]
-          ++ optionals (amd.enable && amd.opengl) [
-            # OpenGL para AMD ya viene con mesa
           ]
           ++ optionals (amd.compute.enable && amd.compute.rocm) [
             # ROCm platform
             rocmPackages.clr
             rocmPackages.rocm-runtime
           ]
-          #|==< Intel >==|#
+          # Intel
           ++ optionals intel.enable [
             # Intel media driver (moderno)
             intel-media-driver
@@ -93,20 +94,6 @@ in {
             # Intel compute runtime
             intel-compute-runtime
           ]
-          ++ optionals (intel.enable && intel.vulkan) [
-            vulkan-loader
-            vulkan-validation-layers
-            vulkan-tools
-            vulkan-extension-layer
-          ]
-          #|==< Nouveau (nvidiaFree) >==|#
-          ++ optionals (nvidiaFree.enable && nvidiaFree.vulkan) [
-            # NVK (Nouveau Vulkan)
-            vulkan-loader
-            vulkan-validation-layers
-            vulkan-tools
-            vulkan-extension-layer
-          ]
           ++ optionals (nvidiaFree.enable && nvidiaFree.acceleration.vaapi) [
             libva-vdpau-driver
             libva-utils
@@ -114,40 +101,32 @@ in {
           ++ optionals (nvidiaFree.enable && nvidiaFree.acceleration.vdpau) [
             vdpauinfo
             libvdpau-va-gl
-          ]
-          #|==< NVIDIA Proprietary >==|#
-          ++ optionals nvidiaPro.enable [
-            # NVIDIA VAAPI driver
-            nvidia-vaapi-driver
-          ]
-          ++ optionals (nvidiaPro.enable && nvidiaPro.vulkan) [
-            vulkan-loader
-            vulkan-validation-layers
-            vulkan-tools
-            vulkan-extension-layer
-          ]
-          ++ optionals (nvidiaPro.enable && nvidiaPro.nvenc) [
-            # Video encoding
-            nv-codec-headers
-            libva-utils
-          ]
-          ++ optionals (nvidiaPro.enable && nvidiaPro.compute.enable && nvidiaPro.compute.cuda) [
-            # CUDA runtime
-            cudatoolkit
-            cudaPackages.cudnn
           ];
+        # NVIDIA Proprietary
+        # ++ optionals nvidiaPro.enable [
+        #   # NVIDIA VAAPI driver
+        #   nvidia-vaapi-driver
+        # ]
+        # ++ optionals (nvidiaPro.enable && nvidiaPro.nvenc) [
+        #   # Video encoding
+        #   nv-codec-headers
+        #   libva-utils
+        # ]
+        # ++ optionals (nvidiaPro.enable && nvidiaPro.compute.enable && nvidiaPro.compute.cuda) [
+        #   # CUDA runtime
+        #   cudatoolkit
+        #   cudaPackages.cudnn
+        # ];
 
         # 32-bit support (para gaming)
         extraPackages32 = with pkgs.driversi686Linux;
           [
             mesa
+            mesa-demos
           ]
           ++ optionals intel.enable [
             intel-media-driver
             intel-vaapi-driver
-          ]
-          ++ optionals nvidiaFree.enable [
-            # Mesa 32-bit
           ]
           ++ optionals (nvidiaFree.enable && nvidiaFree.acceleration.vdpau) [
             libvdpau-va-gl
@@ -159,49 +138,59 @@ in {
       kernelParams = optionals (amd.enable
         && nvidiaPro.enable) [
         # Improved compatibility with AMD iGPU + NVIDIA dGPU
-        "amd_iommu=off"
+        # "amd_iommu=off"
       ];
-      blacklistedKernelModules =
-        [
-          "radeon" # Driver antiguo de AMD, siempre bloqueado
-        ]
-        # Solo bloquear nvidia si nouveau está activo
-        ++ optionals (nvidiaFree.enable && !nvidiaPro.enable) [
-          "nvidia"
-          "nvidia_modeset"
-          "nvidia_uvm"
-          "nvidia_drm"
-        ]
-        # Solo bloquear nouveau si nvidia propietario está activo
-        ++ optionals (nvidiaPro.enable && !nvidiaFree.enable) [
-          "nouveau"
-        ];
+      blacklistedKernelModules = [
+        "radeon"
+      ];
     };
 
-    # Variables de entorno globales
-    environment.sessionVariables = {
-      # Mesa optimizations
-      MESA_GLTHREAD = "true";
+    environment = {
+      systemPackages = with pkgs; [
+        lact
+        mesa
+        mesa-demos
+        mesa-gl-headers
+        libdrm
+        libgbm
+        libGL
+        vulkan-loader
+        vulkan-validation-layers
+        vulkan-tools
+        vulkan-extension-layer
+      ];
+      # sessionVariables = let
+      #   icdNvidia = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+      #   icdRadeon = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
+      #   icdIntel = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json";
+      #   icdNouveau = "/run/opengl-driver/share/vulkan/icd.d/nouveau_icd.x86_64.json";
+      #   # 32-bit
+      #   icdNvidia32 = "/run/opengl-driver-32/share/vulkan/icd.d/nvidia_icd.i686.json";
+      #   icdRadeon32 = "/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json";
+      #   icdNouveau32 = "/run/opengl-driver-32/share/vulkan/icd.d/nouveau_icd.i686.json";
+      #   icdIntel32 = "/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
 
-      # Vulkan ICD paths (prioriza según disponibilidad)
-      VK_ICD_FILENAMES =
-        if nvidiaPro.enable
-        then "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json"
-        else if nvidiaFree.enable && amd.enable
-        then
-          # Hybrid: Nouveau + AMD (lista ambos)
-          "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/nouveau_icd.x86_64.json"
-        else if nvidiaFree.enable && intel.enable
-        then
-          # Hybrid: Nouveau + Intel (lista ambos)
-          "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/nouveau_icd.x86_64.json"
-        else if amd.enable
-        then "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
-        else if intel.enable
-        then "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
-        else if nvidiaFree.enable
-        then "/run/opengl-driver/share/vulkan/icd.d/nouveau_icd.x86_64.json"
-        else "";
+      #   vkIcdPath =
+      #     if nvidiaPro.enable && amd.enable
+      #     then "${icdRadeon}:${icdRadeon32}:${icdNvidia}:${icdNvidia32}" # AMD primero = iGPU por defecto
+      #     else if nvidiaPro.enable && intel.enable
+      #     then "${icdIntel}:${icdIntel32}:${icdNvidia}:${icdNvidia32}" # Intel primero = iGPU por defecto
+      #     else if nvidiaPro.enable
+      #     then "${icdNvidia}:${icdNvidia32}" # Solo NVIDIA (sin iGPU)
+      #     else if nvidiaFree.enable && amd.enable
+      #     then "${icdRadeon}:${icdRadeon32}:${icdNouveau}:${icdNouveau32}"
+      #     else if nvidiaFree.enable && intel.enable
+      #     then "${icdIntel}:${icdIntel32}:${icdNouveau}:${icdNouveau32}"
+      #     else if amd.enable
+      #     then "${icdRadeon}:${icdRadeon32}"
+      #     else if intel.enable
+      #     then "${icdIntel}:${icdIntel32}"
+      #     else if nvidiaFree.enable
+      #     then "${icdNouveau}:${icdNouveau32}"
+      #     else "";
+      # in {
+      #   VK_ICD_FILENAMES = vkIcdPath;
+      # };
     };
   };
 }

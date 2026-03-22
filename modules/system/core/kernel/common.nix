@@ -12,135 +12,184 @@ in {
     supportedFilesystems = ["ntfs"];
     kernelParams =
       [
-        #= Remove /dev/mem access restrictions(Needed for Upgrade Coreboot/Libreboot).
-        #"iomem=relaxed"
-        #= Vulnerability mitigations
+        # Vulnerability mitigations
         "pcie_aspm=off"
         "mitigations=auto"
+        "randomize_kstack_offset=on" # Randomize kernel stack offset on each syscall (mitigates some exploits)
+        "vsyscall=none" # Disable vsyscall (removes legacy syscall interface, improves security)
+        "slab_nomerge" # Disable merging of similar SLAB caches (hardens against some heap attacks)
+        "module.sig_enforce=1" # Only allow loading kernel modules with valid signatures (prevents unsigned modules)
+        "lockdown=confidentiality" # Enable kernel lockdown in confidentiality mode (restricts kernel access even for root)
+        "page_poison=1" # Fill freed memory pages with poison value (helps detect use-after-free bugs)
+        "page_alloc.shuffle=1" # Randomize page allocator order (mitigates some memory corruption attacks)
+        "sysrq_always_enabled=0" # Disable magic SysRq key entirely (prevents low-level system commands)
+        "rootflags=noatime" # Mount root filesystem with noatime (improves performance, disables file access time updates)
+        "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux" # Enable and order Linux Security Modules (stacked LSMs for security)
+        "fbcon=nodefer" # Do not defer kernel messages to framebuffer console (shows messages immediately)
       ]
       ++ optionals plymouth.enable [
-        #= Silent Mode
+        # Silent Mode
         "quiet"
         "splash"
+        "nowatchdog"
         "boot.shell_on_fail"
         "udev.log_priority=3"
         "rd.systemd.show_status=auto"
         "rd.udev.log_priority=3"
       ]
-      #= Gaming
+      # Gaming
       ++ optionals gaming.enable [
+        "preempt=full"
+        "threadirqs"
+        "snd_hda_intel.power_save=0"
         "tsc=reliable"
         "clocksource=tsc"
-        "preempt=full" # https://reddit.com/r/linux_gaming/comments/1g0g7i0/god_of_war_ragnarok_crackling_audio/lr8j475/?context=3#lr8j475
+        "usbhid.quirks=0x057e:0x2009:0x80000000" # Fix for Switch Pro Controller
       ];
-
-    kernelModules = [
-      "ntsync"
-      "tcp_bbr" # bbr
-      "sch_cake"
-    ];
+    kernelModules =
+      [
+        "ntsync"
+        "tcp_bbr"
+        "sch_cake"
+      ]
+      ++ optionals gaming.enable [
+        "uinput" # User input module for virtual devices
+        "snd-seq" # For MIDI support in games
+        "snd-rawmidi" # For raw MIDI support
+        "hid_nintendo" # Nintendo Switch Pro Controller and Joy-Cons support
+      ];
+    kernel.sysfs.kernel.mm.transparent_hugepage = {
+      enabled = "madvise";
+      defrag = "defer+madvise";
+      shmem_enabled = "never";
+      khugepaged.max_ptes_none = 409;
+    };
 
     kernel.sysctl = mkMerge [
-      {
-        # Reduce el uso de swap (prefiere RAM)
-        "vm.swappiness" = mkDefault 10;
+      (mkIf rootIsBtrfs {
+        "vm.dirty_writeback_centisecs" = mkDefault 3000;
+      })
+      (mkIf (gaming.enable && gaming.gamemode.enable) {
+        "kernel.split_lock_mitigate" = 0;
+        "kernel.sched_autogroup_enabled" = 1;
+        # The sysctl swappiness parameter determines the kernel's preference for pushing anonymous pages or page cache to disk in memory-starved situations.
+        # A low value causes the kernel to prefer freeing up open files (page cache), a high value causes the kernel to try to use swap space,
+        # and a value of 100 means IO cost is assumed to be equal.
+        "vm.swappiness" = 100;
 
-        # Mejora el rendimiento cuando se usa swap
-        "vm.vfs_cache_pressure" = mkDefault 50;
+        # The value controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects (VFS cache).
+        # Lowering it from the default value of 100 makes the kernel less inclined to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
+        "vm.vfs_cache_pressure" = 50;
 
-        # Previene OOM matando procesos aleatorios
-        "vm.overcommit_memory" = mkDefault 1;
+        # Contains, as bytes, the number of pages at which a process which is
+        # generating disk writes will itself start writing out dirty data.
+        "vm.dirty_bytes" = 268435456;
 
-        # Dirty pages - optimiza escritura a disco
-        "vm.dirty_ratio" = mkDefault 10;
-        "vm.dirty_background_ratio" = mkDefault 5;
+        # page-cluster controls the number of pages up to which consecutive pages are read in from swap in a single attempt.
+        # This is the swap counterpart to page cache readahead. The mentioned consecutivity is not in terms of virtual/physical addresses,
+        # but consecutive on swap space - that means they were swapped out together. (Default is 3)
+        # increase this value to 1 or 2 if you are using physical swap (1 if ssd, 2 if hdd)
+        "vm.page-cluster" = 0;
 
-        # btrfs
-        "vm.dirty_writeback_centisecs" = mkIf rootIsBtrfs (mkDefault 1500);
+        # Contains, as bytes, the number of pages at which the background kernel
+        # flusher threads will start writing out dirty data.
+        "vm.dirty_background_bytes" = 67108864;
 
-        "net.core.default_qdisc" = "cake"; # Mejor QoS
-        # Aumentar buffers para mejor throughput
-        "net.core.rmem_max" = 134217728;
-        "net.core.wmem_max" = 134217728;
-        "net.ipv4.tcp_rmem" = "4096 87380 67108864";
-        "net.ipv4.tcp_wmem" = "4096 65536 67108864";
+        # The kernel flusher threads will periodically wake up and write old data out to disk.  This
+        # tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
+        "vm.dirty_writeback_centisecs" = 1500;
 
-        # Optimización WiFi
-        "net.ipv4.tcp_mtu_probing" = 1;
+        # This action will speed up your boot and shutdown, because one less module is loaded. Additionally disabling watchdog timers increases performance and lowers power consumption
+        # Disable NMI watchdog
+        "kernel.nmi_watchdog" = 0;
 
-        # IPv6 optimizations
-        "net.ipv6.conf.all.accept_ra" = 2;
-        "net.ipv6.conf.default.accept_ra" = 2;
+        # Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
+        "kernel.unprivileged_userns_clone" = 1;
 
-        # https://wiki.archlinux.org/title/Sysctl#Increase_the_memory_dedicated_to_the_network_interfaces
-        "net.core.rmem_default" = 262144; # 256KB
-        "net.core.wmem_default" = 262144;
-        "net.core.optmem_max" = 20480;
-        "net.core.netdev_max_backlog" = 1000;
-        "net.ipv4.tcp_congestion_control" = "bbr";
-        # https://wiki.archlinux.org/title/Sysctl#Enable_TCP_Fast_Open
-        "net.ipv4.tcp_fastopen" = 3;
-      }
-      (mkIf (gaming.enable && gaming.gamemode.enable)
-        {
-          "vm.mmap_min_addr" = 0;
-          # https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/lib/sysctl.d/99-cachyos-settings.conf
-          "fs.file-max" = 209752;
-          "kernel.split_lock_mitigate" = 0;
-          "net.ipv4.tcp_fin_timeout" = 5;
-          # "vm.dirty_writeback_centisecs" = 1500;
-          "vm.page-cluster" = 0;
-          # https://wiki.archlinux.org/title/Gaming#Make_the_changes_permanent
-          "vm.compaction_proactiveness" = 0;
-          "vm.watermark_boost_factor" = 1;
-          "vm.watermark_scale_factor" = 250;
-          "vm.zone_reclaim_mode" = 0;
-          "kernel.sched_child_runs_first" = 0;
-          "kernel.sched_autogroup_enabled" = 1;
-          "vm.oom-kill" = 1; # Activa el OOM killer (necesario)
-        })
+        # To hide any kernel messages from the console
+        "kernel.printk" = "3 3 3 3";
+
+        # Restricting access to kernel pointers in the proc filesystem
+        "kernel.kptr_restrict" = 2;
+
+        # Increase netdev receive queue
+        # May help prevent losing packets
+        "net.core.netdev_max_backlog" = 4096;
+
+        # Set size of file handles and inode cache
+        "fs.file-max" = 2097152;
+      })
     ];
+
     blacklistedKernelModules = [
-      #= Test
+      # Test
       "snd_seq_dummy"
       "dm_mod"
       "lpc_ich"
-      #= Not used by the system
+      # Not used by the system
       "ath3k"
       "fprint"
       "ide_core"
-      #= Obscure network protocols
-      "af_802154"
-      "decnet"
-      "econet"
-      "ipx"
-      "p8022"
-      "p8023"
-      "psnap"
+      # Obscure network protocols
       "sctp"
-      #= Old, rare, or insufficiently audited filesystems
-      "f2fs"
-      "bcachefs"
-      "hfs"
-      "hfsplus"
-      "jfs"
-      "squashfs"
-      "udf"
-      "ufs"
-      #= Unused network filesystems
+      "af_802154" # IEEE 802.15.4
+      "appletalk" # Appletalk
+      "atm" # ATM
+      "ax25" # Amatuer X.25
+      "decnet" # DECnet
+      "econet" # Econet
+      "ipx" # Internetwork Packet Exchange
+      "n-hdlc" # High-level Data Link Control
+      "netrom" # NetRom
+      "p8022" # IEEE 802.3
+      "p8023" # Novell raw IEEE 802.3
+      "psnap" # SubnetworkAccess Protocol
+      "rds" # Reliable Datagram Sockets
+      "rose" # ROSE
+      "tipc" # Transparent Inter-Process Communication
+      "x25" # X.25
+      # Old or rare or insufficiently audited filesystems.
+      "adfs" # Active Directory Federation Services
+      "affs" # Amiga Fast File System
+      "befs" # "Be File System"
+      "bfs" # BFS, used by SCO UnixWare OS for the /stand slice
+      "cramfs" # compressed ROM/RAM file system
+      "efs" # Extent File System
+      "erofs" # Enhanced Read-Only File System
+      "exofs" # EXtended Object File System
+      "f2fs" # Flash-Friendly File System
+      "freevxfs" # Veritas filesystem driver
+      "gfs2" # Global File System 2
+      "hfs" # Hierarchical File System (Macintosh)
+      "hfsplus" # Same as above, but with extended attributes.
+      "hpfs" # High Performance File System (used by OS/2)
+      "jffs2" # Journalling Flash File System (v2)
+      "jfs" # Journaled File System - only useful for VMWare sessions
+      "ksmbd" # SMB3 Kernel Server
+      "minix" # minix fs - used by the minix OS
+      "nilfs2" # New Implementation of a Log-structured File System
+      "omfs" # Optimized MPEG Filesystem
+      "qnx4" # Extent-based file system used by the QNX4 OS.
+      "qnx6" # Extent-based file system used by the QNX6 OS.
+      "squashfs" # compressed read-only file system (used by live CDs)
+      "sysv" # implements all of Xenix FS, SystemV/386 FS and Coherent FS.
+      "udf" # https://docs.kernel.org/5.15/filesystems/udf.html
+      "vivid" # Virtual Video Test Driver (unnecessary)
+      # Unused network filesystems
       "cifs"
       "gfs2"
       "ksmbd"
       "nfs"
       "nfsv3"
       "nfsv4"
-      #= Thunderbolt
+      # Disable Thunderbolt and FireWire to prevent DMA attacks
+      "firewire-core"
       "thunderbolt"
       #= Vivid testing driver
       "vivid"
       #= ALWAYS nouveau should be used instead.
       "nvidiafb"
-      #= Modules that are disabled in hardened but not the default kernel
+      # Modules that are disabled in hardened but not the default kernel
       "hwpoison_inject"
       "punit_atom_debug"
       "acpi_configfs"
