@@ -19,12 +19,6 @@ in {
         active-color = "#ffffff";
         inactive-color = "#919191";
         urgent-color = "#ffb4ab";
-        # active-gradient._props = {
-        #   angle = 45;
-        #   relative-to = "workspace-view";
-        #   from = "#40C0FF";
-        #   to = "#A040F0";
-        # };
       };
 
       shadow = {

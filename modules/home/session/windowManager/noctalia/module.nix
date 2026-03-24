@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (lib) mkIf mkEnableOption mkOption types optional mapAttrsToList;
+  inherit (lib) mkIf mkEnableOption mkOption types optional;
   cfg = config.programs.noctalia-shell;
 
   jsonFormat = pkgs.formats.json {};
@@ -36,13 +36,6 @@ in {
       description = "The noctalia-shell package to use.";
     };
 
-    # systemd.enable = mkEnableOption "Noctalia shell systemd service";
-    # systemd.target = mkOption {
-    #   type = types.str;
-    #   default = "graphical-session.target";
-    #   description = "Systemd target to bind the service to.";
-    # };
-
     settings = mkOption {
       type = jsonOrPathType;
       default = {};
@@ -70,13 +63,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # assertions = [
-    #   {
-    #     assertion = !cfg.systemd.enable || cfg.package != null;
-    #     message = "noctalia-shell: package must not be null when systemd service is enabled.";
-    #   }
-    # ];
-
     environment.systemPackages = optional (cfg.package != null) cfg.package;
 
     security.pam.services.noctalia = {
@@ -84,26 +70,6 @@ in {
       enableGnomeKeyring = true;
     };
 
-    # systemd.user.services.noctalia-shell = mkIf cfg.systemd.enable {
-    #   description = "Noctalia Shell - Wayland desktop shell";
-    #   documentation = ["https://docs.noctalia.dev"];
-    #   after = [cfg.systemd.target];
-    #   partOf = [cfg.systemd.target];
-    #   wantedBy = [cfg.systemd.target];
-    #   restartTriggers =
-    #     optional (cfg.settings != {}) (generateJson "settings" cfg.settings)
-    #     ++ optional (cfg.colors != {}) (generateJson "colors" cfg.colors)
-    #     ++ optional (cfg.plugins != {}) (generateJson "plugins" cfg.plugins)
-    #     ++ optional (cfg.user-templates != {}) (generateToml "user-templates" cfg.user-templates)
-    #     ++ mapAttrsToList (name: value: generateJson "${name}-settings" value) cfg.pluginSettings;
-    #   environment = {
-    #     PATH = lib.mkForce null;
-    #   };
-    #   serviceConfig = {
-    #     ExecStart = lib.getExe cfg.package;
-    #     Restart = "on-failure";
-    #   };
-    # };
     xdg.configFile =
       lib.filterAttrs (_: v: v != null) {
         "noctalia/settings.json" = mkIf (cfg.settings != {}) {

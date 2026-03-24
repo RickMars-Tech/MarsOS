@@ -1,22 +1,5 @@
 {
   programs.niri.settings._children = [
-    # Layers
-    {
-      layer-rule._children = [
-        {
-          match._props = {namespace = "dms:blurwallpaper";};
-          place-within-backdrop = true;
-        }
-      ];
-    }
-    # {
-    #   layer-rule._children = [
-    #     {
-    #       match._props = {namespace = "^quickshell$";};
-    #       place-within-backdrop = true;
-    #     }
-    #   ];
-    # }
     # Noctalia
     {
       layer-rule._children = [

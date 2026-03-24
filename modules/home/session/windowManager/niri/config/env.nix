@@ -5,7 +5,7 @@
 }: let
   inherit (lib) mkIf;
   uwsm = config.programs.uwsm;
-  # nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
+  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
 in {
   programs.niri.settings.environment = {
     NIRI_DISABLE_SYSTEM_MANAGER_NOTIFY = mkIf uwsm.enable "1";
@@ -24,7 +24,7 @@ in {
     # QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     #= Nvidia
-    # WLR_NO_HARDWARE_CURSORS = mkIf nvidiaPro.wayland-fixes "1";
+    WLR_NO_HARDWARE_CURSORS = mkIf nvidiaPro.enable "1";
     XDG_CURRENT_DESKTOP = "niri";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "niri";
