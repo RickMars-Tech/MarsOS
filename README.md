@@ -9,7 +9,7 @@
 
 ## Design Philosophy
 
-Based on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund]'s [nixos-template][nixos-template] Configuration Structure, with a Full NixOS approach without relying on Home-Manager, preferring to use custom modules for software such as Niri or for simpler hardware configurations without relying on so many inputs in the Flake
+Based on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund]'s [nixos-template][nixos-template] Configuration Structure, with a Full Dendritic Nix approach
 
 <details>
 <summary>Environment Software</summary>

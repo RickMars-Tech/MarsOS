@@ -1,43 +1,59 @@
 {
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
-  inherit (lib) mkDefault mkEnableOption mkIf optionals;
-  cfg = config.mars.hardware;
-  rootIsBtrfs = config.fileSystems."/".fsType or "" == "btrfs";
-in {
-  options.mars.hardware = {
-    rootSSD = mkEnableOption "SSD/NVMe optimizations for root filesystem";
-  };
+  flake.modules.nixos.drives =
+    {
+      config,
+      pkgs,
+      lib,
+      ...
+    }:
+    let
+      inherit (lib) mkDefault mkIf;
+      rootIsBtrfs = config.fileSystems."/".fsType or "" == "btrfs";
+    in
+    {
+      services = {
 
-  config = {
-    # BTRFS Auto-Scrub
-    services.btrfs.autoScrub = mkIf rootIsBtrfs {
-      enable = true;
-      interval = "monthly";
-      fileSystems = ["/"];
-    };
+        btrfs.autoScrub = mkIf rootIsBtrfs {
+          enable = true;
+          interval = "monthly";
+          fileSystems = [ "/" ];
+        };
 
-    # TRIM para SSD
-    services.fstrim = mkIf cfg.rootSSD {
-      enable = true;
-      interval = mkIf rootIsBtrfs "monthly";
-    };
+        # TRIM 4 SSD
+        fstrim = {
+          enable = true;
+          interval = mkIf rootIsBtrfs "monthly";
+        };
 
-    # ZRAM
-    zramSwap = {
-      enable = true;
-      priority = 100;
-      memoryPercent = 100;
-      algorithm = "lz4";
-      swapDevices = 1;
-      writebackDevice = null;
-    };
+        # UDisks2 & Automount
+        udisks2.enable = true;
+        gvfs.enable = true;
+        tumbler.enable = true;
+        smartd = {
+          enable = false;
+          autodetect = true;
+        };
+      };
 
-    environment.systemPackages = with pkgs;
-      [
+      # ZRAM & Swap
+      zramSwap = {
+        enable = true;
+        priority = 50;
+        memoryPercent = 25;
+        algorithm = "zstd";
+        swapDevices = 2;
+      };
+
+      swapDevices = [
+        {
+          device = "/swapfile";
+          size = 16 * 1024;
+          priority = 100;
+        }
+      ];
+
+      environment.systemPackages = with pkgs; [
+        baobab
         woeusb-ng
         popsicle
         usbutils
@@ -45,30 +61,29 @@ in {
         ncdu
         duf
         f3
-      ]
-      ++ optionals rootIsBtrfs [
         compsize
         btrfs-progs
-      ]
-      ++ optionals cfg.rootSSD [
         smartmontools
         nvme-cli
       ];
 
-    # UDisks2 & Automount
-    services = {
-      udisks2.enable = true;
-      gvfs.enable = true;
-      devmon.enable = mkDefault false;
-      smartd = mkIf cfg.rootSSD {
-        enable = true;
-        autodetect = true;
+      programs = {
+        gnome-disks.enable = true;
+        udevil.enable = mkDefault false;
       };
-    };
 
-    programs = {
-      gnome-disks.enable = true;
-      udevil.enable = mkDefault false;
+      # Disable fsck when BTRFS is used
+      # https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts
+      systemd.services.systemd-remount-fs =
+        if (!rootIsBtrfs) then
+          {
+            enable = true;
+          }
+        else
+          {
+            enable = false;
+          };
+
+      boot.kernelParams = if (!rootIsBtrfs) then [ ] else [ "fsck.mode=skip" ];
     };
-  };
 }

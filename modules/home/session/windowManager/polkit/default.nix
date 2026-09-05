@@ -1,3 +1,0 @@
-{
-  security.soteria.enable = true;
-}

@@ -1,22 +1,23 @@
 {
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
-  inherit (lib) mkEnableOption mkDefault mkIf;
-in {
-  options.mars.hardware.thinkpad.enable = mkEnableOption "Thinkpad Configs" // {default = false;};
+  flake.modules.nixos.think =
+    {
+      config,
+      pkgs,
+      lib,
+      ...
+    }:
+    let
+      inherit (lib) mkDefault;
+    in
+    {
+      boot.kernelModules = [ "thinkpad-acpi" ];
+      hardware.trackpoint = {
+        enable = mkDefault true;
+        emulateWheel = mkDefault config.hardware.trackpoint.enable;
+      };
 
-  config = mkIf config.mars.hardware.thinkpad.enable {
-    boot.kernelModules = ["thinkpad-acpi"];
-    hardware.trackpoint = {
-      enable = mkDefault true;
-      emulateWheel = mkDefault config.hardware.trackpoint.enable;
+      environment.systemPackages = with pkgs; [
+        tpacpi-bat
+      ];
     };
-
-    environment.systemPackages = with pkgs; [
-      tpacpi-bat
-    ];
-  };
 }

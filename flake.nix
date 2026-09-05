@@ -1,62 +1,27 @@
 {
-  description = "A Demonstration of The Power of Nix";
-
   inputs = {
     # Core
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Secure Boot
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v1.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    # Declarative Disk Partitioning and Formatting
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Dendritic
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:denful/import-tree";
+    wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
+
+    # Declarative disk
+    disko.url = "github:nix-community/disko";
+
+    # "Home Management"
+    hjem.url = "github:feel-co/hjem";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    ...
-  } @ inputs: let
-    commonConfig = import ./common.nix;
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
+      inputs.import-tree [
+        ./modules
+        ./hosts
+      ]
+    );
 
-    lib = nixpkgs.lib.extend (final: _: {
-      toKDL = import ./lib/to-kdl.nix {lib = final;};
-    });
-
-    commonArgs = {
-      inherit (commonConfig) system username fullname;
-      inherit inputs self;
-    };
-
-    baseModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
-      inputs.disko.nixosModules.disko
-      ./modules
-      {nixpkgs.config.allowUnfree = true;}
-    ];
-
-    mkHost = hostname: extraModules:
-      nixpkgs.lib.nixosSystem {
-        inherit lib;
-        specialArgs = commonArgs // {inherit inputs;};
-        inherit (commonConfig) system;
-        modules = baseModules ++ [./hosts/${hostname}] ++ extraModules;
-      };
-
-    # Define hosts
-    hosts = {
-      boltz = [];
-      rift = [];
-      crest = [];
-    };
-  in {
-    nixosConfigurations = nixpkgs.lib.mapAttrs mkHost hosts;
-
-    formatter.${commonConfig.system} = nixpkgs.legacyPackages.${commonConfig.system}.alejandra;
-  };
 }

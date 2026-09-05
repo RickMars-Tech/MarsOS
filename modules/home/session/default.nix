@@ -1,11 +1,12 @@
+{ self, ... }:
 {
-  imports = [
-    ./greeter
-    ./windowManager
-    ./xdg
-    ./dbus.nix
-    ./theme.nix
-    ./timezone.nix
-    ./user.nix
-  ];
+  flake.modules.nixos.session = {
+    imports = with self.modules.nixos; [
+      # nn # Niri+Noctalia
+      cosmic_epoch
+      fonts
+      timezone
+    ];
+
+  };
 }

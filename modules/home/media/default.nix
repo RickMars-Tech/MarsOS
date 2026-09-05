@@ -1,12 +1,17 @@
-{lib, ...}: let
-  inherit (lib) mkEnableOption;
-in {
-  options.mars.multimediaSoftware = mkEnableOption "Graphics and Design Applications" // {default = false;};
-  imports = [
-    ./gimp
-    ./mpv
-    ./obs
-  ];
-  config = {
-  };
+{ self, ... }:
+{
+  flake.modules.nixos.media =
+    { pkgs, ... }:
+    {
+      imports = with self.modules.nixos; [
+        mpv
+        obs
+      ];
+      environment.systemPackages = with pkgs; [
+        amberol # Music Player
+        oculante # Image Viewer
+        pixieditor
+        blender
+      ];
+    };
 }

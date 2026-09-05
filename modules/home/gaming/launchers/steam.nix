@@ -1,58 +1,81 @@
 {
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
-  inherit (lib) mkIf mkDefault mkEnableOption;
-  inherit (config.mars) gaming;
-  proton-em = pkgs.callPackage ../../../../pkgs/proton-em/default.nix {};
-in {
-  options.mars.gaming = {
-    steam = {
-      enable = mkEnableOption "Enable Steam";
-      openFirewall = mkEnableOption "Open Ports of Firewall dedicated for Steam";
-      hardware-rules = mkEnableOption "Steam Hardware Udev Rules" // {default = false;};
-    };
-  };
-  config = {
-    programs = mkIf (gaming.enable && gaming.steam.enable) {
-      steam = {
-        enable = true;
-        remotePlay.openFirewall = gaming.steam.openFirewall;
-        dedicatedServer.openFirewall = gaming.steam.openFirewall;
-        extest.enable = false;
-        protontricks.enable = mkDefault false;
-        # package = pkgs.steam.override {
-        #   # https://github.com/NixOS/nixpkgs/issues/279893#issuecomment-2425213386
-        #   extraProfile = ''
-        #     unset TZ
-        #   '';
-        #   privateTmp = false; # https://github.com/NixOS/nixpkgs/issues/381923
-        # };
-        extraCompatPackages = with pkgs; [
-          (proton-ge-bin.override {
-            steamDisplayName = "Proton GE";
-          })
-          proton-em
+  flake.modules.nixos.steam =
+    {
+      username,
+      pkgs,
+      lib,
+      ...
+    }:
+    let
+      inherit (lib) mkDefault;
+    in
+    {
+      programs = {
+        steam = {
+          enable = true;
+          remotePlay.openFirewall = true;
+          dedicatedServer.openFirewall = true;
+          extest.enable = false;
+          protontricks.enable = mkDefault false;
+          # package = pkgs.steam.override {
+          #   # https://github.com/NixOS/nixpkgs/issues/279893#issuecomment-2425213386
+          #   extraProfile = ''
+          #     unset TZ
+          #   '';
+          #   privateTmp = false; # https://github.com/NixOS/nixpkgs/issues/381923
+          # };
+          extraCompatPackages = with pkgs; [
+            (proton-ge-bin.overrideAttrs (oldAttrs: {
+              steamDisplayName = "Proton GE";
+            }))
+            # proton-em
+            proton-cachyos-bin
+          ];
+        };
+      };
+
+      hardware.steam-hardware.enable = true;
+
+      environment = {
+        sessionVariables = {
+          STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
+          # https://wiki.cachyos.org/configuration/gaming/#fix-stuttering-caused-by-the-steam-game-recorder-feature
+          LD_PRELOAD = "";
+
+          # Gaming-specific OpenGL optimizations
+          __GL_THREADED_OPTIMIZATIONS = "1";
+          __GL_SHADER_DISK_CACHE = "1";
+          __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
+
+          # DXVK optimizations
+          DXVK_LOG_LEVEL = "none";
+          DXVK_CONFIG_FILE = "/etc/dxvk.conf";
+
+          # Proton optimizations
+          PROTON_USE_WINED3D = "0";
+          PROTON_NO_ESYNC = "0";
+          PROTON_NO_FSYNC = "0";
+          # PROTON_ENABLE_NVAPI = "1";
+
+          # Wine
+          WINEPREFIX = "$HOME/.wine";
+          WINEARCH = "win64";
+        };
+        systemPackages = with pkgs; [
+          steam-run
+          protontricks
+          protonplus
         ];
       };
+
+      # Steam Download Fixes
+      hjem.users.${username}.xdg.data.files."Steam/steam_dev.cfg" = {
+        text = ''
+          @eHTTP2PlatformLinux 0
+          @nClientDownloadEnableHTTP2PlatformLinux 0
+          @fDownloadRateImprovementToAddAnotherConnection 1.0
+          @unShaderBackgroundProcessingThreads 6
+        '';
+      };
     };
-
-    hardware.steam-hardware.enable = gaming.steam.hardware-rules;
-
-    environment.systemPackages = with pkgs;
-      mkIf (gaming.enable && gaming.steam.enable) [
-        steam-run
-        protontricks
-        protonplus
-      ];
-
-    xdg.dataFile."Steam/steam_dev.cfg".text = ''
-      @eHTTP2PlatformLinux 0
-      @nClientDownloadEnableHTTP2PlatformLinux 0
-      @fDownloadRateImprovementToAddAnotherConnection 1.0
-      @unShaderBackgroundProcessingThreads 6
-    '';
-  };
 }

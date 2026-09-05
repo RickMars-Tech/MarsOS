@@ -1,299 +1,254 @@
-{
-  lib,
-  stdenv,
-  buildFHSEnv,
-  makeDesktopItem,
-  symlinkJoin,
-  fetchurl,
-  writeShellScript,
-  unzip,
-  glib,
-  gtk3,
-  webkitgtk_4_1,
-  gdk-pixbuf,
-  libsoup_3,
-  cairo,
-  pango,
-  harfbuzz,
-  atk,
-  at-spi2-atk,
-  at-spi2-core,
-  openssl,
-  zlib,
-  icu,
-  libGL,
-  libGLU,
-  libglvnd,
-  libX11,
-  libXcomposite,
-  libXdamage,
-  libXext,
-  libXfixes,
-  libXrandr,
-  libxcb,
-  libXcursor,
-  libXi,
-  libXrender,
-  libXtst,
-  libXScrnSaver,
-  libXinerama,
-  libxshmfence,
-  libXxf86vm,
-  libxkbcommon,
-  mesa,
-  vulkan-loader,
-  wayland,
-  egl-wayland,
-  pipewire,
-  alsa-lib,
-  pulseaudio,
-  dbus,
-  gsettings-desktop-schemas,
-  hicolor-icon-theme,
-  curl,
-  patchelf,
-  fontconfig,
-  freetype,
-  nspr,
-  nss,
-  systemd,
-  krb5,
-  glib-networking,
-  cacert,
-  gamemode,
-  cups,
-  expat,
-  libxcrypt,
-  libva,
-  libdrm,
-  libpng,
-  xdg-utils,
-  # Opciones configurables
-  enableGamemode ? true,
-}: let
-  pname = "hytale-launcher";
+{ pkgs }:
 
-  # Importar versión y hash desde source.nix
+let
+  # Importar version y hash desde source.nix (auto-update via update.sh)
   source = import ./source.nix;
-  inherit (source) version;
+  inherit (source) version sha256;
 
-  # Unwrapped launcher - extract binary from zip
-  unwrapped = stdenv.mkDerivation {
-    inherit pname version;
+  pname = "hytale-launcher";
+  downloadUrl = "https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-${version}.zip";
 
-    src = fetchurl {
-      url = "https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-${version}.zip";
-      inherit (source) sha256;
+  # Unwrapped derivation - extracts and patches the binary
+  hytale-launcher-unwrapped = pkgs.stdenv.mkDerivation {
+    pname = "${pname}-unwrapped";
+    inherit version;
+
+    src = pkgs.fetchurl {
+      url = downloadUrl;
+      inherit sha256;
     };
 
-    nativeBuildInputs = [unzip];
-    sourceRoot = ".";
+    nativeBuildInputs = with pkgs; [
+      autoPatchelfHook
+      unzip
+    ];
+
+    unpackPhase = ''
+      runHook preUnpack
+      unzip $src -d .
+      runHook postUnpack
+    '';
+
+    buildInputs = with pkgs; [
+      webkitgtk_4_1
+      gtk3
+      glib
+      gdk-pixbuf
+      libsoup_3
+      cairo
+      pango
+      at-spi2-atk
+      harfbuzz
+      glibc
+    ];
+
+    runtimeDependencies = with pkgs; [
+      libGL
+      libxkbcommon
+      libx11
+      libxcomposite
+      libxdamage
+      libxext
+      libxfixes
+      libxrandr
+    ];
+
+    # No build phase needed - just unpack and install
+    dontBuild = true;
 
     installPhase = ''
       runHook preInstall
-      install -Dm755 hytale-launcher $out/bin/hytale-launcher
+
+      mkdir -p $out/lib/hytale-launcher
+      install -m755 hytale-launcher $out/lib/hytale-launcher/
+
       runHook postInstall
     '';
 
-    meta = {
-      description = "Hytale Launcher binary";
-      platforms = ["x86_64-linux"];
+    meta = with pkgs.lib; {
+      description = "Official launcher for Hytale game (unwrapped)";
+      homepage = "https://hytale.com";
+      license = licenses.unfree;
+      sourceProvenance = with sourceTypes; [ binaryNativeCode ];
+      platforms = [ "x86_64-linux" ];
     };
   };
 
-  # FHS environment
-  hytale-launcher-fhs = buildFHSEnv {
-    name = pname;
+  # FHS-wrapped derivation - allows self-updates to work
+  hytale-launcher = pkgs.buildFHSEnv {
+    name = "hytale-launcher";
+    inherit version;
 
-    targetPkgs = pkgs:
-      [
-        # WebKit/GTK stack for launcher UI
+    targetPkgs =
+      pkgs: with pkgs; [
+        # Core dependencies
+        hytale-launcher-unwrapped
+
+        # WebKit/GTK stack (for launcher UI)
+        webkitgtk_4_1
         gtk3
         glib
-        webkitgtk_4_1
-        libsoup_3
-        openssl
-        gsettings-desktop-schemas
-        glib-networking
-        dbus
-        pango
-        cairo
         gdk-pixbuf
-        atk
+        libsoup_3
+        cairo
+        pango
         at-spi2-atk
-        at-spi2-core
-        hicolor-icon-theme
-        xdg-utils
-
-        # Graphics stack
-        cups
-        icu
-        zlib
-        libpng
-        freetype
-        fontconfig
         harfbuzz
-        nspr
-        nss
-        expat
-        alsa-lib
-        libxcrypt
-        mesa
-        vulkan-loader
+
+        # Graphics - OpenGL/Vulkan/EGL (for game client via SDL3)
         libGL
         libGLU
         libglvnd
-        libva
-        libdrm
-        wayland
+        mesa
+        vulkan-loader
         egl-wayland
+
+        # X11 (SDL3 dlopens these)
+        libx11
+        libxcomposite
+        libxdamage
+        libxext
+        libxfixes
+        libxrandr
+        libxcursor
+        libxi
+        libxcb
+        libxscrnsaver
+        libxinerama
+        libxxf86vm
+
+        # Wayland (SDL3 can use Wayland backend)
+        wayland
         libxkbcommon
 
-        # Audio
+        # Audio (for game client via bundled OpenAL)
+        alsa-lib
         pipewire
         pulseaudio
 
-        # X11 libraries
-        libX11
-        libXcomposite
-        libXdamage
-        libXext
-        libXfixes
-        libXrandr
-        libxcb
-        libXcursor
-        libXi
-        libXrender
-        libXtst
-        libXScrnSaver
-        libXinerama
-        libxshmfence
-        libXxf86vm
-
         # System libraries
+        dbus
+        fontconfig
+        freetype
+        glibc
+        nspr
+        nss
         systemd
-        krb5
-        cacert
-        curl
-        patchelf
+        zlib
 
-        # C++ runtime
+        # C++ runtime (needed by libNoesis.so, libopenal.so in game client)
         stdenv.cc.cc.lib
-      ]
-      ++ lib.optional enableGamemode gamemode;
 
-    profile = ''
-      # Backend preference (Wayland with X11 fallback)
-      export GDK_BACKEND="''${GDK_BACKEND:-wayland,x11}"
+        # .NET runtime dependencies (HytaleClient is a .NET application)
+        icu
+        openssl
+        krb5
 
-      # WebKit optimizations
+        # TLS/SSL support for GLib networking (launcher)
+        glib-networking
+        cacert
+      ];
+
+    runScript = pkgs.writeShellScript "hytale-launcher-wrapper" ''
+      # Hytale data directory
+      LAUNCHER_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/Hytale"
+      LAUNCHER_BIN="$LAUNCHER_DIR/hytale-launcher"
+      BUNDLED_HASH_FILE="$LAUNCHER_DIR/.bundled_hash"
+      BUNDLED_BIN="${hytale-launcher-unwrapped}/lib/hytale-launcher/hytale-launcher"
+      LAUNCHER_TMP_DIR="$LAUNCHER_DIR/.nix-tmp"
+
+      mkdir -p "$LAUNCHER_DIR" "$LAUNCHER_TMP_DIR"
+
+      # Compute hash of bundled binary to detect Nix package updates
+      BUNDLED_HASH=$(sha256sum "$BUNDLED_BIN" | cut -d" " -f1)
+
+      # Copy bundled binary if needed (new install or Nix package update)
+      if [ ! -x "$LAUNCHER_BIN" ] || [ ! -f "$BUNDLED_HASH_FILE" ] || [ "$(cat "$BUNDLED_HASH_FILE")" != "$BUNDLED_HASH" ]; then
+        install -m755 "$BUNDLED_BIN" "$LAUNCHER_BIN"
+        echo "$BUNDLED_HASH" > "$BUNDLED_HASH_FILE"
+      fi
+
+      # Hybrid GPU offloading - auto-detect NVIDIA & MESA
+      if [ -d /proc/driver/nvidia ] || command -v nvidia-smi &> /dev/null; then
+        export __NV_PRIME_RENDER_OFFLOAD=1
+        export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+        export __GLX_VENDOR_LIBRARY_NAME=nvidia
+        export __VK_LAYER_NV_optimus=NVIDIA_only
+      else
+        export DRI_PRIME=1
+      fi
+
+      # Required environment variables from Flatpak metadata / upstream nixpkgs
       export WEBKIT_DISABLE_COMPOSITING_MODE=1
 
-      # GTK/GLib schemas
-      export XDG_DATA_DIRS="${lib.makeSearchPath "share/gsettings-schemas" [
-        gsettings-desktop-schemas
-        gtk3
-      ]}:$XDG_DATA_DIRS"
+      # NVIDIA Wayland fixes (see issue #15)
+      export __NV_DISABLE_EXPLICIT_SYNC=1
+      export WEBKIT_DISABLE_DMABUF_RENDERER=1
 
-      # Vulkan optimizations (always enabled)
-      export __GL_GSYNC_ALLOWED="''${__GL_GSYNC_ALLOWED:-1}"
-      export __GL_VRR_ALLOWED="''${__GL_VRR_ALLOWED:-1}"
+      # Enable GLib TLS backend (glib-networking)
+      export GIO_MODULE_DIR=/usr/lib/gio/modules
 
-      ${lib.optionalString enableGamemode ''
-        # GameMode preload
-        export LD_PRELOAD="${lib.getLib gamemode}/lib/libgamemodeauto.so.0''${LD_PRELOAD:+:$LD_PRELOAD}"
-      ''}
+      # SSL certificates
+      export SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
+
+      # Keep patch staging on the same filesystem as launcher data
+      # XDG_CACHE_HOME takes precedence over TMPDIR in the launcher
+      unset XDG_CACHE_HOME
+      export TMPDIR="$LAUNCHER_TMP_DIR"
+
+      exec "$LAUNCHER_BIN" "$@"
     '';
 
-    runScript = writeShellScript "hytale-run" ''
-      set -euo pipefail
+    extraInstallCommands = ''
+            # Install desktop file
+            mkdir -p $out/share/applications
+            cat > $out/share/applications/hytale-launcher.desktop << EOF
+      [Desktop Entry]
+      Name=Hytale Launcher
+      Comment=Official launcher for Hytale
+      Exec=$out/bin/hytale-launcher
+      Icon=hytale-launcher
+      Terminal=false
+      Type=Application
+      Categories=Game;
+      Keywords=hytale;game;launcher;hypixel;
+      StartupWMClass=com.hypixel.HytaleLauncher
+      EOF
 
-      # Path configuration
-      DATA_DIR="''${XDG_DATA_HOME:-$HOME/.local/share}/Hytale"
-      LAUNCHER_DIR="$DATA_DIR/launcher"
-      TARGET_BIN="$LAUNCHER_DIR/hytale-launcher"
-      SOURCE_BIN="${unwrapped}/bin/hytale-launcher"
+            # Install icon
+            for size in 256x256 128x128 64x64 48x48 32x32 16x16; do
+              mkdir -p $out/share/icons/hicolor/$size/apps
+              cp ${./hytale.png} $out/share/icons/hicolor/$size/apps/hytale-launcher.png
+            done
 
-      mkdir -p "$LAUNCHER_DIR"
-
-      # Copy launcher on first run or if source changed
-      if [ ! -f "$TARGET_BIN" ] || [ "${unwrapped}/bin/hytale-launcher" -nt "$TARGET_BIN" ]; then
-        echo "Installing/Updating Hytale Launcher (version ${version})..."
-        cp -f "$SOURCE_BIN" "$TARGET_BIN"
-        chmod +x "$TARGET_BIN"
-        echo "Launcher ready!"
-      fi
-
-      # IPv6 check (always enabled - required for Netty QUIC)
-      if [[ -z "''${HYTALE_SKIP_IPV6_CHECK:-}" ]]; then
-        if [[ ! -d /proc/sys/net/ipv6 ]]; then
-          echo "WARNING: Hytale requires IPv6 (Netty QUIC)." >&2
-          echo "Enable IPv6 in your OS or set HYTALE_SKIP_IPV6_CHECK=1 to skip this check." >&2
-        fi
-      fi
-
-      ${lib.optionalString enableGamemode ''
-        # GameMode status
-        if command -v gamemoded &> /dev/null; then
-          echo "GameMode available - optimizations will be applied automatically"
-          gamemoderun
-        fi
-      ''}
-
-      # Run launcher
-      cd "$LAUNCHER_DIR"
-      exec "$TARGET_BIN" "$@"
+            mkdir -p $out/share/pixmaps
+            cp ${./hytale.png} $out/share/pixmaps/hytale-launcher.png
     '';
 
-    meta = with lib; {
-      description = "Official Hytale game launcher";
+    meta = with pkgs.lib; {
+      description = "Official launcher for Hytale game";
+      longDescription = ''
+        The official launcher for Hytale, developed by Hypixel Studios.
+        This package wraps the launcher from the official distribution,
+        providing FHS compatibility for self-updates.
+      '';
       homepage = "https://hytale.com";
       license = licenses.unfree;
-      platforms = ["x86_64-linux"];
-      mainProgram = pname;
+      sourceProvenance = with sourceTypes; [ binaryNativeCode ];
+      maintainers = [
+        {
+          name = "Jacob Pyke";
+          email = "github@pyk.ee";
+          github = "JPyke3";
+          githubId = 13283054;
+        }
+      ];
+      platforms = [ "x86_64-linux" ];
+      mainProgram = "hytale-launcher";
     };
   };
 
-  # Desktop entry
-  desktopItem = makeDesktopItem {
-    name = pname;
-    desktopName = "Hytale";
-    genericName = "Voxel RPG";
-    comment = "Adventure awaits in Orbis";
-    exec = "${pname} %U";
-    icon = pname;
-    terminal = false;
-    type = "Application";
-    categories = ["Game" "ActionGame" "RolePlaying"];
-    keywords = ["hytale" "game" "launcher" "voxel" "rpg"];
-    startupNotify = true;
-    startupWMClass = "hytale";
-  };
 in
-  # Final package
-  symlinkJoin {
-    name = "${pname}-${version}";
-    paths = [hytale-launcher-fhs desktopItem];
-
-    postBuild = ''
-      # Install icon from local file
-      for size in 256x256 128x128 64x64 48x48 32x32 16x16; do
-        mkdir -p $out/share/icons/hicolor/$size/apps
-        cp ${./hytale.png} $out/share/icons/hicolor/$size/apps/${pname}.png
-      done
-
-      mkdir -p $out/share/pixmaps
-      cp ${./hytale.png} $out/share/pixmaps/${pname}.png
-    '';
-
-    meta = with lib; {
-      description =
-        "Official Hytale game launcher (v${version}) with Vulkan optimizations"
-        + lib.optionalString enableGamemode " and GameMode support";
-      homepage = "https://hytale.com";
-      license = licenses.unfree;
-      platforms = ["x86_64-linux"];
-      mainProgram = pname;
-      maintainers = [];
-    };
-  }
+{
+  inherit hytale-launcher hytale-launcher-unwrapped;
+}

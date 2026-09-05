@@ -1,15 +1,10 @@
 {
-  config,
-  lib,
-  ...
-}: let
-  inherit (lib) mkIf mkEnableOption;
-in {
-  options.mars.hardware.cpu.intel.enable = mkEnableOption "Intel cpu Config";
-
-  config = mkIf config.mars.hardware.cpu.intel.enable {
+  flake.modules.nixos.intelcpu = {
     hardware.cpu.intel.updateMicrocode = true;
-    services.throttled.enable = true;
+    services = {
+      throttled.enable = true;
+      thermald.enable = true;
+    };
     boot = {
       kernelParams = [
         "intel_pstate=enable"

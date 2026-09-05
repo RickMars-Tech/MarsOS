@@ -1,97 +1,71 @@
-#|==< Asus Laptop with AMD APU + Nvidia GPU >==|#
 {
-  imports = [
-    ./disko.nix
-    ../../modules/system/default.nix
-  ];
-  # Hostname
-  networking.hostName = "rift";
-
-  #|==< Mars Config >==|#
-  mars = {
-    boot = {
-      secureBoot = false;
-      plymouth = true;
-      kernel.version = "latest";
-    };
-    #= Enable Doas
-    security.doas = true;
-
-    #= Hardware
-    hardware = {
-      rootSSD = true;
-      asus = {
-        enable = true;
-        battery.chargeUpto = 80;
-      };
-      laptopOptimizations = true;
-      cpu.amd.enable = true;
-
-      # GPUs
-      graphics = {
-        enable = true;
-        #= AMD/RADEON
-        amd.enable = true;
-
-        #= NVIDIA
-        # Nvidia Nouveau
-        nvidiaFree.enable = false; # I love it, but the performance is poor
-
-        # Nvidia Privative Driver
-        nvidiaPro = {
-          enable = true;
-          driver = "latest";
-          #= Nvidia Prime Offload
-          prime = {
-            enable = true;
-            igpu = {
-              vendor = "amd";
-              port = "PCI:35:0:0";
-            };
-            dgpu.port = "PCI:1:0:0";
-          };
-        };
-      };
-    };
-    #= Desktop
-    # Misc Packages
-    multimediaSoftware = true; # include Graphics/Creation tools like OBS and Gimp
-
-    shell.fish = true;
-    #= Development
-    dev = {
-      git = {
-        enable = true;
-        username = "RickMars-Tech";
-        email = "rickmars117@proton.me";
-      };
-      languages = {
-        nix = true;
-        python = true;
-        cpp = false;
-      };
-      ia.opencode = true;
-    };
-    #= Gaming
-    gaming = {
-      enable = true;
-      gamemode = {
-        enable = true;
-        amdOptimizations = false;
-        nvidiaOptimizations = true;
-      };
-      gamescope.enable = true;
-      minecraft = {
-        prismlauncher.enable = true;
-        extraJavaPackages.enable = true;
-      };
-      steam = {
-        enable = true;
-        openFirewall = false;
-        hardware-rules = true;
-      };
-      extra-gaming-packages = true;
-    };
+  inputs,
+  self,
+  ...
+}:
+let
+  # Common variables values used arround the hole config
+  commonArgs = {
+    username = "rick";
+    fullname = "Rick";
+    system = "x86_64-linux";
+    timeZone = "America/Chihuahua";
+    locale = "es_MX.UTF-8";
   };
-  system.stateVersion = "25.11";
+in
+{
+  # Host config
+  flake.nixosConfigurations.rift = inputs.nixpkgs.lib.nixosSystem {
+    inherit (commonArgs) system;
+    specialArgs = commonArgs // {
+      inherit inputs self;
+    };
+    modules = [
+      self.modules.nixos.riftModules
+      self.diskoConfigurations.rift
+      inputs.disko.nixosModules.disko
+    ];
+  };
+
+  # Modules used by the Host
+  flake.modules.nixos.riftModules = {
+    imports = with self.modules.nixos; [
+      # Full system core settings
+      system
+
+      # Asusctl
+      asus
+
+      # AMD CPU & GPU
+      amdcpu
+      amdgpu
+
+      # Nvidia Privative Driver with Prime Config
+      nvidia-pro
+      nvidia-pro-prime
+
+      # Desktop Base & Gaming
+      desktop
+      fish-shell # comment if you prefer bash
+      # bash-shell # uncomment if you prefer bash
+      gaming
+      devel
+
+      # Winboat & Virtualization
+      winboat
+      docker # Needed for Winboat
+      virtualization
+
+      # Programing Tools for:
+      python
+
+      # Browsers
+      firefox
+
+    ];
+
+    # Host name & stateVersion
+    networking.hostName = "rift";
+    system.stateVersion = "26.05";
+  };
 }

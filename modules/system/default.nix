@@ -1,9 +1,14 @@
-{lib, ...}: let
-  inherit (builtins) filter map readDir pathExists attrNames;
-  isDirectory = _: type: type == "directory";
-  hasDefault = name: pathExists (./. + "/${name}/default.nix");
-in {
-  imports =
-    map (name: ./. + "/${name}")
-    (filter hasDefault (attrNames (lib.filterAttrs isDirectory (readDir ./.))));
+{
+  flake.modules.nixos.system =
+    { self, ... }:
+    {
+      imports = with self.modules.nixos; [
+        core
+        hardwareCore
+        network
+        nix
+      ];
+      # Force to NOT use ARM/Windows/etc binaries
+      boot.binfmt.emulatedSystems = [ ];
+    };
 }
