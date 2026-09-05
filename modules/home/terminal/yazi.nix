@@ -45,7 +45,7 @@
               ];
               view = [
                 {
-                  run = "swayimg %s";
+                  run = "oculante %s";
                   block = true;
                 }
               ];
