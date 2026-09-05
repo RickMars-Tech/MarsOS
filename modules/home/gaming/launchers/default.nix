@@ -16,6 +16,8 @@
         gnuchess
         stockfish
 
+        bottles # Not a launcher, but very usefull
+
         # Own Packaged
         hytale-launcher
         opengoal
