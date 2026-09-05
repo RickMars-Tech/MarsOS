@@ -30,10 +30,6 @@
       };
       # Shell/CLI programs
       environment.systemPackages = with pkgs; [
-        # eza # Replacement for ls
-        # xcp # Extended CP
-        # dust # Like du but more intuitive
-        # duf # Disk Usage/Free Utility
         trashy # Alternative to rm and trash-cli
         macchanger # CLI Mac Changer
         zip # Compressor/archiver for creating and modifying zipfiles
@@ -41,8 +37,7 @@
         gnutar # GNU implementation of the `tar' archiver
         yt-dlp
         # Goofy Software
-        # cbonsai
-        # nerdfetch
+        nyancat
         asciiquarium
         sl
       ];
