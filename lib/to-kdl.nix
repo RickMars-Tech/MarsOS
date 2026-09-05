@@ -11,9 +11,9 @@
   toLiteral = v:
     if v == null
     then "null"
-    else if v == true
+    else if v
     then "true"
-    else if v == false
+    else if !v
     then "false"
     else if typeOf v == "string"
     then ''"${sanitize v}"''

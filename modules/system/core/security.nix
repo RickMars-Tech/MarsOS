@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
-  gaming = config.mars.gaming;
+  inherit (config.mars) gaming;
 in {
   options.mars.security = {
     sudo-rs = mkEnableOption "Enable Sudo-Rs" // {default = false;};

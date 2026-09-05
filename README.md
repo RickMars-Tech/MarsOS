@@ -7,8 +7,6 @@
 ![Niri Term](./assets/desk-img/term.png)
 ![Niri Bar](./assets/desk-img/bar.png)
 
-- Wallpaper: [Bloom Dark by dpcdpc11](https://www.reddit.com/r/wallpapers/comments/102bz2o/bloom_dark_by_dpcdpc11_5120x2880/?tl=es-419)
-
 ## Design Philosophy
 
 Based on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund]'s [nixos-template][nixos-template] Configuration Structure, with a Full NixOS approach without relying on Home-Manager, preferring to use custom modules for software such as Niri or for simpler hardware configurations without relying on so many inputs in the Flake

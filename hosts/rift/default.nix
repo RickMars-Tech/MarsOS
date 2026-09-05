@@ -35,13 +35,12 @@
 
         #= NVIDIA
         # Nvidia Nouveau
-        nvidiaFree.enable = false;
+        nvidiaFree.enable = false; # I love it, but the performance is poor
 
         # Nvidia Privative Driver
         nvidiaPro = {
           enable = true;
-          # nvenc = false;
-          driver = "beta";
+          driver = "latest";
           #= Nvidia Prime Offload
           prime = {
             enable = true;
@@ -51,7 +50,6 @@
             };
             dgpu.port = "PCI:1:0:0";
           };
-          # wayland-fixes = true;
         };
       };
     };

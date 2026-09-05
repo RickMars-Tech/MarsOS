@@ -7,11 +7,11 @@
   inherit (lib) mkIf mkMerge mkEnableOption;
   # Options
   asus = config.mars.hardware.asus.gamemode;
-  gaming = config.mars.gaming;
-  steam = config.mars.gaming.steam;
+  inherit (config.mars) gaming;
+  inherit (config.mars.gaming) steam;
   minecraft = config.mars.gaming.minecraft.prismlauncher;
   # nvidiaPro = config.mars.graphics.nvidiaPro;
-  amd = config.mars.hardware.graphics.amd;
+  inherit (config.mars.hardware.graphics) amd;
 in {
   imports = [
     ./launchers

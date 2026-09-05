@@ -33,8 +33,8 @@ in {
 
     package = pkgs.nix;
     channel.enable = false;
-    registry = registry; # Registry for legacy nix commands
-    nixPath = nixPath; # Pin nixpkgs flake to system nixpkgs
+    inherit registry; # Registry for legacy nix commands
+    inherit nixPath; # Pin nixpkgs flake to system nixpkgs
     settings = {
       auto-optimise-store = true;
       experimental-features = [

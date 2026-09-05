@@ -5,7 +5,7 @@
 }: let
   inherit (lib) mkEnableOption mkMerge mkIf;
   nouveau = config.mars.hardware.graphics.nvidiaFree;
-  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
+  inherit (config.mars.hardware.graphics) nvidiaPro;
   gaming = config.mars.gaming.gamemode;
 in {
   options.mars.hardware.graphics.nvidiaFree = {

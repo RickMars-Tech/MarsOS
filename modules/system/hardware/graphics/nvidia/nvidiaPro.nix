@@ -4,13 +4,13 @@
   lib,
   ...
 }: let
-  cfg = config.mars.hardware.graphics.nvidiaPro;
-  nvidiaFree = config.mars.hardware.graphics.nvidiaFree;
   inherit (lib) mkIf mkOption mkEnableOption optionals types;
+  cfg = config.mars.hardware.graphics.nvidiaPro;
+  inherit (config.mars.hardware.graphics) nvidiaFree;
+  isLaptop = config.mars.hardware.laptopOptimizations;
 in {
   options.mars.hardware.graphics.nvidiaPro = {
     enable = mkEnableOption "nVidia graphics" // {default = false;};
-    # nvenc = mkEnableOption "NVENC video encoding" // {default = false;};
     driver = mkOption {
       type = types.enum ["stable" "latest" "beta" "legacy_470" "legacy_390"];
       default = "stable";
@@ -38,10 +38,31 @@ in {
         description = "Bus Port of dgpu";
       };
     };
-    # wayland-fixes = mkEnableOption "Wayland VRAM Consumption Fixes";
   };
 
   config = mkIf cfg.enable {
+    boot = {
+      kernelParams =
+        [
+          "nvidia.NVreg_EnableResizableBar=1"
+          "nvidia.NVreg_UsePageAttributeTable=1"
+          "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1,PowerMizerEnable=0x1;PerfLevelSrc=0x2222;PowerMizerDefault=0x3;PowerMizerDefaultAC=0x1"
+        ]
+        ++ optionals isLaptop [
+          "NVreg_RegistryDwords=OverrideMaxPerf=0x1"
+        ];
+      kernelModules =
+        optionals cfg.enable [
+          "nvidia"
+          "nvidia_modeset"
+          "nvidia_uvm"
+          "nvidia_drm"
+        ]
+        ++ optionals (cfg.enable && cfg.prime.enable) [
+          "nvidia_wmi_ec_backlight"
+        ];
+    };
+
     # f#ck, we need this thing to use nvidia privative driver
     services.xserver = {
       enable = cfg.enable && !nvidiaFree.enable;
@@ -53,20 +74,33 @@ in {
       nvidiaSettings = true;
       modesetting.enable = true;
       dynamicBoost.enable = true;
+      powerManagement = {
+        inherit (cfg.prime) enable;
+        kernelSuspendNotifier = config.hardware.nvidia.open && lib.versionAtLeast config.hardware.nvidia.package.version "595";
+      };
 
       open = true;
       #  "stable" "latest" "beta" "legacy_470" "legacy_390"
       package =
         if cfg.driver == "stable"
         then stable
-        else if cfg.driver == "latest"
-        then latest
         else if cfg.driver == "beta"
         then beta
         else if cfg.driver == "legacy_470"
         then legacy_470
         else if cfg.driver == "legacy_390"
         then legacy_390
+        else if cfg.driver == "latest"
+        # latest
+        then
+          mkDriver {
+            version = "595.58.03";
+            sha256_64bit = "sha256-jA1Plnt5MsSrVxQnKu6BAzkrCnAskq+lVRdtNiBYKfk=";
+            sha256_aarch64 = "sha256-hzzIKY1Te8QkCBWR+H5k1FB/HK1UgGhai6cl3wEaPT8=";
+            openSha256 = "sha256-6LvJyT0cMXGS290Dh8hd9rc+nYZqBzDIlItOFk8S4n8=";
+            settingsSha256 = "sha256-2vLF5Evl2D6tRQJo0uUyY3tpWqjvJQ0/Rpxan3NOD3c=";
+            persistencedSha256 = "sha256-AtjM/ml/ngZil8DMYNH+P111ohuk9mWw5t4z7CHjPWw=";
+          }
         else stable;
 
       # Hybrid GPU(AMD+NVIDIA or Intel+NVIDIA)
@@ -82,10 +116,10 @@ in {
       };
     };
 
-    # Fix for openGL nvidia drivers bug (GLThreadedOptimizations)
-    home.file = {
-      ".nv/nvidia-application-profiles-rc".text = ''
-        {
+    environment.etc = {
+      # Fix for openGL nvidia drivers bug (GLThreadedOptimizations)
+      "nvidia/nvidia-application-profiles-rc.d/GLThreadedOptimizations".text = ''
+          {
             "rules": [
                 {
                     "pattern": {
@@ -108,32 +142,31 @@ in {
             ]
         }
       '';
+      # Wayland Compositors Minor Fix
+      "nvidia/nvidia-application-profiles-rc.d/niri-wayland".text = ''
+        {
+            "rules": [
+                {
+                    "pattern": {
+                        "feature": "procname",
+                        "matches": "niri"
+                    },
+                    "profile": "Limit Free Buffer Pool On Wayland Compositors"
+                }
+            ],
+            "profiles": [
+                {
+                    "name": "Limit Free Buffer Pool On Wayland Compositors",
+                    "settings": [
+                        {
+                            "key": "GLVidHeapReuseRatio",
+                            "value": 0
+                        }
+                    ]
+                }
+            ]
+        }
+      '';
     };
-
-    # Wayland Compositors Minor Fix
-    environment.etc."nvidia/nvidia-application-profiles-rc.d/niri-wayland".text = ''
-      {
-          "rules": [
-              {
-                  "pattern": {
-                      "feature": "procname",
-                      "matches": "niri"
-                  },
-                  "profile": "Limit Free Buffer Pool On Wayland Compositors"
-              }
-          ],
-          "profiles": [
-              {
-                  "name": "Limit Free Buffer Pool On Wayland Compositors",
-                  "settings": [
-                      {
-                          "key": "GLVidHeapReuseRatio",
-                          "value": 0
-                      }
-                  ]
-              }
-          ]
-      }
-    '';
   };
 }

@@ -7,7 +7,7 @@
 in {
   options.mars.hardware.cpu.intel.enable = mkEnableOption "Intel cpu Config";
 
-  config = mkIf (config.mars.hardware.cpu.intel.enable) {
+  config = mkIf config.mars.hardware.cpu.intel.enable {
     hardware.cpu.intel.updateMicrocode = true;
     services.throttled.enable = true;
     boot = {

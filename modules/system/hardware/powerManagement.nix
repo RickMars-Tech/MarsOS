@@ -5,7 +5,7 @@
 }: let
   inherit (lib) mkIf mkDefault mkEnableOption optionalAttrs;
   cfg = config.mars;
-  asus = config.mars.hardware.asus;
+  inherit (config.mars.hardware) asus;
 in {
   options.mars.hardware.laptopOptimizations = mkEnableOption "Laptop Optimizations";
 

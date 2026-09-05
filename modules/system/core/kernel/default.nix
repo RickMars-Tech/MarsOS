@@ -5,8 +5,8 @@
   ...
 }: let
   inherit (lib) mkOption types;
-  version = config.mars.boot.kernel.version;
-  gaming = config.mars.gaming;
+  inherit (config.mars.boot.kernel) version;
+  inherit (config.mars) gaming;
 in {
   imports = [./common.nix];
 
@@ -29,7 +29,7 @@ in {
 
     # Scheduler SCX
     services.scx = {
-      enable = gaming.enable;
+      inherit (gaming) enable;
       package = pkgs.scx.rustscheds;
       scheduler = "scx_lavd";
     };

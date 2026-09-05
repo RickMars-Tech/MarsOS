@@ -44,7 +44,7 @@
       nixpkgs.lib.nixosSystem {
         inherit lib;
         specialArgs = commonArgs // {inherit inputs;};
-        system = commonConfig.system;
+        inherit (commonConfig) system;
         modules = baseModules ++ [./hosts/${hostname}] ++ extraModules;
       };
 

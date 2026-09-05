@@ -7,12 +7,12 @@
   inherit (lib) mkIf;
 in {
   programs.git = {
-    enable = config.mars.dev.git.enable;
+    inherit (config.mars.dev.git) enable;
     lfs.enable = true;
     config = {
       user = {
         name = config.mars.dev.git.username;
-        email = config.mars.dev.git.email;
+        inherit (config.mars.dev.git) email;
       };
 
       core = {

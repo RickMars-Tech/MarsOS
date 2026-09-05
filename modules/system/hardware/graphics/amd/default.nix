@@ -5,10 +5,10 @@
   ...
 }: let
   inherit (lib) mkEnableOption optionals mkMerge mkIf;
-  graphics = config.mars.hardware.graphics;
-  amd = config.mars.hardware.graphics.amd;
-  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
-  nvidiaFree = config.mars.hardware.graphics.nvidiaFree;
+  inherit (config.mars.hardware) graphics;
+  inherit (config.mars.hardware.graphics) amd;
+  inherit (config.mars.hardware.graphics) nvidiaPro;
+  inherit (config.mars.hardware.graphics) nvidiaFree;
   laptop = config.mars.hardware.laptopOptimizations;
   gaming = config.mars.gaming.gamemode;
 in {
@@ -53,7 +53,7 @@ in {
     };
     environment = {
       sessionVariables = mkMerge [
-        (mkIf (amd.enable) {
+        (mkIf amd.enable {
           AMD_VULKAN_ICD = "RADV";
         })
         (mkIf (!nvidiaFree.enable && !nvidiaPro.enable) {

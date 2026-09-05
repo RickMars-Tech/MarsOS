@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) getExe mkMerge mkIf;
-  asus = config.mars.hardware.asus;
+  inherit (config.mars.hardware) asus;
   asusctl = "${pkgs.asusctl}/bin/asusctl";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   term = getExe pkgs.wezterm; #getExe pkgs.ghostty;

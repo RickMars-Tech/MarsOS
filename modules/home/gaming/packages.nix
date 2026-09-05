@@ -10,11 +10,12 @@
   dlss-swapper = pkgs.callPackage ../../../pkgs/gamingScripts/dlss-swapper.nix {};
   dlss-swapper-dll = pkgs.callPackage ../../../pkgs/gamingScripts/dlss-swapper-dll.nix {};
   zink-run = pkgs.callPackage ../../../pkgs/gamingScripts/zink-run.nix {};
-  # Options
-  gaming = config.mars.gaming;
-  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
-  nvidiaFree = config.mars.hardware.graphics.nvidiaFree;
   nouveauPrimeRun = pkgs.callPackage ../../../pkgs/gamingScripts/nouveau-prime-run.nix {};
+
+  # Options
+  inherit (config.mars) gaming;
+  inherit (config.mars.hardware.graphics) nvidiaPro;
+  inherit (config.mars.hardware.graphics) nvidiaFree;
 in {
   environment.systemPackages = with pkgs;
     [

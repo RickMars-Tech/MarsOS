@@ -7,7 +7,7 @@
   inherit (lib) optionals;
 in {
   environment.systemPackages = with pkgs;
-    optionals (config.mars.multimediaSoftware) [
+    optionals config.mars.multimediaSoftware [
       (pkgs.wrapOBS {
         plugins = with pkgs.obs-studio-plugins; [
           wlrobs

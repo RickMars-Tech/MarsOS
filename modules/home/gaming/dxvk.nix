@@ -7,7 +7,7 @@
     dxvk.enableStateCache = True
 
     # GPU selection (auto-detect)
-    dxvk.gpuSelection = 0
+    # dxvk.gpuSelection = 0
 
     # Memory allocation
     dxvk.maxFrameLatency = 1

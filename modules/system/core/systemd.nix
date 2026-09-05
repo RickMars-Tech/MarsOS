@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) optionals mkForce; # mkIf;
-  amd = config.mars.hardware.graphics.amd;
+  inherit (config.mars.hardware.graphics) amd;
 in {
   systemd = {
     services = {

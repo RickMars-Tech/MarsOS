@@ -6,6 +6,7 @@
         boldPanelIcons = true;
         alternativeIcons = true;
       })
+      nwg-look
       gsettings-desktop-schemas
     ];
     sessionVariables = {

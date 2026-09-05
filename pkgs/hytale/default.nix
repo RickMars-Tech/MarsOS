@@ -75,7 +75,7 @@
 
   # Importar versión y hash desde source.nix
   source = import ./source.nix;
-  version = source.version;
+  inherit (source) version;
 
   # Unwrapped launcher - extract binary from zip
   unwrapped = stdenv.mkDerivation {
@@ -83,7 +83,7 @@
 
     src = fetchurl {
       url = "https://launcher.hytale.com/builds/release/linux/amd64/hytale-launcher-${version}.zip";
-      sha256 = source.sha256;
+      inherit (source) sha256;
     };
 
     nativeBuildInputs = [unzip];

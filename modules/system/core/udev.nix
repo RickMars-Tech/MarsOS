@@ -6,8 +6,8 @@
 }: let
   inherit (lib) mkIf optionalString;
 
-  gaming = config.mars.gaming;
-  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
+  inherit (config.mars) gaming;
+  inherit (config.mars.hardware.graphics) nvidiaPro;
 in {
   services.udev = {
     enable = true;

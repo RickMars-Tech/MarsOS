@@ -4,8 +4,8 @@
   ...
 }: let
   inherit (lib) mkIf;
-  uwsm = config.programs.uwsm;
-  nvidiaPro = config.mars.hardware.graphics.nvidiaPro;
+  inherit (config.programs) uwsm;
+  inherit (config.mars.hardware.graphics) nvidiaPro;
 in {
   programs.niri.settings.environment = {
     NIRI_DISABLE_SYSTEM_MANAGER_NOTIFY = mkIf uwsm.enable "1";

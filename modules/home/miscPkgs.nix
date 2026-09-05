@@ -3,6 +3,7 @@
   environment.systemPackages = with pkgs; [
     qbittorrent-enhanced
     libreoffice
+    yt-dlp
   ];
 
   programs = {

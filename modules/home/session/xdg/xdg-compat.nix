@@ -146,7 +146,26 @@ in {
       };
     };
   };
-  config = {
+  config = let
+    allFiles = lib.flatten (
+      lib.mapAttrsToList (
+        _: userCfg:
+          lib.mapAttrsToList (
+            name: file:
+              if file.text != null
+              then pkgs.writeText name file.text
+              else if file.source != null
+              then file.source
+              else null
+          ) (userCfg.configFiles
+            // userCfg.cacheFiles
+            // userCfg.dataFiles
+            // userCfg.stateFiles
+            // userCfg.homeFiles)
+      )
+      config.users.users
+    );
+  in {
     users.users.${username} = {
       configFiles = cfg.configFile;
       cacheFiles = cfg.cacheFile;
@@ -154,12 +173,16 @@ in {
       stateFiles = cfg.stateFile;
       homeFiles = config.home.file;
     };
+
     environment.sessionVariables = {
       XDG_CONFIG_HOME = cfg.configHome;
       XDG_CACHE_HOME = cfg.cacheHome;
       XDG_DATA_HOME = cfg.dataHome;
       XDG_STATE_HOME = cfg.stateHome;
     };
+
+    system.extraDependencies = lib.filter (x: x != null) allFiles;
+
     system.activationScripts.xdgUserFiles = lib.stringAfter ["users"] ''
       ${lib.concatStringsSep "\n" (
         lib.flatten (

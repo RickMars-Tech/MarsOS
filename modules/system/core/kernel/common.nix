@@ -4,8 +4,8 @@
   ...
 }: let
   inherit (lib) mkIf mkMerge mkDefault optionals;
-  gaming = config.mars.gaming;
-  plymouth = config.boot.plymouth;
+  inherit (config.mars) gaming;
+  inherit (config.boot) plymouth;
   rootIsBtrfs = config.fileSystems."/".fsType or "" == "btrfs";
 in {
   boot = {
@@ -26,6 +26,7 @@ in {
         "rootflags=noatime" # Mount root filesystem with noatime (improves performance, disables file access time updates)
         "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux" # Enable and order Linux Security Modules (stacked LSMs for security)
         "fbcon=nodefer" # Do not defer kernel messages to framebuffer console (shows messages immediately)
+        "libahci.ignore_sss=1"
       ]
       ++ optionals plymouth.enable [
         # Silent Mode
@@ -34,7 +35,7 @@ in {
         "nowatchdog"
         "boot.shell_on_fail"
         "udev.log_priority=3"
-        "rd.systemd.show_status=auto"
+        "systemd.show_status=auto"
         "rd.udev.log_priority=3"
       ]
       # Gaming
@@ -68,6 +69,10 @@ in {
     kernel.sysctl = mkMerge [
       (mkIf rootIsBtrfs {
         "vm.dirty_writeback_centisecs" = mkDefault 3000;
+      })
+      (mkIf plymouth.enable {
+        # To hide any kernel messages from the console
+        "kernel.printk" = "3 3 3 3";
       })
       (mkIf (gaming.enable && gaming.gamemode.enable) {
         "kernel.split_lock_mitigate" = 0;
@@ -105,9 +110,6 @@ in {
 
         # Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
         "kernel.unprivileged_userns_clone" = 1;
-
-        # To hide any kernel messages from the console
-        "kernel.printk" = "3 3 3 3";
 
         # Restricting access to kernel pointers in the proc filesystem
         "kernel.kptr_restrict" = 2;

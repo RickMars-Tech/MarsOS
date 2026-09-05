@@ -5,11 +5,11 @@
   ...
 }: let
   inherit (lib) mkIf optionals mkEnableOption;
-  graphics = config.mars.hardware.graphics;
-  intel = graphics.intel;
-  amd = graphics.amd;
-  nvidiaPro = graphics.nvidiaPro;
-  nvidiaFree = graphics.nvidiaFree;
+  inherit (config.mars.hardware) graphics;
+  inherit (graphics) intel;
+  inherit (graphics) amd;
+  inherit (graphics) nvidiaPro;
+  inherit (graphics) nvidiaFree;
 in {
   imports = [
     ./amd

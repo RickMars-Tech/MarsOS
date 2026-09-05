@@ -12,7 +12,7 @@ in {
     networkmanager = {
       enable = true;
       wifi = {
-        backend = mkDefault "wpa_supplicant";
+        backend = mkDefault "iwd";
         macAddress = mkDefault "preserve";
         powersave = mkDefault false;
         scanRandMacAddress = false;

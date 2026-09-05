@@ -5,8 +5,8 @@
   ...
 }: let
   inherit (lib) mkEnableOption mkIf;
-  gaming = config.mars.gaming;
-  gamescope = config.mars.gaming.gamescope;
+  inherit (config.mars) gaming;
+  inherit (config.mars.gaming) gamescope;
 in {
   options.mars.gaming.gamescope = {
     enable = mkEnableOption "Enable Gamescope" // {default = false;};

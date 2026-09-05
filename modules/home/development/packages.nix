@@ -6,8 +6,8 @@
 }: let
   inherit (lib) optionals;
   lang = config.mars.dev.languages;
-  ide = config.mars.dev.ide;
-  flashprog = config.mars.dev.flash.flashprog;
+  inherit (config.mars.dev) ide;
+  inherit (config.mars.dev.flash) flashprog;
 in {
   environment.systemPackages = with pkgs;
     [

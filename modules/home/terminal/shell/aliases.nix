@@ -34,5 +34,7 @@
     # Macchanger
     changemac = "macchanger -r"; #= Generates a random MAC and sets it
     resetmac = "macchanger -p"; #= Resets the MAC address to the permanent
+
+    yt-dwl-music = ''yt-dlp -x --audio-format mp3 -o "%(playlist_title)s/%(playlist_index)s - %(title)s.%(ext)s" '';
   };
 }

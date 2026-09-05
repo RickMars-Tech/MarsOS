@@ -7,11 +7,11 @@
   inherit (lib) mkIf mkMerge optionals;
 
   # Import graphics options
-  graphics = config.mars.hardware.graphics;
+  inherit (config.mars.hardware) graphics;
   # gaming = config.mars.gaming.gamemode or {};
-  nvidiaPro = graphics.nvidiaPro;
-  nvidiaFree = graphics.nvidiaFree;
-  amd = graphics.amd;
+  inherit (graphics) nvidiaPro;
+  inherit (graphics) nvidiaFree;
+  inherit (graphics) amd;
   # Import Prime runner scripts
   nouveauPrimeRun = pkgs.callPackage ../../../../../pkgs/gamingScripts/nouveau-prime-run.nix {};
 in {

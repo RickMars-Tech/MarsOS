@@ -8,7 +8,7 @@
 in {
   options.mars.hardware.thinkpad.enable = mkEnableOption "Thinkpad Configs" // {default = false;};
 
-  config = mkIf (config.mars.hardware.thinkpad.enable) {
+  config = mkIf config.mars.hardware.thinkpad.enable {
     boot.kernelModules = ["thinkpad-acpi"];
     hardware.trackpoint = {
       enable = mkDefault true;

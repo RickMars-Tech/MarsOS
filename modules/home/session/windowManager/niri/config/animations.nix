@@ -1,123 +1,344 @@
 # https://github.com/XansiVA/nirimation
 {
   programs.niri.extraConfig = ''
+    /*
+    Shader: prism_fold
+    Authors: Justin Garza <JGarza9788@gmail.com>
+    Desc: A full chromatic prism animation
+    Demo: ./demos/prism_fold.gif
+    */
+
+
     animations {
+
+        // Slow down all animations by this factor. Values below 1 speed them up instead.
+        slowdown 1.5
+
         workspace-switch {
-            spring damping-ratio=0.80 stiffness=523 epsilon=0.0001
+            spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+
+    //this animation does not support custom shaders
         }
 
-         window-open {
-            duration-ms 400
-            curve "ease-out-expo"
+        window-open {
+            duration-ms 280
+            curve "linear"
+
             custom-shader r"
-            vec4 door_rise(vec3 coords_geo, vec3 size_geo) {
-                float progress = niri_clamped_progress;
 
-                // Tilt from 90 degrees (flat) to 0 degrees (upright)
-                float tilt = (1.0 - progress) * 1.57079632;
-
-                // Pivot point at bottom edge
-                vec2 coords = coords_geo.xy * size_geo.xy;
-                coords.y = size_geo.y - coords.y;
-
-                // Distance from pivot (bottom edge)
-                float dist_from_pivot = coords.y;
-
-                // Calculate 3D position
-                // Negative z_offset so it goes away from viewer (backward)
-                float z_offset = -dist_from_pivot * sin(tilt);
-                float y_compressed = dist_from_pivot * cos(tilt);
-
-                // Apply perspective based on depth
-                float perspective = 600.0;
-                float perspective_scale = perspective / (perspective + z_offset);
-
-                // Scale everything by perspective
-                coords.x = (coords.x - size_geo.x * 0.5) * perspective_scale + size_geo.x * 0.5;
-                coords.y = y_compressed * perspective_scale;
-
-                // Flip Y back to normal coordinates
-                coords.y = size_geo.y - coords.y;
-
-                coords_geo = vec3(coords / size_geo.xy, 1.0);
-
-                vec3 coords_tex = niri_geo_to_tex * coords_geo;
-                vec4 color = texture2D(niri_tex, coords_tex.st);
-
-                // Brighten as it rises
-                float brightness = 0.4 + 0.6 * progress;
-                color.rgb *= brightness;
-
-                return color * progress;
-            }
-            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
-                return door_rise(coords_geo, size_geo);
-            }"
-
-        }
-
-       window-close {
-        duration-ms 400
-        curve "ease-out-expo"
-        custom-shader r"
-        vec4 bob_and_slide(vec3 coords_geo, vec3 size_geo) {
-            float progress = niri_clamped_progress;
-
-            float y_offset = 0.0;
-
-            // Bob phase (0.0 to 0.25) - goes up then back to 0
-            if (progress < 0.25) {
-                float t = progress / 0.25;
-                // Parabola: goes up to peak at t=0.5, back down to 0 at t=1.0
-                y_offset = -40.0 * (1.0 - 4.0 * (t - 0.5) * (t - 0.5));
-            }
-            // Slide phase (0.25 to 1.0) - slides down
-            else {
-                float slide_progress = (progress - 0.25) / 0.75;
-                y_offset = -slide_progress * (size_geo.y + 100.0);
-            }
-
-            // Apply transformation
-            vec2 coords = coords_geo.xy * size_geo.xy;
-            coords.y = coords.y + y_offset;
-
-            coords_geo = vec3(coords / size_geo.xy, 1.0);
-
-            vec3 coords_tex = niri_geo_to_tex * coords_geo;
-            vec4 color = texture2D(niri_tex, coords_tex.st);
-
-            return color;
-        }
-        vec4 close_color(vec3 coords_geo, vec3 size_geo) {
-            return bob_and_slide(coords_geo, size_geo);
-        }"
+    // Exponential Easing
+    float easeInExpo(float t) {
+        return t == 0.0 ? 0.0 : pow(2.0, 10.0 * (t - 1.0));
+    }
+    float easeOutExpo(float t) {
+        return t == 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * t);
+    }
+    float easeInOutExpo(float t) {
+        if (t == 0.0) return 0.0;
+        if (t == 1.0) return 1.0;
+        return t < 0.5 ? 0.5 * pow(2.0, 20.0 * t - 10.0) : 1.0 - 0.5 * pow(2.0, -20.0 * t + 10.0);
+    }
+    // Sine Easing
+    float easeInSine(float t) {
+        return 1.0 - cos((t * 3.141592653589793) / 2.0);
+    }
+    float easeOutSine(float t) {
+        return sin((t * 3.141592653589793) / 2.0);
+    }
+    float easeInOutSine(float t) {
+        return -0.5 * (cos(3.141592653589793 * t) - 1.0);
+    }
+    // Quartic Easing
+    float easeInQuart(float t) {
+        return t * t * t * t;
+    }
+    float easeOutQuart(float t) {
+        float f = t - 1.0;
+        return 1.0 - f * f * f * f;
+    }
+    float easeInOutQuart(float t) {
+        return t < 0.5 ? 8.0 * t * t * t * t : 1.0 - 8.0 * (t - 1.0) * (t - 1.0) * (t - 1.0) * (t - 1.0);
     }
 
-        horizontal-view-movement {
-            spring damping-ratio=0.65 stiffness=423 epsilon=0.0001
+    // Cubic Easing
+    float easeInCubic(float t) {
+        return t * t * t;
+    }
+
+    float easeOutCubic(float t) {
+        float f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    float easeInOutCubic(float t) {
+        return t < 0.5
+            ? 4.0 * t * t * t
+            : 1.0 + 4.0 * (t - 1.0) * (t - 1.0) * (t - 1.0);
+    }
+
+    vec2 scaleUV(vec2 uv, vec2 pivot, vec2 scale) {
+        return (uv - pivot) / scale + pivot;
+    }
+
+    vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+        if (coords_geo.x < 0.0 || coords_geo.x > 1.0 ||
+            coords_geo.y < 0.0 || coords_geo.y > 1.0) {
+            return vec4(0.0);
         }
-        window-movement {
-            spring damping-ratio=0.65 stiffness=300 epsilon=0.0001
-        }
-        window-resize {
-            custom-shader r"
-                vec4 resize_color(vec3 coords_curr_geo, vec3 size_curr_geo) {
-                    vec3 coords_tex_next = niri_geo_to_tex_next * coords_curr_geo;
-                    vec4 color = texture2D(niri_tex_next, coords_tex_next.st);
-                    return color;
-                }
+
+        vec2 uv = coords_geo.xy;
+        float p = niri_clamped_progress;
+
+        float s = mix(0.82, 1.0, easeOutCubic(p));
+        vec2 baseUV = scaleUV(uv, vec2(0.5, 0.5), vec2(s, s));
+
+        float rOff = mix(-0.01, 0.0, easeOutExpo(p));
+        float gOff = mix( 0.000, 0.0, easeInOutSine(p));
+        float bOff = mix( 0.01, 0.0, easeInExpo(p));
+
+        vec4 xyScale = vec4(0.0);
+        xyScale.r = mix(0.0, 1.0, easeInQuart(p));
+        xyScale.g = mix(0.0, 1.0, easeInExpo(p));
+        xyScale.b = mix(0.0, 1.0, easeInSine(p));
+
+        vec2 uvR = scaleUV(baseUV + vec2(rOff, 0.0), vec2(0.5, 0.5), vec2(xyScale.r));
+        vec2 uvG = scaleUV(baseUV + vec2(gOff, 0.0), vec2(0.5, 0.5), vec2(xyScale.g));
+        vec2 uvB = scaleUV(baseUV + vec2(bOff, 0.0), vec2(0.5, 0.5), vec2(xyScale.b));
+
+        vec4 outColor = vec4(0.0);
+        outColor.r = texture2D(niri_tex, uvR).r;
+        outColor.g = texture2D(niri_tex, uvG).g;
+        outColor.b = texture2D(niri_tex, uvB).b;
+
+        float avgRGB = (outColor.r + outColor.g + outColor.b) / 3.0;
+        outColor.a = smoothstep(0.0, 0.5, avgRGB);
+
+        return outColor;
+    }
             "
         }
-        config-notification-open-close {
-            spring damping-ratio=0.65 stiffness=923 epsilon=0.001
+
+        window-close {
+            duration-ms 180
+            curve "linear"
+
+            custom-shader r"
+    // Exponential Easing
+    float easeInExpo(float t) {
+        return t == 0.0 ? 0.0 : pow(2.0, 10.0 * (t - 1.0));
+    }
+    float easeOutExpo(float t) {
+        return t == 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * t);
+    }
+    float easeInOutExpo(float t) {
+        if (t == 0.0) return 0.0;
+        if (t == 1.0) return 1.0;
+        return t < 0.5 ? 0.5 * pow(2.0, 20.0 * t - 10.0) : 1.0 - 0.5 * pow(2.0, -20.0 * t + 10.0);
+    }
+    // Sine Easing
+    float easeInSine(float t) {
+        return 1.0 - cos((t * 3.141592653589793) / 2.0);
+    }
+    float easeOutSine(float t) {
+        return sin((t * 3.141592653589793) / 2.0);
+    }
+    float easeInOutSine(float t) {
+        return -0.5 * (cos(3.141592653589793 * t) - 1.0);
+    }
+    // Quartic Easing
+    float easeInQuart(float t) {
+        return t * t * t * t;
+    }
+    float easeOutQuart(float t) {
+        float f = t - 1.0;
+        return 1.0 - f * f * f * f;
+    }
+    float easeInOutQuart(float t) {
+        return t < 0.5 ? 8.0 * t * t * t * t : 1.0 - 8.0 * (t - 1.0) * (t - 1.0) * (t - 1.0) * (t - 1.0);
+    }
+
+    // Cubic Easing
+    float easeInCubic(float t) {
+        return t * t * t;
+    }
+
+    float easeOutCubic(float t) {
+        float f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    float easeInOutCubic(float t) {
+        return t < 0.5
+            ? 4.0 * t * t * t
+            : 1.0 + 4.0 * (t - 1.0) * (t - 1.0) * (t - 1.0);
+    }
+
+    vec2 scaleUV(vec2 uv, vec2 pivot, vec2 scale) {
+        return (uv - pivot) / scale + pivot;
+    }
+
+    vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+
+        if (coords_geo.x < 0.0 || coords_geo.x > 1.0 ||
+            coords_geo.y < 0.0 || coords_geo.y > 1.0) {
+            return vec4(0.0);
         }
+
+
+        vec2 uv = coords_geo.xy;
+        float p = 1.0 - niri_clamped_progress;
+
+        float s = mix(0.82, 1.0, easeOutCubic(p));
+        vec2 baseUV = scaleUV(uv, vec2(0.5, 0.5), vec2(s, s));
+
+        float rOff = mix(-0.01, 0.0, easeOutExpo(p));
+        float gOff = mix( 0.000, 0.0, easeInOutSine(p));
+        float bOff = mix( 0.01, 0.0, easeInExpo(p));
+
+        vec4 xyScale = vec4(0.0);
+        xyScale.r = mix(0.0, 1.0, easeInQuart(p));
+        xyScale.g = mix(0.0, 1.0, easeInExpo(p));
+        xyScale.b = mix(0.0, 1.0, easeInSine(p));
+
+        vec2 uvR = scaleUV(baseUV + vec2(rOff, 0.0), vec2(0.5, 0.5), vec2(xyScale.r));
+        vec2 uvG = scaleUV(baseUV + vec2(gOff, 0.0), vec2(0.5, 0.5), vec2(xyScale.g));
+        vec2 uvB = scaleUV(baseUV + vec2(bOff, 0.0), vec2(0.5, 0.5), vec2(xyScale.b));
+
+        vec4 outColor = vec4(0.0);
+        outColor.r = texture2D(niri_tex, uvR).r;
+        outColor.g = texture2D(niri_tex, uvG).g;
+        outColor.b = texture2D(niri_tex, uvB).b;
+
+        float avgRGB = (outColor.r + outColor.g + outColor.b) / 3.0;
+        outColor.a = smoothstep(0.0, 0.5, avgRGB);
+
+        return outColor;
+    }
+            "
+        }
+
+        horizontal-view-movement {
+            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+
+    //this animation does not support custom shaders
+        }
+
+        window-movement {
+            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+
+    //this animation does not support custom shaders
+        }
+
+        window-resize {
+            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+
+
+            custom-shader r"
+
+    // Exponential Easing
+    float easeInExpo(float t) {
+        return t == 0.0 ? 0.0 : pow(2.0, 10.0 * (t - 1.0));
+    }
+    float easeOutExpo(float t) {
+        return t == 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * t);
+    }
+    float easeInOutExpo(float t) {
+        if (t == 0.0) return 0.0;
+        if (t == 1.0) return 1.0;
+        return t < 0.5 ? 0.5 * pow(2.0, 20.0 * t - 10.0) : 1.0 - 0.5 * pow(2.0, -20.0 * t + 10.0);
+    }
+    // Sine Easing
+    float easeInSine(float t) {
+        return 1.0 - cos((t * 3.141592653589793) / 2.0);
+    }
+    float easeOutSine(float t) {
+        return sin((t * 3.141592653589793) / 2.0);
+    }
+    float easeInOutSine(float t) {
+        return -0.5 * (cos(3.141592653589793 * t) - 1.0);
+    }
+    // Quartic Easing
+    float easeInQuart(float t) {
+        return t * t * t * t;
+    }
+    float easeOutQuart(float t) {
+        float f = t - 1.0;
+        return 1.0 - f * f * f * f;
+    }
+    float easeInOutQuart(float t) {
+        return t < 0.5 ? 8.0 * t * t * t * t : 1.0 - 8.0 * (t - 1.0) * (t - 1.0) * (t - 1.0) * (t - 1.0);
+    }
+
+    vec4 resize_color(vec3 coords_curr_geo, vec3 size_curr_geo) {
+
+        float p = niri_clamped_progress;
+        vec3 coords_tex_next = niri_geo_to_tex_next * coords_curr_geo;
+
+        float distance = 0.0075;
+
+        vec4 outColor = vec4(0.0);
+
+        vec2 rXY = mix(
+            vec2(-distance),
+            vec2(0.0),
+            easeInQuart(p)
+        );
+
+        vec2 gXY = mix(
+            vec2(0.0,0.0),
+            vec2(0.0),
+            easeInQuart(p)
+        );
+
+        vec2 bXY = mix(
+            vec2(distance),
+            vec2(0.0),
+            easeInSine(p)
+        );
+
+        outColor.r = texture2D(niri_tex_next, coords_tex_next.st + rXY).r;
+        outColor.g = texture2D(niri_tex_next, coords_tex_next.st + gXY).g;
+        outColor.b = texture2D(niri_tex_next, coords_tex_next.st + bXY).b;
+        outColor.a = texture2D(niri_tex_next, coords_tex_next.st ).a;
+
+        return outColor;
+    }
+            "
+
+
+        }
+
+        config-notification-open-close {
+            spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+
+    //this animation does not support custom shaders
+        }
+
+        exit-confirmation-open-close {
+            spring damping-ratio=0.6 stiffness=500 epsilon=0.01
+
+    //this animation does not support custom shaders
+        }
+
         screenshot-ui-open {
             duration-ms 200
-            curve "ease-out-quad"
+            curve "linear"
+
+    //this animation does not support custom shaders
         }
+
         overview-open-close {
-            spring damping-ratio=0.85 stiffness=800 epsilon=0.0001
+            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+
+    //this animation does not support custom shaders
+        }
+
+        recent-windows-close {
+            spring damping-ratio=1.0 stiffness=800 epsilon=0.001
+
+    //this animation does not support custom shaders
         }
     }
+
   '';
 }

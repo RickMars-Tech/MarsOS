@@ -6,7 +6,6 @@ in {
     ./opencode
     ./git.nix
     ./packages.nix
-    ./vscode.nix
   ];
   options.mars.dev = {
     git = {

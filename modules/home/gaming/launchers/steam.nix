@@ -5,7 +5,7 @@
   ...
 }: let
   inherit (lib) mkIf mkDefault mkEnableOption;
-  gaming = config.mars.gaming;
+  inherit (config.mars) gaming;
   proton-em = pkgs.callPackage ../../../../pkgs/proton-em/default.nix {};
 in {
   options.mars.gaming = {

@@ -9,8 +9,8 @@
     #!${pkgs.bash}/bin/bash
     echo ''${1:-100} > /sys/class/power_supply/BAT?/charge_control_end_threshold
   '';
-  asus = config.mars.hardware.asus;
-  battery = config.mars.hardware.asus.battery;
+  inherit (config.mars.hardware) asus;
+  inherit (config.mars.hardware.asus) battery;
 in {
   options.mars.hardware.asus = {
     enable = mkEnableOption "Asus Configs" // {default = false;};

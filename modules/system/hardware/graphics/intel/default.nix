@@ -5,8 +5,8 @@
   ...
 }: let
   inherit (lib) mkIf types mkMerge mkOption mkEnableOption optionals;
-  graphics = config.mars.hardware.graphics;
-  intel = config.mars.hardware.graphics.intel;
+  inherit (config.mars.hardware) graphics;
+  inherit (config.mars.hardware.graphics) intel;
   # gaming = config.mars.gaming;
   # nvidiaFree = config.mars.graphics.nvidiaFree;
 in {

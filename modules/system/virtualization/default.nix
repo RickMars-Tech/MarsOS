@@ -5,7 +5,7 @@
 }: {
   imports = [
     ./containers.nix
-    ./winbpoat.nix
+    # ./winbpoat.nix
   ];
   virtualisation = {
     spiceUSBRedirection.enable = true;
