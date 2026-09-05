@@ -3,31 +3,22 @@
    MarsOS is a simple way to replicate my setup on any NixOS system via a Flake.
 </p>
 
-![Niri Desktop](./assets/desk-img/desktop2.png)
-![Niri Term](./assets/desk-img/term.png)
-![Niri Bar](./assets/desk-img/bar.png)
+![Niri Desktop](./assets/desk-img/desktop.png)
+![Niri Term](./assets/desk-img/desktop2.png)
 
 ## Design Philosophy
 
-Based on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund]'s [nixos-template][nixos-template] Configuration Structure, with a Full Dendritic Nix approach
+Inspired on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund]'s [nixos-template][nixos-template] Configuration Structure, with a Full Dendritic Nix approach
 
 <details>
 <summary>Environment Software</summary>
 
-|                             | Full Wayland Btw                                    |
-| --------------------------- | --------------------------------------------------- |
-| **Window Manager**          | [Niri][Niri] + [Noctalia][Noctalia]                 |
-| **Session Manager**         | [SDDM][SDDM] + [SDDM-Astronaut][SDDM-Astronaut]     |
-| **Terminal Emulator**       | [Wezterm][Wezterm] + [Zellij][Zellij]               |
-| **Network Management Tool** | [IWD][IWD] + [NetworkManager][NetworkManager]       |
-| **System Resource Monitor** | [Bottom][Bottom] & [Mission Center][Mission Center] |
-| **File Manager**            | [Yazi][Yazi] & [Nautilus][Nautilus]                 |
-| **Polkit**                  | [Soteria][Soteria]                                  |
-| **Shell**                   | [Fish][Fish] + [Starship][Starship]                 |
-| **Text Editor**             | [Helix][Helix]                                      |
-| **Fonts**                   | [Nerd fonts][Nerd fonts]                            |
-| **Image Viewer**            | [Swayimg][Swayimg]                                  |
-| **Multimedia Player**       | [MPV][MPV]                                          |
+|                         | Full Wayland Btw                    |
+| ----------------------- | ----------------------------------- |
+| **Desktop Environment** | [COSMIC][COSMIC]                    |
+| **Shell**               | [Fish][Fish] + [Starship][Starship] |
+| **Text Editor**         | [Helix][Helix]                      |
+| **Fonts**               | [Nerd fonts][Nerd fonts]            |
 
 </details>
 
@@ -37,17 +28,14 @@ Based on [linuxmobile][linuxmobile]'s [Shin][Shin] and [olafkfreund][olafkfreund
 ```
 MarsOS/
 ├── assets/
-│   ├── ascii-art
-│   └── wallpapers/
+│   ├── wallpapers/
+│   └── profile.png
 ├── hosts/{host}/
-│   │     ├── default.nix
-│   │     └── disko.nix
-│   ├── host.md
-│   └── config.md
+│         ├── default.nix
+│         └── disko.nix
 ├── modules/
 ├── flake.nix
-├── flake.lock
-└── shell.nix
+└── flake.lock
 ```
 
 </details>
@@ -88,10 +76,10 @@ MarsOS/
 
 4. **Reboot and enjoy!**
 
-## Documentation
+<!-- ## Documentation -->
 
-- **[Creating Custom Hosts](./hosts/host.md)** - Learn how to create your own host configurations
-- **[Configuration Options](./hosts/config.md)** - Complete reference of all Mars modules and options
+<!-- - **[Creating Custom Hosts](./hosts/host.md)** - Learn how to create your own host configurations -->
+<!-- - **[Configuration Options](./hosts/config.md)** - Complete reference of all Mars modules and options -->
 
 ## Important Notes
 
@@ -125,22 +113,11 @@ Special thanks to these excellent configurations that inspired and taught me so 
 
 <!--------------------------------{ Components }------------------------------->
 
-[Niri]: https://github.com/YaLTeR/niri
-[Noctalia]: https://noctalia.dev/
-[Wezterm]: https://wezterm.org/
-[Zellij]: https://zellij.dev/
-[SDDM]: https://github.com/sddm/sddm
-[SDDM-Astronaut]: https://github.com/Keyitdev/sddm-astronaut-theme
+[COSMIC]: https://github.com/pop-os/cosmic-epoch
 [IWD]: https://git.kernel.org/pub/scm/network/wireless/iwd.git
 [NetworkManager]: https://gitlab.freedesktop.org/NetworkManager/NetworkManager
-[Bottom]: https://github.com/ClementTsang/bottom
-[Mission Center]: https://gitlab.com/mission-center-devs/mission-center
 [Yazi]: https://github.com/sxyazi/yazi
-[Nautilus]: https://apps.gnome.org/Nautilus/
-[Soteria]: https://github.com/ImVaskel/soteria
 [Fish]: https://fishshell.com/
 [Starship]: https://starship.rs/
 [Helix]: https://helix-editor.com/
 [Nerd fonts]: https://www.nerdfonts.com/
-[Swayimg]: https://github.com/artemsen/swayimg
-[MPV]: https://mpv.io/
