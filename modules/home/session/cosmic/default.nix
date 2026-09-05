@@ -20,6 +20,7 @@
 
       # Extra Apps for Cosmic
       environment.systemPackages = with pkgs; [
+        cosmic-ext-calculator
         cosmic-ext-tweaks
         cutecosmic
         wl-clipboard-rs
