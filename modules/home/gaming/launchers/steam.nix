@@ -17,13 +17,13 @@
           dedicatedServer.openFirewall = true;
           extest.enable = false;
           protontricks.enable = mkDefault false;
-          # package = pkgs.steam.override {
-          #   # https://github.com/NixOS/nixpkgs/issues/279893#issuecomment-2425213386
-          #   extraProfile = ''
-          #     unset TZ
-          #   '';
-          #   privateTmp = false; # https://github.com/NixOS/nixpkgs/issues/381923
-          # };
+          package = pkgs.steam.override {
+            # https://github.com/NixOS/nixpkgs/issues/279893#issuecomment-2425213386
+            extraProfile = ''
+              unset TZ
+            '';
+            privateTmp = false; # https://github.com/NixOS/nixpkgs/issues/381923
+          };
           extraCompatPackages = with pkgs; [
             (proton-ge-bin.overrideAttrs (oldAttrs: {
               steamDisplayName = "Proton GE";

@@ -45,7 +45,7 @@
           # and a value of 100 means IO cost is assumed to be equal.
           # Yes, 180—with zram it's acceptable to go above 100 because the swapping cost is much lower than with a physical disk. In fact,
           # it's the value recommended by systemd-zram-generator.
-          "vm.swappiness" = lib.mkIf config.zramSwap.enable 180; # set 180 if zramSwap is enabled
+          "vm.swappiness" = lib.mkIf config.zramSwap.enable 180;
 
           # The value controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects (VFS cache).
           # Lowering it from the default value of 100 makes the kernel less inclined to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
