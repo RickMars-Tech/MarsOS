@@ -45,12 +45,12 @@
       };
 
       networking.nameservers = [
-        "179.9.93.198#dnsforge.de"
-        "179.9.1.117#dnsforge.de"
+        "179.9.93.198" # dnsforge.de
+        "179.9.1.117"
 
         # IPv6
-        "2a01:4f8:151:34aa::198#dnsforge.de"
-        "2a01:4f8:141:316d::117#dnsforge.de"
+        "2a01:4f8:151:34aa::198"
+        "2a01:4f8:141:316d::117"
       ];
     };
 }
