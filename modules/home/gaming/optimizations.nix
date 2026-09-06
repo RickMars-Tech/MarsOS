@@ -9,7 +9,7 @@
     {
       services = {
         scx = {
-          enable = true;
+          enable = !config.services.system76-scheduler.enable;
           package = pkgs.scx.rustscheds;
           scheduler = "scx_rusty";
         };
@@ -17,11 +17,16 @@
 
       boot = {
         kernelParams = [
+          "nowatchdog"
+          "nmi_watchdog=0"
           "preempt=full"
           "threadirqs"
           "snd_hda_intel.power_save=0"
           "tsc=reliable"
           "clocksource=tsc"
+          "split_lock_detect=off"
+          "pcie_aspm.policy=performance"
+          "transparent_hugepage=madvise"
           "usbhid.quirks=0x057e:0x2009:0x80000000" # Fix for Switch Pro Controller
         ];
         kernelModules = [
@@ -32,6 +37,7 @@
           "hid_nintendo" # Nintendo Switch Pro Controller and Joy-Cons support
         ];
         kernel.sysctl = {
+          "kernel.printk" = "3 3 3 3";
           "kernel.split_lock_mitigate" = 0;
           "kernel.sched_autogroup_enabled" = 1;
           # The sysctl swappiness parameter determines the kernel's preference for pushing anonymous pages or page cache to disk in memory-starved situations.
@@ -39,7 +45,7 @@
           # and a value of 100 means IO cost is assumed to be equal.
           # Yes, 180—with zram it's acceptable to go above 100 because the swapping cost is much lower than with a physical disk. In fact,
           # it's the value recommended by systemd-zram-generator.
-          "vm.swappiness" = lib.mkIf config.zramSwap.enable 180; # zramSwap
+          "vm.swappiness" = lib.mkIf config.zramSwap.enable 180; # set 180 if zramSwap is enabled
 
           # The value controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects (VFS cache).
           # Lowering it from the default value of 100 makes the kernel less inclined to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
@@ -61,7 +67,7 @@
 
           # The kernel flusher threads will periodically wake up and write old data out to disk.  This
           # tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
-          "vm.dirty_writeback_centisecs" = 1000;
+          "vm.dirty_writeback_centisecs" = 1500;
 
           # This action will speed up your boot and shutdown, because one less module is loaded. Additionally disabling watchdog timers increases performance and lowers power consumption
           # Disable NMI watchdog
@@ -79,6 +85,14 @@
 
           # Set size of file handles and inode cache
           "fs.file-max" = 2097152;
+
+          "vm.dirty_background_ratio" = 3;
+          "vm.dirty_ratio" = 8;
+
+          "fs.inotify.max_user_instances" = 1024;
+          "fs.inotify.max_user_watches" = 524288;
+          "vm.max_map_count" = 1048576;
+          "net.ipv4.tcp_keepalive_time" = 120;
         };
       };
       environment.etc."drirc".text = ''

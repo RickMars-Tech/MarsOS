@@ -5,13 +5,9 @@
       pkgs,
       ...
     }:
-    # let
-    #   zink-run = pkgs.callPackage ../../../pkgs/gamingScripts/zink-run.nix { };
-    # in
     {
       imports = with self.modules.nixos; [
         gamingLaunchers
-        gamescope
         gaming-optimizations
       ];
 
@@ -22,8 +18,8 @@
 
         settings = {
           general = {
-            renice = 10;
-            ioprio = 7;
+            renice = 20;
+            ioprio = 0;
             inhibit_screensaver = 1;
             disable_splitlock = 1;
             softrealtime = "auto";
@@ -36,6 +32,10 @@
             pin_cores = "yes";
           };
           filter.whitelist = "steam";
+          custom = {
+            start = "nvidia-smi -pm 1";
+            end = "nvidia-smi -pm 0";
+          };
         };
       };
 
