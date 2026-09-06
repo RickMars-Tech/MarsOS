@@ -13,7 +13,7 @@
         # Optimize SystemD
         settings.Manager = {
           DefaultTimeoutStartSec = "15s";
-          DefaultTimeoutStopSec = "3s";
+          DefaultTimeoutStopSec = "10s";
           DefaultLimitNOFILE = "2048:2097152";
         };
         user.settings.Manager.DefaultLimitNOFILE = "1024:1048576";
