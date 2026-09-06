@@ -7,6 +7,8 @@
         kernelParams = [
           "nvidia.NVreg_EnableResizableBar=1"
           "nvidia.NVreg_UsePageAttributeTable=1"
+          "nvidia.NVreg_InitializeSystemMemoryAllocations=0"
+          "nvidia.NVreg_DynamicPowerManagement=0x02" # runtime D3 for Turing mobile GPUs
           "nvidia.NVreg_RegistryDwords=RmEnableAggressiveVblank=1,RMIntrLockingMode=1,PowerMizerEnable=0x1;PerfLevelSrc=0x2222;PowerMizerDefault=0x3;PowerMizerDefaultAC=0x1;OverrideMaxPerf=0x1"
         ];
       };
