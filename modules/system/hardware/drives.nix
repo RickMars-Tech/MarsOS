@@ -38,9 +38,9 @@
       # ZRAM & Swap
       zramSwap = {
         enable = true;
-        priority = 50;
+        priority = 200;
         memoryPercent = 25;
-        algorithm = "zstd";
+        algorithm = "lz4";
         swapDevices = 2;
       };
 
