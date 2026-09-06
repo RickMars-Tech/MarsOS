@@ -21,7 +21,7 @@
             powersave = mkDefault false;
             scanRandMacAddress = false;
           };
-          dns = "systemd-resolved"; # "default";
+          dns = "systemd-resolved";
           dispatcherScripts = [
             {
               source = pkgs.writeText "upHook" ''
