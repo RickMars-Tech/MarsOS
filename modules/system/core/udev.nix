@@ -20,22 +20,21 @@
           KERNEL=="ttyACM[0-9]*", MODE="0660", GROUP="dialout"
           KERNEL=="ttyUSB[0-9]*", MODE="0660", GROUP="dialout"
 
-          # HDD
+          # HDD: BFQ remains the right choice
           ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", \
               ATTR{queue/scheduler}="bfq"
 
-          # SSD
+          # SSD: use ADIOS instead of mq-deadline
           ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", \
-              ATTR{queue/scheduler}="mq-deadline"
+              ATTR{queue/scheduler}="adios"
 
-          # NVMe SSD
+          # NVMe: use ADIOS instead of kyber
           ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
-              ATTR{queue/scheduler}="none"
+              ATTR{queue/scheduler}="adios"
 
-          # HDPARM
+          # HDPARM (Ahorro de energía para HDD)
           ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", \
               ATTRS{id/bus}=="ata", RUN+="${pkgs.hdparm}/bin/hdparm -B 254 -S 0 /dev/%k"
-
         '';
       };
     };
