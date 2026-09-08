@@ -20,6 +20,8 @@
 
       # Extra Apps for Cosmic
       environment.systemPackages = with pkgs; [
+        cosmic-ext-applet-sysinfo
+        cosmic-ext-ctl
         cosmic-ext-calculator
         cosmic-ext-tweaks
         cutecosmic
