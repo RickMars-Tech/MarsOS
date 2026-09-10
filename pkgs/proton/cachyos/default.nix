@@ -16,7 +16,7 @@
 # To bump: update `version`, `dateTag`, download the asset, compute the
 # sha256 (`nix-prefetch-url <url>`), and paste it into `hash`.
 let
-  version = "11.0-20260602-slr";
+  version = "11.0-20260703-slr";
   tag = "cachyos-${version}";
 in
 stdenvNoCC.mkDerivation {
@@ -25,7 +25,7 @@ stdenvNoCC.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/CachyOS/proton-cachyos/releases/download/${tag}/proton-cachyos-${version}-x86_64.tar.xz";
-    hash = "sha256-qC20cEi08yTC1RMu8mCXbrIf+yl1QBUpFSKzRKzmZTg=";
+    hash = "sha256-Yv9LJ1AYByPMAFOGCP5ofiHR2Rox72TOGnyfRsPbMQs=";
   };
 
   dontBuild = true;
