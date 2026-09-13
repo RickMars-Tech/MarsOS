@@ -16,7 +16,8 @@
         enable = true;
         xwayland.enable = true;
       };
-      services.system76-scheduler.enable = true;
+      services.system76-scheduler.enable = config.services.desktopManager.cosmic.enable;
+      hardware.system76.power-daemon.enable = config.services.desktopManager.cosmic.enable;
 
       # Extra Apps for Cosmic
       environment.systemPackages = with pkgs; [
