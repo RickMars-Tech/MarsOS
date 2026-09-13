@@ -1,10 +1,9 @@
 {
   flake.modules.nixos.firefox =
     {
-      config,
-      pkgs,
+      # config,
       self,
-      lib,
+      # lib,
       ...
     }:
     {
@@ -20,11 +19,10 @@
           "es-MX"
           "en-US"
         ];
-        # package = pkgs.wrapFirefox (pkgs.firefox-unwrapped.override { pipewireSupport = true; }) { };
       };
 
       environment.sessionVariables = {
-        BROWSER = "${lib.getExe config.programs.firefox.package}";
+        BROWSER = "firefox";
         MOZ_USE_XINPUT2 = "1"; # Touchpad Gestures and Smooth Scrolling
         MOZ_ENABLE_WAYLAND = "1"; # Force Wayland
       };
