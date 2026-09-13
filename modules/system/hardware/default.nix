@@ -76,7 +76,7 @@
         # Graphics
         lact
         # mesa
-        # mesa-demos
+        mesa-demos
         # mesa-gl-headers
         # libdrm
         libgbm
