@@ -15,6 +15,7 @@
       services.desktopManager.cosmic = {
         enable = true;
         xwayland.enable = true;
+        showExcludedPkgsWarning = false;
       };
       services.system76-scheduler.enable = config.services.desktopManager.cosmic.enable;
       hardware.system76.power-daemon.enable = config.services.desktopManager.cosmic.enable;
