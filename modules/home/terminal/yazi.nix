@@ -45,7 +45,7 @@
               ];
               view = [
                 {
-                  run = "oculante %s";
+                  run = "cosmic-viewer %s";
                   block = true;
                 }
               ];

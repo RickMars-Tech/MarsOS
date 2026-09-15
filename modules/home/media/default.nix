@@ -9,7 +9,6 @@
       ];
       environment.systemPackages = with pkgs; [
         amberol # Music Player
-        oculante # Image Viewer
         pixieditor
         blender
       ];

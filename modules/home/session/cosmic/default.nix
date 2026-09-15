@@ -22,6 +22,7 @@
 
       # Extra Apps for Cosmic
       environment.systemPackages = with pkgs; [
+        cosmic-viewer
         cosmic-ext-applet-sysinfo
         cosmic-ext-ctl
         cosmic-ext-calculator
@@ -44,7 +45,6 @@
           cosmic-edit
           cosmic-store
           cosmic-player
-          # cosmic-term
           cosmic-greeter
         ]
         ++ optional (!config.services.displayManager.cosmic-greeter.enable) [
