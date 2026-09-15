@@ -3,7 +3,6 @@
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
-        jetbrains.pycharm
         (python3.withPackages (
           p: with p; [
             numpy
