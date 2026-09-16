@@ -8,6 +8,7 @@
         noctalia
         theme
         xdg
+        wezterm
       ];
 
       # Polkit
