@@ -3,7 +3,7 @@
     { pkgs, ... }:
     {
       hardware.amdgpu = {
-        initrd.enable = true;
+        initrd.enable = false;
         # amdgpu instead of radeon
         legacySupport.enable = true;
       };
@@ -23,7 +23,6 @@
           AMD_VULKAN_ICD = "RADV";
         };
         systemPackages = with pkgs; [
-          radeontop
           amdgpu_top
         ];
       };

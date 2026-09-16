@@ -43,16 +43,13 @@
 
   flake.nixosModules.nvidia-prime-free =
     { pkgs, ... }:
-    # let
-    #   nouveauPrimeRun = pkgs.callPackage ../../../../pkgs/gamingScripts/nouveauPrime.nix { };
-    # in
     {
       environment = {
         # Change GPU when use Gamemoderun
         sessionVariables.GAMEMODERUNEXEC = "nouveau-prime-run";
 
         # NVIDIA Prime utilities are handled by hardware.nvidia.prime.offload.enableOffloadCmd
-        # Nouveau Prime utilitie
+        # Nouveau Prime utilitie this:
         systemPackages = [
           pkgs.nouveauPrimeRun
         ];

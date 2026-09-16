@@ -29,7 +29,7 @@
 
           extraPackages = with pkgs; [
             mesa
-            mesa-demos
+            # mesa-demos
             mesa-gl-headers
             libdrm
             libgbm
@@ -41,7 +41,7 @@
           ];
           extraPackages32 = with pkgs.driversi686Linux; [
             mesa
-            mesa-demos
+            # mesa-demos
           ];
         };
       };
@@ -76,9 +76,7 @@
         # Graphics
         lact
         # mesa
-        mesa-demos
-        # mesa-gl-headers
-        # libdrm
+        mesa-gl-headers
         libgbm
         libGL
         vulkan-loader

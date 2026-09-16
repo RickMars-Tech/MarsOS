@@ -7,13 +7,13 @@
         enable = true;
         drivers = with pkgs; [
           gutenprint
-          # hplip
+          hplip
         ];
       };
 
       # Packages
       environment.systemPackages = with pkgs; [
-        # hplip
+        hplip
       ];
     };
 }
