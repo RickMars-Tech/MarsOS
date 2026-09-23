@@ -5,6 +5,7 @@
       imports = with self.modules.nixos; [
         prism
         steam
+        ogui
       ];
       environment.systemPackages = with pkgs; [
         # Emulation
