@@ -4,7 +4,7 @@
     {
       imports = with self.modules.nixos; [
         core
-        hardwareCore
+        hardware
         network
         nix
       ];

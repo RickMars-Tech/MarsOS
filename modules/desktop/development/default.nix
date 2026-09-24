@@ -4,7 +4,7 @@
     imports = with self.modules.nixos; [
       db
       git
-      hx
+      helix
       opencode
       arduino
     ];

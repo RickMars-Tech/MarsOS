@@ -1,6 +1,6 @@
 { self, ... }:
 {
-  flake.modules.nixos.nn =
+  flake.modules.nixos.niri-noctalia =
     { pkgs, ... }:
     {
       imports = with self.modules.nixos; [

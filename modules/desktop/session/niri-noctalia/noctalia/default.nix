@@ -7,7 +7,7 @@
   flake.modules.nixos.noctalia =
     { pkgs, ... }:
     {
-      imports = [ self.modules.nixos.greeter ];
+      imports = [ self.modules.nixos.noctalia-greeter ];
       security.pam.services.noctalia = {
         unixAuth = true;
         enableGnomeKeyring = true;

@@ -9,7 +9,7 @@
     {
       imports = with self.modules.nixos; [
         firefoxExtensions
-        firefoxPolices
+        firefoxPolicies
         firefoxSearch
         firefoxSettings
       ];

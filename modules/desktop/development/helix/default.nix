@@ -4,7 +4,7 @@
   ...
 }:
 {
-  flake.modules.nixos.hx =
+  flake.modules.nixos.helix =
     { pkgs, ... }:
     {
       environment = {

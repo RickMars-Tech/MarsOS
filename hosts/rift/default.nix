@@ -46,6 +46,7 @@ in
 
       # Desktop Base & Gaming
       desktop
+      cosmic_epoch # Default Desktop
       fish-shell # comment if you prefer bash
       # bash-shell # uncomment if you prefer bash
       gaming

@@ -3,7 +3,7 @@
   flake.modules.nixos = {
     shell = {
       imports = with self.modules.nixos; [
-        alss
+        aliases
         prompt
         shellTools
       ];

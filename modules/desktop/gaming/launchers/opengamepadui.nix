@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.ogui = {
+  flake.modules.nixos.opengamepadui = {
     programs.opengamepadui = {
       enable = true;
       inputplumber.enable = true;

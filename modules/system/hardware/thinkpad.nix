@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.think =
+  flake.modules.nixos.thinkpad =
     {
       config,
       pkgs,

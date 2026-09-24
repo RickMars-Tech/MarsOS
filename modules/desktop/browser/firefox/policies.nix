@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.firefoxPolices = {
+  flake.modules.nixos.firefoxPolicies = {
     programs.firefox.policies = {
       # Updates & Background Services
       AppAutoUpdate = false;

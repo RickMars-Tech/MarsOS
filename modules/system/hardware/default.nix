@@ -1,6 +1,6 @@
 { self, ... }:
 {
-  flake.modules.nixos.hardwareCore =
+  flake.modules.nixos.hardware =
     {
       pkgs,
       lib,
@@ -11,7 +11,7 @@
     in
     {
       imports = with self.modules.nixos; [
-        power
+        powerManagement
         audio
         drives
       ];

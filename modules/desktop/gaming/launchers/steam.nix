@@ -25,7 +25,7 @@
           #   privateTmp = false; # https://github.com/NixOS/nixpkgs/issues/381923
           # };
           extraCompatPackages = with pkgs; [
-            (proton-ge-bin.overrideAttrs (oldAttrs: {
+            (proton-ge-bin.overrideAttrs (_: {
               steamDisplayName = "Proton GE";
             }))
             # proton-em

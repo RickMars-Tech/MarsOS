@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.alss =
+  flake.modules.nixos.aliases =
     {
       pkgs,
       lib,

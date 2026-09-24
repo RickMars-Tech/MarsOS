@@ -11,6 +11,7 @@
         plymouth # comment to disable Plymouth
         security
         systemd
+        timezone
         udev
       ];
     };
