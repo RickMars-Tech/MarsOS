@@ -22,6 +22,7 @@
         # Own Packaged
         hytale-launcher
         opengoal
+        open-now
       ];
     };
 }
