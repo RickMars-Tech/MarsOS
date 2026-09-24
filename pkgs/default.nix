@@ -6,6 +6,7 @@ final: prev: {
   inherit ((final.callPackage ./hytale { })) hytale-launcher;
   opengoal = final.callPackage ./open-goal { };
   proton-em = final.callPackage ./proton/em { };
+  open-now = final.callPackage ./openNow { };
   proton-cachyos-bin = final.callPackage ./proton/cachyos { };
 
   # Gaming Scripts
