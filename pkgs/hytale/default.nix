@@ -200,9 +200,9 @@ let
     '';
 
     extraInstallCommands = ''
-            # Install desktop file
-            mkdir -p $out/share/applications
-            cat > $out/share/applications/hytale-launcher.desktop << EOF
+      # Install desktop file
+      mkdir -p $out/share/applications
+      cat > $out/share/applications/hytale-launcher.desktop << EOF
       [Desktop Entry]
       Name=Hytale Launcher
       Comment=Official launcher for Hytale
@@ -215,14 +215,14 @@ let
       StartupWMClass=com.hypixel.HytaleLauncher
       EOF
 
-            # Install icon
-            for size in 256x256 128x128 64x64 48x48 32x32 16x16; do
-              mkdir -p $out/share/icons/hicolor/$size/apps
-              cp ${./hytale.png} $out/share/icons/hicolor/$size/apps/hytale-launcher.png
-            done
+      # Install icon
+      for size in 256x256 128x128 64x64 48x48 32x32 16x16; do
+        mkdir -p $out/share/icons/hicolor/$size/apps
+        cp ${./hytale.png} $out/share/icons/hicolor/$size/apps/hytale-launcher.png
+      done
 
-            mkdir -p $out/share/pixmaps
-            cp ${./hytale.png} $out/share/pixmaps/hytale-launcher.png
+      mkdir -p $out/share/pixmaps
+      cp ${./hytale.png} $out/share/pixmaps/hytale-launcher.png
     '';
 
     meta = with pkgs.lib; {

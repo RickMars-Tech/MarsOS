@@ -14,7 +14,7 @@ echo "Downloading and calculating hash..."
 
 # Obtener hash usando nix-prefetch-url
 HASH=$(nix-prefetch-url --type sha256 "$URL")
-SRI_HASH=$(nix hash to-sri --type sha256 "$HASH")
+SRI_HASH=$(nix hash convert --hash-algo sha256 --to sri "$HASH")
 
 # Escribir archivo de versión
 cat >"$(dirname "$0")/source.nix" <<EOF
