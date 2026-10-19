@@ -11,13 +11,23 @@
         terminal
         printers
         session
+        timezone
         user
       ];
 
-      environment.systemPackages = with pkgs; [
-        libreoffice
-        qbittorrent-enhanced
-      ];
+      environment = {
+        systemPackages = with pkgs; [
+          libreoffice
+          qbittorrent-enhanced
+          gsettings-desktop-schemas
+        ];
+
+        # Permite que gsettings encuentre los esquemas GLib (org.gnome.desktop.*),
+        # usados p. ej. por cosmic-session para aplicar el tema oscuro de GTK.
+        sessionVariables.XDG_DATA_DIRS = [
+          "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+        ];
+      };
 
       programs = {
         # Appimages
@@ -34,16 +44,6 @@
         fuse.enable = true;
         # Open source alternative to AirDrop
         localsend.enable = true;
-      };
-
-      services.dbus = {
-        enable = true;
-        implementation = "broker";
-        # packages = with pkgs; [
-        #   nautilus
-        #   xdg-desktop-portal
-        #   xdg-desktop-portal-gnome
-        # ];
       };
     };
 }
