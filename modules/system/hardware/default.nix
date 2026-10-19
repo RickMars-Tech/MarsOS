@@ -29,23 +29,24 @@
 
           extraPackages = with pkgs; [
             mesa
-            # mesa-demos
+            mesa-demos
             mesa-gl-headers
             libdrm
             libgbm
             libGL
             vulkan-loader
+            vulkan-headers
             vulkan-validation-layers
             vulkan-tools
             vulkan-extension-layer
           ];
           extraPackages32 = with pkgs.driversi686Linux; [
             mesa
-            # mesa-demos
+            mesa-demos
           ];
         };
       };
-      services.fwupd.enable = true;
+      services.fwupd.enable = false;
 
       # Some Packages
       environment.systemPackages = with pkgs; [
@@ -75,15 +76,14 @@
         ffmpeg
         # Graphics
         lact
-        # mesa
-        mesa-gl-headers
-        libgbm
-        libGL
-        vulkan-loader
-        vulkan-headers
-        vulkan-validation-layers
-        vulkan-tools
-        vulkan-extension-layer
+        # mesa-gl-headers
+        # libgbm
+        # libGL
+        # vulkan-loader
+        # vulkan-headers
+        # vulkan-validation-layers
+        # vulkan-tools
+        # vulkan-extension-layer
       ];
     };
 }

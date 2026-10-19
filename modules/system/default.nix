@@ -8,7 +8,5 @@
         network
         nix
       ];
-      # Force to NOT use ARM/Windows/etc binaries
-      boot.binfmt.emulatedSystems = [ ];
     };
 }

@@ -7,7 +7,7 @@
       ...
     }:
     let
-      inherit (lib) mkDefault mkIf;
+      inherit (lib) mkIf optionals;
       rootIsBtrfs = config.fileSystems."/".fsType or "" == "btrfs";
     in
     {
@@ -24,53 +24,48 @@
           enable = true;
           interval = mkIf rootIsBtrfs "monthly";
         };
-
-        # UDisks2 & Automount
-        udisks2.enable = true;
-        gvfs.enable = true;
-        tumbler.enable = true;
-        smartd = {
-          enable = false;
-          autodetect = true;
-        };
       };
 
-      # ZRAM & Swap
+      # ZRAM
+      # memoryPercent es POR DISPOSITIVO. Con swapDevices=2 y
+      # memoryPercent=25 el total era el 50% de la RAM repartido en dos
+      # discos, con peor compresión (lz4). Un solo dispositivo con zstd
+      # (comprime ~3x) da más swap efectivo gastando menos RAM.
       zramSwap = {
         enable = true;
-        priority = 200;
-        memoryPercent = 25;
-        algorithm = "lz4";
-        swapDevices = 2;
+        priority = 100; # Mayor que el swap en disco: se usa primero
+        memoryPercent = 50; # ~3.4GB sin comprimir -> ~1GB reales con zstd
+        algorithm = "zstd";
+        swapDevices = 1;
       };
 
+      # Swap de disco: último recurso. Ya no hay hibernación configurada,
+      # así que 16GB solo servían para thrashing. 4GB de colchón bastan.
       swapDevices = [
         {
           device = "/swapfile";
-          size = 16 * 1024;
-          priority = 100;
+          size = 4 * 1024;
+          priority = 10;
         }
       ];
 
-      environment.systemPackages = with pkgs; [
-        baobab
-        woeusb-ng
-        popsicle
-        usbutils
-        iotop
-        ncdu
-        duf
-        f3
-        compsize
-        btrfs-progs
-        smartmontools
-        nvme-cli
-      ];
-
-      programs = {
-        gnome-disks.enable = true;
-        udevil.enable = mkDefault false;
+      # Mata el proceso que más memoria consume antes de que el sistema
+      # se congele por presión de memoria (red de seguridad extra a oomd).
+      services.earlyoom = {
+        enable = true;
+        freeMemThreshold = 8;
+        freeSwapThreshold = 8;
       };
+
+      environment.systemPackages =
+        with pkgs;
+        [
+          woeusb-ng
+          popsicle
+          usbutils
+          f3
+        ]
+        ++ optionals rootIsBtrfs [ btrfs-progs ];
 
       # Disable fsck when BTRFS is used
       # https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts
