@@ -40,7 +40,7 @@
             libvdpau-va-gl
             libva-vdpau-driver
             libva-utils
-            tracy
+            # tracy # Super broken
           ];
       };
     };
