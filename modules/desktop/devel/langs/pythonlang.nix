@@ -5,17 +5,19 @@
       environment.systemPackages = with pkgs; [
         (python3.withPackages (
           p: with p; [
-            numpy
-            matplotlib
             mathutils
+            matplotlib
+            numba
+            numpy
+            pillow
             pyautogui
             pyside6
             pygame
-            scipy
             ruff
+            scipy
+            scipy
           ]
         ))
-        pyright # LSP adicional para Python
       ];
     };
 }

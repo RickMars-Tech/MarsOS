@@ -20,14 +20,12 @@
           mcp = {
             nixos = {
               type = "local";
-              command = [
-                "nix"
-                "run"
-                "github:utensils/mcp-nixos"
-                "--"
-              ];
+              # Usar el paquete de nixpkgs en vez de "nix run github:..." :
+              # el wrapper no tiene "nix" en PATH, requeriría red/build y
+              # superaba el timeout, por lo que el MCP nunca arrancaba.
+              command = [ (pkgs.lib.getExe pkgs.mcp-nixos) ];
               enabled = true;
-              timeout = 10000;
+              timeout = 20000;
             };
             gh_grep = {
               type = "remote";

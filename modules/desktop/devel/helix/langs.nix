@@ -1,12 +1,13 @@
 {
   flake.wrapperModules.hxLangs =
-    { pkgs, ... }:
+    { pkgs, lib,... }:
     let
       formatters = {
-        nixfmt = "${pkgs.nixfmt}/bin/nixfmt";
+        nixfmt = lib.getExe pkgs.nixfmt-rs;
         biome = "${pkgs.biome}/bin/biome";
         oxfmt = "${pkgs.oxfmt}/bin/oxfmt";
         shfmt = "${pkgs.shfmt}/bin/shfmt";
+        ruff = "${pkgs.ruff}/bin/ruff";
       };
 
       languageServers = {
@@ -16,6 +17,7 @@
         nixd = "${pkgs.nixd}/bin/nixd";
         tailwindcss = "${pkgs.tailwindcss-language-server}/bin/tailwindcss-language-server";
         volar = "${pkgs.vue-language-server}/bin/vue-language-server";
+        ruff = "${pkgs.ruff}/bin/ruff";
       };
     in
     {
@@ -172,19 +174,18 @@
               language-servers = [ "tailwindcss" ];
             }
             {
-              name = "vue";
+              name = "python";
               auto-format = true;
               formatter = {
-                command = formatters.oxfmt;
+                command = formatters.ruff;
                 args = [
-                  "--stdin-filepath"
-                  "file.vue"
+                  "format"
+                  "--line-length"
+                  "88"
+                  "-"
                 ];
               };
-              language-servers = [
-                "volar"
-                "tailwindcss"
-              ];
+              language-servers = [ "ruff" ];
             }
             {
               name = "nix";
@@ -213,15 +214,15 @@
                 "-q"
               ];
             };
+            ruff = {
+              command = languageServers.ruff;
+              args = [ "server" ];
+            };
             marksman = {
               command = languageServers.marksman;
             };
             tailwindcss = {
               command = languageServers.tailwindcss;
-              args = [ "--stdio" ];
-            };
-            volar = {
-              command = languageServers.volar;
               args = [ "--stdio" ];
             };
           };

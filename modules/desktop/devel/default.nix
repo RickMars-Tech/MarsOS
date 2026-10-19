@@ -4,6 +4,7 @@
     imports = with self.modules.nixos; [
       db
       git
+      # gameDev
       helix
       opencode
       arduino
