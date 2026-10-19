@@ -41,7 +41,7 @@
       };
     };
 
-  flake.nixosModules.nvidia-prime-free =
+  flake.modules.nixos.nvidia-free-prime =
     { pkgs, ... }:
     {
       environment = {
@@ -51,7 +51,7 @@
         # NVIDIA Prime utilities are handled by hardware.nvidia.prime.offload.enableOffloadCmd
         # Nouveau Prime utilitie this:
         systemPackages = [
-          pkgs.nouveauPrimeRun
+          pkgs.nouveauPrime
         ];
       };
     };
