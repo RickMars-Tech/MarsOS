@@ -1,22 +1,14 @@
 {
-  flake.modules.nixos.bluetooth =
-    { pkgs, ... }:
-    {
-      hardware.bluetooth = {
-        enable = true;
-        powerOnBoot = false;
-        settings = {
-          General = {
-            Experimental = true;
-            FastConnectable = true;
-          };
+  flake.modules.nixos.bluetooth = {
+    hardware.bluetooth = {
+      enable = true;
+      powerOnBoot = false;
+      settings = {
+        General = {
+          Experimental = false;
+          FastConnectable = false;
         };
       };
-
-      environment.systemPackages = with pkgs; [
-        iw
-        wirelesstools
-        wavemon
-      ];
     };
+  };
 }

@@ -2,8 +2,9 @@
 {
   flake.modules.nixos.security = {
     imports = [ self.modules.nixos.sudo-rs ];
-    security = {
-    };
+
+    security.apparmor.enable = true;
+
     # SystemD hardening
     systemd = {
       coredump.settings.Coredump = {

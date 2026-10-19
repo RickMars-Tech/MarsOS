@@ -1,6 +1,7 @@
 {
   flake.modules.nixos.network =
     {
+      config,
       self,
       pkgs,
       lib,
@@ -16,19 +17,24 @@
         wifi
       ];
 
-      environment.systemPackages = with pkgs; [ proton-vpn ];
+      environment.systemPackages = with pkgs; [
+        proton-vpn
+        inetutils
+      ];
 
       services = {
         resolved = {
-          enable = true;
+          enable = !config.services.desktopManager.cosmic.enable;
 
           settings.Resolve = {
             Domains = [ "~." ];
 
             # DNSOverTLS para mayor privacidad y seguridad
-            dnsovertls = "opportunistic";
+            # Las claves DEBEN llevar mayúscula inicial: systemd-resolved ignora
+            # silenciosamente las minúsculas (log: "Unknown key ... ignoring")
+            DNSOverTLS = "opportunistic";
 
-            fallbackDns = [
+            FallbackDNS = [
               #= Cloudflare (Block Malware)
               "1.1.1.2"
               "2606:4700:4700::1112"
@@ -42,7 +48,7 @@
               "2001:4860:4860::8888"
             ];
 
-            dnssec = "allow-downgrade";
+            DNSSEC = "allow-downgrade";
 
             MulticastDNS = true;
             LLMNR = true;
@@ -56,7 +62,7 @@
         };
 
         #== Segurity
-        openssh.enable = mkDefault false;
+        openssh.enable = false; # Servidor SSH desactivado (no se usa en esta laptop)
         fail2ban.enable = mkDefault false;
         samba.enable = false;
       };

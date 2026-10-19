@@ -4,7 +4,6 @@
       enable = true;
       execWheelOnly = true;
       extraConfig = ''
-        Defaults pwfeedback
         Defaults insults
       '';
     };
