@@ -6,11 +6,11 @@
 }:
 let
   pname = "OpenNow";
-  version = "1.0.1";
+  version = "1.0.2-nightly.810.1";
 
   src = fetchurl {
     url = "https://github.com/OpenCloudGaming/${pname}/releases/download/v${version}/${pname}-Qt-${version}-Linux-x64.AppImage";
-    sha256 = "sha256-tL0GGrETsmpCxiaqYOh4tEweTcQ8z+4T7EY6HOl3ya0=";
+    sha256 = "sha256-jOIr9kljEDvOURYibYO2bDtS3ryA4YMwON2WxsRnfg4=";
   };
 
   appimageContents = appimageTools.extract {

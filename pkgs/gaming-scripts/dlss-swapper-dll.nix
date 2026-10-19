@@ -1,6 +1,6 @@
 # https://github.com/CachyOS/CachyOS-Settings/blob/master/usr/bin/dlss-swapper-dll
 # This forces Nvidia DLSS to use the latest preset for SR, RR and framegen + skips ngx updater
-{pkgs}:
+{ pkgs }:
 pkgs.writeShellScriptBin "dlss-swapper-dll" ''
   export DXVK_NVAPI_DRS_NGX_DLSS_RR_OVERRIDE=on
   export DXVK_NVAPI_DRS_NGX_DLSS_SR_OVERRIDE=on
