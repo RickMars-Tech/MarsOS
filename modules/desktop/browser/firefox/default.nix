@@ -1,11 +1,6 @@
 {
   flake.modules.nixos.firefox =
-    {
-      # config,
-      self,
-      # lib,
-      ...
-    }:
+    { self, ... }:
     {
       imports = with self.modules.nixos; [
         firefoxExtensions

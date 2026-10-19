@@ -5,14 +5,13 @@
       inherit (lib) mkForce concatStringsSep;
       extensions = [
         "ublock-origin"
-        "bitwarden-password-manager"
         "sponsorblock"
-        "spot-sponsorblock"
-        "darkreader"
-        "traduzir-paginas-web"
-        "auto-tab-discard"
-        "user-agent-string-switcher"
         "return-youtube-dislikes"
+        "traduzir-paginas-web"
+        "darkreader"
+        "auto-tab-discard"
+        "bitwarden-password-manager"
+        "malwarebytes"
       ];
     in
     {
