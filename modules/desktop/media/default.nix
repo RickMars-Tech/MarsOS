@@ -9,8 +9,9 @@
       ];
       environment.systemPackages = with pkgs; [
         amberol # Music Player
-        pixieditor
         blender
+        imagemagick
+        kdePackages.kdenlive
       ];
     };
 }

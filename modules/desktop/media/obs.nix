@@ -6,7 +6,6 @@
         enable = true;
 
         plugins = with pkgs.obs-studio-plugins; [
-          obs-composite-blur
           wlrobs
           obs-backgroundremoval
           obs-pipewire-audio-capture
@@ -14,7 +13,5 @@
           obs-vaapi
         ];
       };
-
-      environment.systemPackages = with pkgs; [ kdePackages.kdenlive ];
     };
 }
