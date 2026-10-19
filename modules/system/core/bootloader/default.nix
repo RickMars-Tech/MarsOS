@@ -2,7 +2,7 @@
 {
   flake.modules.nixos.bootloader = {
     imports = with self.modules.nixos; [
-      limine
+      systemd-boot
     ];
 
     boot = {
@@ -15,11 +15,14 @@
         verbose = false;
         compressor = "zstd";
         compressorArgs = [
-          "-10"
+          "-3"
           "-T0"
         ];
       };
-      crashDump.enable = true;
+      # crashDump reserva 128M de RAM y añade nmi_watchdog=panic +
+      # softlockup_panic=1, lo que reinicia/congela el equipo ante un
+      # softlockup. En un equipo con 8GB no compensa: desactivado.
+      crashDump.enable = false;
     };
   };
 }
