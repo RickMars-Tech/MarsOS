@@ -4,9 +4,6 @@
       enable = true;
 
       extraRules = ''
-        # NTSYNC
-        KERNEL=="ntsync", MODE="0660", TAG+="uaccess"
-
         # CPU DMA Latency (Audio)
         DEVPATH=="/devices/virtual/misc/cpu_dma_latency", OWNER="root", GROUP="audio", MODE="0660"
 

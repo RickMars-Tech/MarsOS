@@ -14,14 +14,12 @@
         initrd.verbose = false;
 
         kernelParams = [
-          "plymouth.use-simpledrm=1"
           # Silent Mode
           "quiet"
           "splash"
-          "nowatchdog"
           "boot.shell_on_fail"
-          "systemd.show_status=auto"
           "rd.udev.log_priority=3"
+          "rd.systemd.show_status=false"
           "udev.log_priority=3"
           "vt.global_cursor_default=0"
         ];

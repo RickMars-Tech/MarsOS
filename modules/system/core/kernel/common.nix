@@ -8,10 +8,7 @@
         "mitigations=auto"
         "randomize_kstack_offset=on" # Randomize kernel stack offset on each syscall (mitigates some exploits)
         "vsyscall=none" # Disable vsyscall (removes legacy syscall interface, improves security)
-        "slab_nomerge" # Disable merging of similar SLAB caches (hardens against some heap attacks)
         "module.sig_enforce=1" # Only allow loading kernel modules with valid signatures (prevents unsigned modules)
-        "lockdown=confidentiality" # Enable kernel lockdown in confidentiality mode (restricts kernel access even for root)
-        "page_poison=1" # Fill freed memory pages with poison value (helps detect use-after-free bugs)
         "page_alloc.shuffle=1" # Randomize page allocator order (mitigates some memory corruption attacks)
         "sysrq_always_enabled=0" # Disable magic SysRq key entirely (prevents low-level system commands)
         "rootflags=noatime" # Mount root filesystem with noatime (improves performance, disables file access time updates)
@@ -23,16 +20,8 @@
         "tcp_bbr"
         "sch_cake"
       ];
-      kernel.sysfs.kernel.mm.transparent_hugepage = {
-        enabled = "madvise";
-        defrag = "defer+madvise";
-        shmem_enabled = "never";
-        khugepaged.max_ptes_none = 409;
-      };
 
       blacklistedKernelModules = [
-        # https://xint.io/blog/copy-fail-linux-distributions#remediation-7
-        # "algif_aead"
         # Test
         "snd_seq_dummy"
         "dm_mod"
@@ -111,5 +100,24 @@
         "evbug"
       ];
     };
+
+    # https://github.com/WhitePeace36/LinuxAMDGamingOptimizationGuide#tmpfiles
+    #
+    # Antes se usaba "boot.kernel.sysfs". Ese módulo crea unidades
+    # "nixos-sysfs@...path" que vigilan cada atributo y, durante el
+    # apagado/reinicio, se re-disparan e intentan arrancar el servicio
+    # mientras systemd ya está en shutdown.target. Eso genera el chorro de
+    # errores "Transaction ... is destructive / Failed with result
+    # 'resources'" que se ve al quitarse Plymouth. Los mismos valores se
+    # aplican aquí con tmpfiles (una sola escritura en el arranque, sin
+    # watcher), eliminando ese ruido
+    systemd.tmpfiles.rules = [
+      # Con 8GB, "always" provoca bloat de memoria y fragmentación.
+      # "madvise" solo usa THP cuando la aplicación lo pide, esto es más estable
+      "w /sys/kernel/mm/transparent_hugepage/enabled - - - - madvise"
+      "w /sys/kernel/mm/transparent_hugepage/defrag - - - - defer"
+      "w /sys/kernel/mm/transparent_hugepage/shmem_enabled - - - - advise"
+      "w /sys/module/zswap/parameters/enabled - - - - 0"
+    ];
   };
 }
