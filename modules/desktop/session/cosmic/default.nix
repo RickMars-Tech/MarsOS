@@ -7,10 +7,13 @@
       ...
     }:
     let
-      inherit (lib) optional mkForce;
+      inherit (lib) optionals;
     in
     {
-      imports = [ self.modules.nixos.cosmic_greeter ];
+      imports = with self.modules.nixos; [
+        cosmic_greeter
+        dbus
+      ];
 
       services = {
         desktopManager.cosmic = {
@@ -18,18 +21,12 @@
           xwayland.enable = true;
           showExcludedPkgsWarning = false;
         };
-
-        # Use oo7 instead of Gnome K-ring
-        oo7.enable = true;
-        gnome.gnome-keyring.enable = mkForce false;
       };
 
       environment = {
         # Extra Apps for Cosmic
         systemPackages = with pkgs; [
-          cosmic-viewer
           cosmic-ext-calculator
-          cosmic-ext-tweaks
           cutecosmic
           wl-clipboard-rs
         ];
@@ -44,12 +41,11 @@
             cosmic-edit
             cosmic-store
             cosmic-player
-            cosmic-greeter
           ]
-          ++ optional (!config.services.displayManager.cosmic-greeter.enable) [
-            cosmic-greeter
+          ++ optionals (!config.services.displayManager.cosmic-greeter.enable) [
+            config.services.displayManager.cosmic-greeter.package
           ];
-
       };
+
     };
 }
