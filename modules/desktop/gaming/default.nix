@@ -15,28 +15,6 @@
       programs.gamemode = {
         enable = true;
         enableRenice = true;
-
-        settings = {
-          general = {
-            renice = 20;
-            ioprio = 0;
-            inhibit_screensaver = 1;
-            disable_splitlock = 1;
-            softrealtime = "auto";
-            desiredgov = "performance";
-            igpu_desiredgov = "powersave";
-            igpu_power_threshold = 0.3;
-          };
-          cpu = {
-            park_cores = "no";
-            pin_cores = "yes";
-          };
-          filter.whitelist = "steam";
-          custom = {
-            start = "nvidia-smi -pm 1";
-            end = "nvidia-smi -pm 0";
-          };
-        };
       };
 
       environment = {
@@ -47,7 +25,6 @@
           lm_sensors # Temperature monitoring
           vkbasalt # Vulkan post-processing layer
           pciutils
-          # bottles
           zink-run # Vulkan translation layer to OpenGL
         ];
         # DXVK configuration

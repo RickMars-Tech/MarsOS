@@ -5,7 +5,6 @@
       imports = with self.modules.nixos; [
         prism
         steam
-        opengamepadui
       ];
       environment.systemPackages = with pkgs; [
         # Emulation

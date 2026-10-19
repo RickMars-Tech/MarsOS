@@ -2,99 +2,82 @@
   flake.modules.nixos.gaming-optimizations =
     {
       config,
-      pkgs,
       lib,
       ...
     }:
     {
-      services = {
-        scx = {
-          enable = !config.services.system76-scheduler.enable;
-          package = pkgs.scx.rustscheds;
-          scheduler = "scx_rusty";
-        };
-      };
-
+      # https://github.com/WhitePeace36/LinuxAMDGamingOptimizationGuide#kernel-commandline-parameter
       boot = {
         kernelParams = [
-          "nowatchdog"
-          "nmi_watchdog=0"
           "preempt=full"
           "threadirqs"
           "snd_hda_intel.power_save=0"
           "tsc=reliable"
           "clocksource=tsc"
           "split_lock_detect=off"
-          "pcie_aspm.policy=performance"
-          "transparent_hugepage=madvise"
+          "split_lock_mitigate=0"
+          "rd.systemd.show_status=false"
           "usbhid.quirks=0x057e:0x2009:0x80000000" # Fix for Switch Pro Controller
         ];
         kernelModules = [
-          "ntsync"
+          "ntsync" # Emulates windows synchronization primitives
           "uinput" # User input module for virtual devices
           "snd-seq" # For MIDI support in games
           "snd-rawmidi" # For raw MIDI support
           "hid_nintendo" # Nintendo Switch Pro Controller and Joy-Cons support
         ];
+        # https://github.com/WhitePeace36/LinuxAMDGamingOptimizationGuide#kernel-commandline-parameter
+        # Ajustes pensados para 8GB de RAM.
+        # Se eliminaron valores de guías de gaming de gama alta
+        # (watermark_scale_factor=500, compaction_proactiveness=40,
+        # threads-max=~1e9, overcommit_memory=1) que en poca RAM causan
+        # reclaim agresivo, thrashing y bloqueos por OOM.
         kernel.sysctl = {
-          "kernel.printk" = "3 3 3 3";
-          "kernel.split_lock_mitigate" = 0;
-          "kernel.sched_autogroup_enabled" = 1;
-          # The sysctl swappiness parameter determines the kernel's preference for pushing anonymous pages or page cache to disk in memory-starved situations.
-          # A low value causes the kernel to prefer freeing up open files (page cache), a high value causes the kernel to try to use swap space,
-          # and a value of 100 means IO cost is assumed to be equal.
-          # Yes, 180—with zram it's acceptable to go above 100 because the swapping cost is much lower than with a physical disk. In fact,
-          # it's the value recommended by systemd-zram-generator.
-          "vm.swappiness" = lib.mkIf config.zramSwap.enable 180;
-
-          # The value controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects (VFS cache).
-          # Lowering it from the default value of 100 makes the kernel less inclined to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
+          # --- Swap / ZRAM ---
+          "vm.swappiness" = lib.mkIf config.zramSwap.enable 100; # 180 provocaba thrashing hacia disco
+          "vm.page-cluster" = 0; # Una sola página por lectura de swap (ideal para zram/SSD)
+          "vm.zone_reclaim_mode" = 0; # Correcto para escritorio
           "vm.vfs_cache_pressure" = 50;
+          "vm.stat_interval" = 10;
+          "vm.unprivileged_userfaultfd" = 1; # Requerido por algunos juegos/Wine
+          "vm.max_map_count" = 1048576; # Suficiente para juegos; antes ~2^31
 
-          # Contains, as bytes, the number of pages at which a process which is
-          # generating disk writes will itself start writing out dirty data.
-          "vm.dirty_bytes" = 268435456;
+          # --- Writeback: evita congelamientos de IO ---
+          "vm.dirty_bytes" = 268435456; # 256MB (antes 512MB, demasiado para 8GB)
+          "vm.dirty_background_bytes" = 33554432; # 32MB
+          "vm.dirty_writeback_centisecs" = 60;
 
-          # page-cluster controls the number of pages up to which consecutive pages are read in from swap in a single attempt.
-          # This is the swap counterpart to page cache readahead. The mentioned consecutivity is not in terms of virtual/physical addresses,
-          # but consecutive on swap space - that means they were swapped out together. (Default is 3)
-          # increase this value to 1 or 2 if you are using physical swap (1 if ssd, 2 if hdd)
-          "vm.page-cluster" = 0;
+          # --- Memoria / procesos: valores seguros ---
+          "vm.overcommit_memory" = 0; # Heurística: falla asignaciones imposibles en vez de colgar con OOM
+          "vm.page_lock_unfairness" = 3;
+          "vm.defrag_mode" = 0;
 
-          # Contains, as bytes, the number of pages at which the background kernel
-          # flusher threads will start writing out dirty data.
-          "vm.dirty_background_bytes" = 67108864;
+          # --- Split lock (coincide con el cmdline) ---
+          "kernel.split_lock_mitigate" = 0;
 
-          # The kernel flusher threads will periodically wake up and write old data out to disk.  This
-          # tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
-          "vm.dirty_writeback_centisecs" = 1500;
-
-          # This action will speed up your boot and shutdown, because one less module is loaded. Additionally disabling watchdog timers increases performance and lowers power consumption
-          # Disable NMI watchdog
+          # --- Watchdog / printk ---
           "kernel.nmi_watchdog" = 0;
+          "kernel.printk_devkmsg" = "off";
+          "kernel.printk" = "3 3 2 3";
+          "kernel.kptr_restrict" = 1;
 
-          # Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
-          "kernel.unprivileged_userns_clone" = 1;
-
-          # Restricting access to kernel pointers in the proc filesystem
-          "kernel.kptr_restrict" = 2;
-
-          # Increase netdev receive queue
-          # May help prevent losing packets
-          "net.core.netdev_max_backlog" = 4096;
-
-          # Set size of file handles and inode cache
-          "fs.file-max" = 2097152;
-
-          "vm.dirty_background_ratio" = 3;
-          "vm.dirty_ratio" = 8;
-
-          "fs.inotify.max_user_instances" = 1024;
-          "fs.inotify.max_user_watches" = 524288;
-          "vm.max_map_count" = 1048576;
-          "net.ipv4.tcp_keepalive_time" = 120;
+          # --- Red (rendimiento) ---
+          "net.core.busy_read" = 0;
+          "net.ipv4.tcp_mtu_probing" = 1;
+          "net.ipv4.tcp_congestion_control" = "bbr";
+          "net.core.netdev_max_backlog" = 16384;
+          "net.core.rmem_max" = 16777216;
+          "net.core.wmem_max" = 16777216;
+          "net.core.rmem_default" = 8388608;
+          "net.core.wmem_default" = 8388608;
         };
       };
+
+      # Udev rules for ntsync
+      services.udev.extraRules = ''
+        KERNEL=="ntsync", MODE="0660", TAG+="uaccess"
+      '';
+
       environment.etc."drirc".text = ''
         <driconf>
            <device>
