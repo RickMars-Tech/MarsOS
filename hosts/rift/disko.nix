@@ -79,7 +79,7 @@
         "/tmp" = {
           fsType = "tmpfs";
           mountOptions = [
-            "size=4G"
+            "size=2G" # Antes 4G: la mitad de la RAM en tmpfs era excesivo
             "mode=1777"
           ];
         };
