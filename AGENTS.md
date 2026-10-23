@@ -107,8 +107,8 @@ Máquina (importante para diagnóstico)
 -------------------------------------
 
  -  **7 GB RAM + ~9.3 GB swap** (zram zstd 75% → 5.3 G sin comprimir, prio 100 +
-    `/swapfile` 4 GB prio 10 declarado en `drives.nix`; en BTRFS NixOS lo crea
-    con `btrfs filesystem mkswapfile`).
+    **partición** swap `p2` de 4 GB prio 10 en `hosts/rift/disko.nix`; disko
+    genera `swapDevices` sola).
  -  **earlyoom activo** con umbrales 8%/8%: mata procesos si la RAM se agota.
     `nix.settings.cores = 4` y `max-jobs = 4` limitan builds pesados (con
     `auto`/`0` los builds de Rust ahogaban la máquina y mataban COSMIC).
@@ -227,28 +227,36 @@ el metainfo en `share/metainfo/`. Los `fetchurl` apuntan al tag `v${version}`
 del repo de GitHub (hashes SRI; `nix-prefetch-url` da base32, hay que convertir
 con `nix hash convert --to sri`).
 
-### Swap: `/swapfile` de 4 GB (decisión: simplicidad)
+### Swap: partición `p2` de 4 GB (no swapfile)
 
-El swap de disco es un `/swapfile` de 4 GB (prio 10) declarado en
-`drives.nix`; lo principal lo cubre zram con zstd (prio 100, se usa primero).
-En BTRFS NixOS lo crea con `btrfs filesystem mkswapfile` (nodatacow, sin
-compresión y preasignado), así que no hay que tocarlo a mano.
+El swap de disco es una **partición** de 4 GB (prio 10) declarada en
+`hosts/rift/disko.nix`; lo principal lo cubre zram con zstd (prio 100, se usa
+primero). Disko genera la entrada de `swapDevices` sola (`by-partlabel/swap`,
+`discardPolicy = "once"`): no declararla a mano en `drives.nix` o saldría
+duplicada.
 
-Limitaciones asumidas (por eso se valoró una partición swap y se descartó):
-mientras está activo, sus block groups se saltan en `scrub`/`balance` y el
-subvolumen que lo contiene no se puede snapshotear. Con 4 GB el impacto es
-pequeño y evita reparticionar. Si algún día se quiere partición swap, se puede
-hacer sin reinstalar desde la ISO (encoger btrfs ~5G, encoger la partición con
-`parted`, crear una con nombre GPT `swap` y `mkswap`); el montaje es por
-`by-partlabel`, así que el número de partición da igual.
+Motivo: en BTRFS un swapfile activo hace que `scrub`/`balance` se salten sus
+block groups y que no se pueda snapshotear el subvolumen que lo contiene.
 
-Ojo: evaluar `config.swapDevices` aislado con este nixpkgs (26.11) da un falso
-positivo `swapDevices.*.label was accessed but has no value defined` (lo dispara
-`stage-1.nix`). El `drvPath` del toplevel evalúa sin problema.
+Dato del disco de `rift`: entre `p1` (ESP, acaba en 1.001 GiB) y `p3` (root,
+empieza en 5.001 GiB) había un hueco de exactamente **4.0 GiB**, resto de una
+partición swap anterior. Por eso la partición se pudo recrear sin encoger nada:
+
+```bash
+sudo sgdisk --new=2:0:+4G --typecode=2:8200 --change-name=2:swap /dev/nvme0n1
+sudo partprobe /dev/nvme0n1          # si no aparece p2, reiniciar
+sudo mkswap -L swap /dev/disk/by-partlabel/swap
+```
+
+El montaje es por `by-partlabel`, así que el número de partición da igual.
+Ojo: crear la partición **antes** de `nixos-rebuild switch` con la config nueva;
+si no, el fstab apunta a un dispositivo inexistente (sin swap y espera al
+arrancar). Tras el switch, borrar el `/swapfile` viejo para recuperar 4 GB:
+`sudo swapoff /swapfile && sudo rm /swapfile`.
 
 La máquina soporta hibernación (`disk` en `/sys/power/state`), pero **no está
-configurada**. Con swapfile en BTRFS, habilitarla requiere `boot.resumeDevice` +
-`resume=` y calcular `resume_offset` (`btrfs inspect-internal map-swapfile`).
+configurada** y 4 GB no bastan para 7 GB de RAM: requeriría ampliar la swap y
+añadir `boot.resumeDevice` + `resume=UUID=...`.
 
 ### `/home` es un subvolumen BTRFS, no una partición aparte
 

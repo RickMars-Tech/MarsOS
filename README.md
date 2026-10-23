@@ -62,6 +62,7 @@ MarsOS/
   | Partition | Size | Filesystem |
   |---|---|---|
   | ESP (`/boot`) | 1 GB | vfat |
+  | swap | 4 GB | swap (p2, no swapfile) |
   | root (`/`, `/home`, `/nix`, `/var/log`) | rest | BTRFS (subvolumes + zstd) |
 
   `/home`, `/nix` and `/var/log` are BTRFS **subvolumes**, so they get
@@ -69,11 +70,9 @@ MarsOS/
   `device = "/dev/nvme0n1";` in `disko.nix` if your disk differs (check with
   `lsblk`).
 
-  Swap is a 4 GB `/swapfile` created automatically on first boot (NixOS uses
-  `btrfs filesystem mkswapfile` on BTRFS). It runs behind zram (priority 100)
-  as a last resort. A swap *partition* would avoid the BTRFS swapfile caveats
-  (`scrub`/`balance` skip its block groups) but it isn't worth repartitioning
-  here.
+  Swap is a **partition**, not a swapfile: a BTRFS swapfile is skipped by
+  `scrub`/`balance` and prevents snapshotting its subvolume. It runs behind zram
+  (priority 100) as a last resort.
 
 ### Steps
 
