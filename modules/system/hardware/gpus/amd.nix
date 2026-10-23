@@ -3,29 +3,19 @@
     { pkgs, ... }:
     {
       hardware.amdgpu = {
-        initrd.enable = false;
-        # amdgpu instead of radeon
-        legacySupport.enable = true;
+        initrd.enable = true;
+        legacySupport.enable = false;
       };
       boot = {
         kernelParams = [
           "gpu_sched.sched_policy=0"
-          "radeon.cik_support=0"
-          "amdgpu.cik_support=1"
-          "radeon.si_support=0"
-          "amdgpu.si_support=1"
           "amdgpu.sg_display=0"
           "amdgpu.gpu_recovery=1"
         ];
       };
-      environment = {
-        sessionVariables = {
-          AMD_VULKAN_ICD = "RADV";
-        };
-        systemPackages = with pkgs; [
-          amdgpu_top
-        ];
-      };
+      environment.systemPackages = with pkgs; [
+        amdgpu_top
+      ];
     };
   flake.modules.nixos.rocm =
     { pkgs, ... }:
@@ -39,7 +29,7 @@
         ROCM_PATH = "${pkgs.rocmPackages.clr}";
         HIP_PATH = "${pkgs.rocmPackages.hip-common}";
       };
-      systemPackages = with pkgs; [
+      environment.systemPackages = with pkgs; [
         # ROCm platform
         rocmPackages.clr
 
