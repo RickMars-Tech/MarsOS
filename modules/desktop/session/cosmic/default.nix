@@ -26,6 +26,7 @@
       environment = {
         # Extra Apps for Cosmic
         systemPackages = with pkgs; [
+          postilla
           cosmic-ext-calculator
           cutecosmic
           wl-clipboard-rs
