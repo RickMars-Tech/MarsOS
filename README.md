@@ -44,37 +44,100 @@ MarsOS/
 
 ### Prerequisites
 
-- A bootable NixOS ISO (Minimal installation recommended)
-- Internet connection
+- A bootable NixOS ISO (Minimal installation recommended).
+- **Internet connection with the network already configured.** The Minimal ISO
+  boots without a configured connection; if you have no Ethernet, connect to
+  Wi-Fi first:
+
+  ```bash
+  # Interactive Wi-Fi setup (iwd is the default on recent Minimal ISOs)
+  iwctl --passphrase '<password>' station wlan0 connect <SSID>
+  # Verify you are online before continuing
+  ping -c1 cache.nixos.org
+  ```
+
+- The steps below install on **`/dev/nvme0n1`** with a fixed hybrid layout
+  defined in each host's `hosts/<host>/disko.nix`:
+
+  | Partition | Size | Filesystem |
+  |---|---|---|
+  | ESP (`/boot`) | 1 GB | vfat |
+  | swap | 4 GB | swap (no swapfile) |
+  | root (`/`, `/nix`, `/var/log`) | 120 GB | BTRFS (subvolumes + zstd) |
+  | `/home` | rest | ext4 with `casefold` |
+
+  Root is BTRFS for compression, subvolumes and snapshots; `/home` is ext4
+  because **BTRFS has no `casefold` support**, and `casefold` is what Wine/Proton
+  uses (`chattr +F` on `drive_c`) to avoid the slow userspace case-insensitive
+  emulation. Change `device = "/dev/nvme0n1";` in `disko.nix` if your disk
+  differs (check with `lsblk`), and adjust `size = "120G";` to resize root.
+
+  Swap is a partition rather than a swapfile because a BTRFS swapfile degrades
+  `scrub`/`balance` while `autoScrub` is enabled; it runs behind zram
+  (priority 100).
+
+  > **Keeping `/home` across a reinstall:** disko's `--mode destroy,...` wipes
+  > the whole GPT, so the partition does **not** survive on its own. Set
+  > `destroy = false;` on the disk and wipe only the root filesystem first
+  > (`wipefs -a /dev/nvme0n1p3`); `disko` then skips partitions that already
+  > have a filesystem.
 
 ### Steps
 
-1. **Clone the repository:**
+> **WARNING:** Disko formats the disk in `destroy` mode. **Everything on it is
+> erased.** Back up your data first.
+
+1. **Clone the repository (with its git history):**
 
 ```bash
    nix run nixpkgs#git -- clone https://github.com/RickMars-Tech/MarsOS.git
+   cd MarsOS
 ```
 
-2. **Navigate to the directory and apply Disko formatting:**
+> **Why git matters:** this flake uses `import-tree`, which **only imports
+> files tracked by git**. If the repository is copied without its `.git`
+> directory (e.g. a partial `cp`), the evaluation would silently skip your
+> modules. Always install from a real `git clone`, or run `git add -A` inside
+> the clone so every file is tracked.
+
+2. **Apply the Disko layout (partitions + format + mount on `/mnt`):**
 
 ```bash
-   cd MarsOS/
-   sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount hosts/<host>/disko.nix
+   sudo nix --experimental-features "nix-command flakes" \
+     run github:nix-community/disko/latest -- \
+     --mode destroy,format,mount --flake .#<host>
 ```
 
-> **Note:** Replace `<host>` with your actual hostname (e.g., `boltz`, `rift`, or `crest`)
+> **Note:** Replace `<host>` with your actual hostname (e.g., `rift`). Disko
+> discovers the layout under `flake.diskoConfigurations.<host>`, so it always
+> matches `hosts/<host>/disko.nix`.
+>
+> Disko mounts the freshly formatted root at `/mnt`. Verify with
+> `findmnt /mnt` before continuing.
 
-3. **Copy the Flake to `/mnt/etc/nixos/` and build the system:**
+3. **Install the system from the flake:**
 
 ```bash
-   sudo mkdir -p /mnt/etc/nixos
-   sudo cp -r ~/MarsOS /mnt/etc/nixos/
-   sudo nixos-install --flake /mnt/etc/nixos/MarsOS#<host>
+   sudo nixos-install --flake .#<host>
 ```
 
-> **Note:** Replace `<host>` with your chosen hostname
+> **Note:** Replace `<host>` with your chosen hostname. `nixos-install` runs
+> from the cloned repository and needs **network access** to fetch the flake's
+> `github:` inputs (`nixpkgs`, `flake-parts`, `disko`, `hjem`, ...). If the
+> install fails fetching inputs, re-check your connection with
+> `ping -c1 cache.nixos.org`.
+>
+> You do **not** need to copy the flake to `/mnt/etc/nixos/` or run
+> `nixos-generate-config`: `disko` already wrote the partition layout and the
+> flake provides the filesystems.
 
-4. **Reboot and enjoy!**
+4. **Set a root/user password (if prompted) and reboot:**
+
+```bash
+   sudo reboot
+```
+
+> Remove the USB drive when the machine restarts.
 
 <!-- ## Documentation -->
 
@@ -85,7 +148,8 @@ MarsOS/
 
 1. **Personal Configuration:** This Flake is specifically tailored for my systems (boltz, rift, and crest). You're welcome to use it as a base, modify the configuration files, or copy individual components that suit your needs.
 
-2. **Boot Loader:** This configuration uses systemd-boot and Lanzaboote as the default boot loader. GRUB support is not included, so you'll need to configure it manually if you prefer GRUB.
+2. **Boot Loader:** This configuration uses **systemd-boot**. GRUB support is
+   not included, so you'll need to configure it manually if you prefer GRUB.
 
 3. **Installation Environment:** For best results, install from a minimal NixOS environment without a pre-installed desktop environment.
 
