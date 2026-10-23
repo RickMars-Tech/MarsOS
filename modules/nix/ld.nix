@@ -35,7 +35,6 @@
             vulkan-loader
             egl-wayland
             eglexternalplatform
-            libGL
             vdpauinfo
             libvdpau-va-gl
             libva-vdpau-driver

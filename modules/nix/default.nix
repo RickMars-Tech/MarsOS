@@ -75,8 +75,12 @@ in
           log-lines = 100;
           show-trace = false;
 
-          # Build users
-          max-jobs = "auto";
+          # Build users / límites de RAM. Con 7GB de RAM, "auto" (12 jobs)
+          # ilimitaba los cores por build y ~12 rustc concurrentes (1.5GB
+          # cada uno) ahogaban la máquina: earlyoom mató el build de postilla
+          # y casi tumba la sesión COSMIC. 4+4 deja margen para el escritorio.
+          max-jobs = 4;
+          cores = 4;
 
           # Keep build dependencies
           keep-derivations = true;
