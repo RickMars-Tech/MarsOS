@@ -22,6 +22,24 @@
                   mountOptions = [ "umask=0077" ];
                 };
               };
+              # Swap en partición (p2), no swapfile: en BTRFS un swapfile activo
+              # degrada `scrub`/`balance` (sus block groups se saltan) y el
+              # subvolumen que lo contiene no se puede snapshotear. Ocupa el
+              # hueco que ya existía entre ESP y root (resto de una swap previa).
+              # 4 GB bastan como último recurso: lo principal lo cubre zram.
+              swap = {
+                priority = 2;
+                name = "swap";
+                label = "swap";
+                size = "4G";
+                content = {
+                  type = "swap";
+                  randomEncryption = false;
+                  # prio 10 < zram (100): el swap en disco es el último recurso.
+                  priority = 10;
+                  discardPolicy = "once";
+                };
+              };
               root = {
                 priority = 3;
                 size = "100%";
