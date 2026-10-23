@@ -1,4 +1,4 @@
-# Remember, PRO is not for Professional, it is for Privative
+# Remember, PRO is not for Professional, it is for Proprietary/Privative
 {
   flake.modules.nixos.nvidia-pro =
     {
@@ -7,12 +7,42 @@
       lib,
       ...
     }:
+    let
+      # Fix del empaquetado de nvidia-x11 en nixpkgs: `builder.sh` parchea los
+      # binarios (nvidia-smi, nvidia-powerd, ...) con
+      # `patchelf --set-interpreter ... --set-rpath ...`, y ese patchelf
+      # reordena los program headers de forma que la sección `.dynamic` acaba
+      # dentro de un segmento LOAD de solo lectura (R) en vez de RW. Al arrancar,
+      # el linker escribe en `.dynamic` y el kernel lo mata con SEGV_ACCERR
+      # (segfault en ld-linux). Afecta por igual a todas las ramas del driver.
+      #
+      # Con `--no-sort` los program headers se preservan y `.dynamic` queda en
+      # RW, con lo que los binarios vuelven a funcionar. Se parte del
+      # `origBin/` (copia sin tocar que el propio builder deja) para no
+      # reescribir un binario ya corrupto.
+      nvidiaPatched =
+        drv:
+        drv.overrideAttrs (old: {
+          postInstall = (if old.postInstall != null then old.postInstall else "") + ''
+            if [ -n "''${bin:-}" ] && [ -d "$bin/origBin" ]; then
+              interpreter=$(cat "$NIX_CC/nix-support/dynamic-linker")
+              for f in "$bin/origBin"/*; do
+                name=$(basename "$f")
+                install -Dm755 "$f" "$bin/bin/$name"
+                patchelf --no-sort \
+                  --set-interpreter "$interpreter" \
+                  --set-rpath "$out/lib:''${libPath:-}" "$bin/bin/$name"
+              done
+            fi
+          '';
+        });
+    in
     {
       # nvidia_uvm (memoria unificada de CUDA) intenta mapear toda la VRAM de la
-      # GPU (6GB) en el vmemmap; con solo 8GB de RAM eso falla y genera un
-      # "page allocation failure" (warn_alloc) en el journal al enumerar la GPU
-      # (p. ej. gfxtest de Firefox). No se usa CUDA aquí, así que se neutraliza
-      # su carga. No afecta a juegos, nvidia_drm ni NVENC.
+      # GPU (6GB) en el vmemmap; con solo 8GB de RAM(Mi caso) eso falla y genera
+      # un "page allocation failure" (warn_alloc) en el journal al enumerar la
+      # GPU (p. ej. gfxtest de Firefox). No se usa CUDA aquí, así que se
+      # neutraliza su carga. No afecta a juegos, nvidia_drm ni NVENC.
       boot.extraModprobeConfig = ''
         install nvidia-uvm ${pkgs.coreutils}/bin/true
       '';
@@ -47,7 +77,7 @@
             NVreg_RegistryDwords = "PowerMizerEnable=0x1;PerfLevelSrc=0x2222;PowerMizerDefault=0x3;PowerMizerDefaultAC=0x1";
           })
         ];
-        branch = "latest";
+        package = nvidiaPatched config.boot.kernelPackages.nvidiaPackages.latest;
         # Exameple of custom version of Driver
         # package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
         #   version = "615.71.09";
@@ -65,8 +95,10 @@
           dlss-swapper-dll
         ];
         sessionVariables = {
-          # https://github.com/ventureoo/nvidia-tweaks#environment-variables
-          GBM_BACKEND = "nvidia-drm";
+          # Nota: NO poner GBM_BACKEND=nvidia-drm a nivel global. En esta laptop
+          # la pantalla (y COSMIC/Wayland) va por la iGPU AMD; forzar el backend
+          # GBM a nvidia rompe compositores que renderizan en la AMD. El
+          # offload a NVIDIA se hace con prime-run, no cambiando GBM global.
           WLR_NO_HARDWARE_CURSORS = 1;
 
           __GL_YIELD = "USLEEP";
