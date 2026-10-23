@@ -3,7 +3,8 @@
     boot.loader.systemd-boot = {
       enable = true;
       memtest86.enable = true;
-      configurationLimit = null;
+      # ESP de 1 GB: limitar generaciones evita llenarla.
+      configurationLimit = 10;
     };
   };
 }
