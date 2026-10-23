@@ -24,6 +24,9 @@
 
       services = {
         resolved = {
+          # Nota: con COSMIC habilitado, systemd-resolved queda apagado (COSMIC
+          # gestiona la red/DNS) y todo el bloque settings.Resolve de abajo NO
+          # se aplica. Se conserva para el caso de desactivar COSMIC.
           enable = !config.services.desktopManager.cosmic.enable;
 
           settings.Resolve = {
@@ -57,7 +60,6 @@
             Cache = true;
             CacheFromLocalhost = false;
             DNSStubListener = true;
-            DNSStubListenerExtra = "127.0.0.53";
           };
         };
 
