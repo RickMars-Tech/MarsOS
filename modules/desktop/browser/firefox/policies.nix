@@ -13,7 +13,8 @@
       # UI and Behavior
       DisplayMenuBar = "never";
       DontCheckDefaultBrowser = true;
-      HardwareAcceleration = false;
+      # HardwareAcceleration se omite: settings.nix ya fuerza WebRender/VAAPI y
+      # ponerlo a false aquí lo contradiría (policy desactiva la aceleración).
       OfferToSaveLogins = false;
       DefaultDownloadDirectory = "$HOME/Downloads";
 
