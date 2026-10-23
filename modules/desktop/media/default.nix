@@ -8,7 +8,11 @@
         obs
       ];
       environment.systemPackages = with pkgs; [
-        amberol # Music Player
+        # Music Players
+        kopuz
+        cliamp
+
+        # Otros
         blender
         imagemagick
         kdePackages.kdenlive
