@@ -63,7 +63,7 @@ let
 EOF
 
 if hasAsset "brave-origin-nightly_${latestVersion}_arm64.deb"; then
-  cat >>"$SCRIPT_DIR/package.nix" <<EOF
+  cat >>"$SCRIPT_DIR/default.nix" <<EOF
     aarch64-linux = {
       url = "https://github.com/brave/brave-browser/releases/download/v\${version}/brave-origin-nightly_\${version}_arm64.deb";
       hash = "${hashAarch64}";
