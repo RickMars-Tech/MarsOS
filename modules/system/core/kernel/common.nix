@@ -8,11 +8,7 @@
         "mitigations=auto"
         "randomize_kstack_offset=on" # Randomize kernel stack offset on each syscall (mitigates some exploits)
         "vsyscall=none" # Disable vsyscall (removes legacy syscall interface, improves security)
-        "module.sig_enforce=1" # Only allow loading kernel modules with valid signatures (prevents unsigned modules)
         "page_alloc.shuffle=1" # Randomize page allocator order (mitigates some memory corruption attacks)
-        "sysrq_always_enabled=0" # Disable magic SysRq key entirely (prevents low-level system commands)
-        "rootflags=noatime" # Mount root filesystem with noatime (improves performance, disables file access time updates)
-        "lsm=landlock,lockdown,yama,integrity,apparmor,bpf,tomoyo,selinux" # Enable and order Linux Security Modules (stacked LSMs for security)
         "fbcon=nodefer" # Do not defer kernel messages to framebuffer console (shows messages immediately)
         "libahci.ignore_sss=1"
       ];
@@ -21,12 +17,13 @@
         "sch_cake"
       ];
 
+      # Desactiva SysRq por sysct
+      kernel.sysctl."kernel.sysrq" = 0;
+
       blacklistedKernelModules = [
-        # Test
-        "snd_seq_dummy"
-        "dm_mod"
-        "lpc_ich"
         # Not used by the system
+        "snd_seq_dummy"
+        "lpc_ich"
         "ath3k"
         "fprint"
         "ide_core"
@@ -59,13 +56,11 @@
         "exofs" # EXtended Object File System
         "f2fs" # Flash-Friendly File System
         "freevxfs" # Veritas filesystem driver
-        "gfs2" # Global File System 2
         "hfs" # Hierarchical File System (Macintosh)
         "hfsplus" # Same as above, but with extended attributes.
         "hpfs" # High Performance File System (used by OS/2)
         "jffs2" # Journalling Flash File System (v2)
         "jfs" # Journaled File System - only useful for VMWare sessions
-        "ksmbd" # SMB3 Kernel Server
         "minix" # minix fs - used by the minix OS
         "nilfs2" # New Implementation of a Log-structured File System
         "omfs" # Optimized MPEG Filesystem
@@ -74,7 +69,6 @@
         "squashfs" # compressed read-only file system (used by live CDs)
         "sysv" # implements all of Xenix FS, SystemV/386 FS and Coherent FS.
         "udf" # https://docs.kernel.org/5.15/filesystems/udf.html
-        "vivid" # Virtual Video Test Driver (unnecessary)
         # Unused network filesystems
         "cifs"
         "gfs2"
@@ -85,8 +79,6 @@
         # Disable Thunderbolt and FireWire to prevent DMA attacks
         "firewire-core"
         "thunderbolt"
-        #= Vivid testing driver
-        "vivid"
         #= ALWAYS nouveau should be used instead.
         "nvidiafb"
         # Modules that are disabled in hardened but not the default kernel
