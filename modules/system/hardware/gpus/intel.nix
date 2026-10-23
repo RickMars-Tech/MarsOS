@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.gpu.intel =
+  flake.modules.nixos.intelgpu =
     { pkgs, ... }:
     {
       boot = {
@@ -8,18 +8,20 @@
       };
       hardware = {
         intel-gpu-tools.enable = true;
+        graphics = {
+          extraPackages = with pkgs; [
+            # Intel media driver (moderno)
+            intel-media-driver
+            # VAAPI driver (legacy)
+            intel-vaapi-driver
+            # Intel compute runtime
+            intel-compute-runtime
+          ];
+          extraPackages32 = with pkgs.driversi686Linux; [
+            intel-media-driver
+            intel-vaapi-driver
+          ];
+        };
       };
-      extraPackages = with pkgs; [
-        # Intel media driver (moderno)
-        intel-media-driver
-        # VAAPI driver (legacy)
-        intel-vaapi-driver
-        # Intel compute runtime
-        intel-compute-runtime
-      ];
-      extraPackages32 = with pkgs.driversi686Linux; [
-        intel-media-driver
-        intel-vaapi-driver
-      ];
     };
 }
