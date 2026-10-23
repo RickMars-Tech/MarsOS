@@ -22,17 +22,12 @@
             "input" # Input devices
             "dialout" # Serial devices
 
-            # Development (as needed)
-            "git"
-
             # Gaming
-            "games"
             "gamemode"
 
-            # Containers/Virtualization (condicional)
-            "libvirt"
+            # Containers/Virtualization
+            "libvirtd"
             "kvm"
-            "qemu"
 
             # Network management
             "networkmanager"
