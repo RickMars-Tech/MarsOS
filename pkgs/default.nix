@@ -1,6 +1,7 @@
 # Custom packages
 final: _: {
   brave-origin = final.callPackage ./brave-origin { };
+  clamui = final.callPackage ./clamui { };
 
   # Gaming pkgs
   inherit ((final.callPackage ./hytale { })) hytale-launcher;
@@ -14,5 +15,8 @@ final: _: {
   dlss-swapper = final.callPackage ./gaming-scripts/dlss-swapper.nix { };
   nouveauPrime = final.callPackage ./gaming-scripts/nouveauPrime.nix { };
   zink-run = final.callPackage ./gaming-scripts/zink-run.nix { };
+
+  # Cosmic
+  postilla = final.callPackage ./postilla { };
 
 }

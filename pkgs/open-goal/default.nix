@@ -36,6 +36,6 @@ appimageTools.wrapType2 {
     license = licenses.isc;
     maintainers = [ "RickMars" ];
     platforms = [ "x86_64-linux" ];
-    mainProgram = "open-goal-launcher";
+    mainProgram = "OpenGOAL-Launcher";
   };
 }

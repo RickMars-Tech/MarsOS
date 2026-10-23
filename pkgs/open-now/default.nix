@@ -35,6 +35,6 @@ appimageTools.wrapType2 {
     homepage = "https://github.com/OpenCloudGaming/OpenNow";
     license = licenses.mit;
     platforms = [ "x86_64-linux" ];
-    mainProgram = "Open-Now";
+    mainProgram = "OpenNow";
   };
 }
