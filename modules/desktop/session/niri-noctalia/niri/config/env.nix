@@ -5,7 +5,6 @@
       #= Wayland Backend
       GDK_BACKEND = "wayland";
       CLUTTER_BACKEND = "wayland";
-      SDL_VIDEODRIVER = "x11";
       MOZ_ENABLE_WAYLAND = "1";
       MOZ_WAYLAND_USE_VAAPI = "1";
       MOZ_WEBRENDER = "1";
