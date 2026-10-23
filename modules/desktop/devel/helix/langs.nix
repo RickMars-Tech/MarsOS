@@ -1,11 +1,12 @@
 {
   flake.wrapperModules.hxLangs =
-    { pkgs, lib,... }:
+    { pkgs, lib, ... }:
     let
       formatters = {
         nixfmt = lib.getExe pkgs.nixfmt-rs;
         biome = "${pkgs.biome}/bin/biome";
         oxfmt = "${pkgs.oxfmt}/bin/oxfmt";
+        hongdown = lib.getExe pkgs.hongdown;
         shfmt = "${pkgs.shfmt}/bin/shfmt";
         ruff = "${pkgs.ruff}/bin/ruff";
       };
@@ -13,7 +14,7 @@
       languageServers = {
         astro-ls = "${pkgs.astro-language-server}/bin/astro-ls";
         biome = "${pkgs.biome}/bin/biome";
-        marksman = "${pkgs.marksman}/bin/marksman";
+        markoxide = lib.getExe pkgs.markdown-oxide;
         nixd = "${pkgs.nixd}/bin/nixd";
         tailwindcss = "${pkgs.tailwindcss-language-server}/bin/tailwindcss-language-server";
         volar = "${pkgs.vue-language-server}/bin/vue-language-server";
@@ -108,13 +109,10 @@
               name = "markdown";
               auto-format = true;
               formatter = {
-                command = formatters.oxfmt;
-                args = [
-                  "--stdin-filepath"
-                  "file.md"
-                ];
+                command = formatters.hongdown;
+                args = [ "--stdin" ];
               };
-              language-servers = [ "marksman" ];
+              language-servers = [ "markdown-oxide" ];
             }
             {
               name = "typescript";
@@ -218,9 +216,12 @@
               command = languageServers.ruff;
               args = [ "server" ];
             };
-            marksman = {
-              command = languageServers.marksman;
+            markdown-oxide = {
+              command = languageServers.markoxide;
             };
+            # marksman = {
+            #   command = languageServers.marksman;
+            # };
             tailwindcss = {
               command = languageServers.tailwindcss;
               args = [ "--stdio" ];

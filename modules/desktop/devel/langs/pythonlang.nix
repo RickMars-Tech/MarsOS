@@ -15,7 +15,6 @@
             pygame
             ruff
             scipy
-            scipy
           ]
         ))
       ];
