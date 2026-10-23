@@ -2,13 +2,11 @@
 # para que Easy Anti-Cheat v2 funcione en NixOS
 {
   flake.modules.nixos.eac = { lib, ... }: {
-    boot.kernelParams = lib.mkForce [
+    # mkAfter (no mkForce): añade los params sin borrar los de otros módulos.
+    boot.kernelParams = lib.mkAfter [
       # IOMMU
       "intel_iommu=on"
       "amd_iommu=on"
-
-      # BPF LSM
-      "lsm=landlock,lockdown,yama,integrity,apparmor,bpf"
 
       # Lockdown
       # does nothing right now. staging-nixos turned on

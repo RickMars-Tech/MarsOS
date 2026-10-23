@@ -67,25 +67,25 @@
       pam = {
         loginLimits = [
           {
-            domain = "@games";
+            domain = "@gamemode";
             type = "soft";
             item = "rtprio";
             value = "99";
           }
           {
-            domain = "@games";
+            domain = "@gamemode";
             type = "hard";
             item = "rtprio";
             value = "99";
           }
           {
-            domain = "@games";
+            domain = "@gamemode";
             type = "soft";
             item = "nice";
             value = "-20";
           }
           {
-            domain = "@games";
+            domain = "@gamemode";
             type = "hard";
             item = "nice";
             value = "-20";
