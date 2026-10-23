@@ -56,31 +56,24 @@ MarsOS/
   ping -c1 cache.nixos.org
   ```
 
-- The steps below install on **`/dev/nvme0n1`** with a fixed hybrid layout
-  defined in each host's `hosts/<host>/disko.nix`:
+- The steps below install on **`/dev/nvme0n1`** with the BTRFS layout defined in
+  each host's `hosts/<host>/disko.nix`:
 
   | Partition | Size | Filesystem |
   |---|---|---|
   | ESP (`/boot`) | 1 GB | vfat |
-  | swap | 4 GB | swap (no swapfile) |
-  | root (`/`, `/nix`, `/var/log`) | 120 GB | BTRFS (subvolumes + zstd) |
-  | `/home` | rest | ext4 with `casefold` |
+  | root (`/`, `/home`, `/nix`, `/var/log`) | rest | BTRFS (subvolumes + zstd) |
 
-  Root is BTRFS for compression, subvolumes and snapshots; `/home` is ext4
-  because **BTRFS has no `casefold` support**, and `casefold` is what Wine/Proton
-  uses (`chattr +F` on `drive_c`) to avoid the slow userspace case-insensitive
-  emulation. Change `device = "/dev/nvme0n1";` in `disko.nix` if your disk
-  differs (check with `lsblk`), and adjust `size = "120G";` to resize root.
+  `/home`, `/nix` and `/var/log` are BTRFS **subvolumes**, so they get
+  independent snapshots and share the free space with `/`. Change
+  `device = "/dev/nvme0n1";` in `disko.nix` if your disk differs (check with
+  `lsblk`).
 
-  Swap is a partition rather than a swapfile because a BTRFS swapfile degrades
-  `scrub`/`balance` while `autoScrub` is enabled; it runs behind zram
-  (priority 100).
-
-  > **Keeping `/home` across a reinstall:** disko's `--mode destroy,...` wipes
-  > the whole GPT, so the partition does **not** survive on its own. Set
-  > `destroy = false;` on the disk and wipe only the root filesystem first
-  > (`wipefs -a /dev/nvme0n1p3`); `disko` then skips partitions that already
-  > have a filesystem.
+  Swap is a 4 GB `/swapfile` created automatically on first boot (NixOS uses
+  `btrfs filesystem mkswapfile` on BTRFS). It runs behind zram (priority 100)
+  as a last resort. A swap *partition* would avoid the BTRFS swapfile caveats
+  (`scrub`/`balance` skip its block groups) but it isn't worth repartitioning
+  here.
 
 ### Steps
 

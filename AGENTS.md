@@ -106,11 +106,9 @@ salvo que pida probar algo en vivo.
 Máquina (importante para diagnóstico)
 -------------------------------------
 
- -  **7 GB RAM + ~9.3 GB swap** (zram zstd 75% prio 100 + **partición** swap 4
-    GB prio 10, definida en `hosts/rift/disko.nix`). No hay swapfile: en BTRFS
-    un swapfile degrada `scrub`/`balance` y aquí `autoScrub` está activo.
-    disko genera la entrada de `swapDevices` sola (no declararla a mano en
-    `drives.nix`).
+ -  **7 GB RAM + ~9.3 GB swap** (zram zstd 75% → 5.3 G sin comprimir, prio 100 +
+    `/swapfile` 4 GB prio 10 declarado en `drives.nix`; en BTRFS NixOS lo crea
+    con `btrfs filesystem mkswapfile`).
  -  **earlyoom activo** con umbrales 8%/8%: mata procesos si la RAM se agota.
     `nix.settings.cores = 4` y `max-jobs = 4` limitan builds pesados (con
     `auto`/`0` los builds de Rust ahogaban la máquina y mataban COSMIC).
@@ -229,55 +227,43 @@ el metainfo en `share/metainfo/`. Los `fetchurl` apuntan al tag `v${version}`
 del repo de GitHub (hashes SRI; `nix-prefetch-url` da base32, hay que convertir
 con `nix hash convert --to sri`).
 
-### Swap: partición, nunca swapfile en BTRFS con autoScrub
+### Swap: `/swapfile` de 4 GB (decisión: simplicidad)
 
-En BTRFS un swapfile activo **degrada `scrub` y `balance`** (los block groups
-con extents del swapfile se saltan) y no se puede snapshotear el subvolumen que
-lo contiene. Con `services.btrfs.autoScrub` activo es lo peor posible. Por eso
-el swap es una **partición** (4 GB, prio 10) declarada en
-`hosts/rift/disko.nix`; lo principal lo cubre zram (prio 100 > 10).
+El swap de disco es un `/swapfile` de 4 GB (prio 10) declarado en
+`drives.nix`; lo principal lo cubre zram con zstd (prio 100, se usa primero).
+En BTRFS NixOS lo crea con `btrfs filesystem mkswapfile` (nodatacow, sin
+compresión y preasignado), así que no hay que tocarlo a mano.
 
-Disko genera **solo** la entrada de `swapDevices` desde su `_config` (con
-`device = /dev/disk/by-partlabel/swap` y `discardPolicy`): no declarar
-`swapDevices` a mano en `drives.nix` o saldrá duplicado. Revisar el resultado:
-`grep -iE 'swap|mkswap' $(nix build --no-link --print-out-paths
-.#nixosConfigurations.rift.config.system.build.diskoScriptNoDeps)`.
+Limitaciones asumidas (por eso se valoró una partición swap y se descartó):
+mientras está activo, sus block groups se saltan en `scrub`/`balance` y el
+subvolumen que lo contiene no se puede snapshotear. Con 4 GB el impacto es
+pequeño y evita reparticionar. Si algún día se quiere partición swap, se puede
+hacer sin reinstalar desde la ISO (encoger btrfs ~5G, encoger la partición con
+`parted`, crear una con nombre GPT `swap` y `mkswap`); el montaje es por
+`by-partlabel`, así que el número de partición da igual.
 
 Ojo: evaluar `config.swapDevices` aislado con este nixpkgs (26.11) da un falso
 positivo `swapDevices.*.label was accessed but has no value defined` (lo dispara
-`stage-1.nix`); ya pasaba con el swapfile. El `drvPath` del toplevel evalúa sin
-problema, así que no bloquea la instalación.
+`stage-1.nix`). El `drvPath` del toplevel evalúa sin problema.
 
 La máquina soporta hibernación (`disk` en `/sys/power/state`), pero **no está
-configurada**: sin `boot.resumeDevice`/`resume=` no se reanuda. Si algún día se
-quiere, con partición swap basta añadir `resume=UUID=...`; con swapfile en BTRFS
-habría que calcular `resume_offset` (`btrfs inspect-internal map-swapfile`).
+configurada**. Con swapfile en BTRFS, habilitarla requiere `boot.resumeDevice` +
+`resume=` y calcular `resume_offset` (`btrfs inspect-internal map-swapfile`).
 
-### `/home`: partición ext4 aparte (layout fijo híbrido)
+### `/home` es un subvolumen BTRFS, no una partición aparte
 
-`hosts/rift/disko.nix` tiene un layout **fijo**: ESP 1G | swap 4G | root 120G
-**BTRFS** | `/home` (resto) **ext4 + `casefold`**. No hay selectores de FS.
+El layout es **ESP 1G | swap 4G | root (resto) BTRFS** con los subvolúmenes
+`/root`, `/home`, `/nix` y `/var/log`. Tener `/home` como subvolumen da la
+separación lógica (snapshots independientes) **sin** perder el espacio
+compartido; particionarlo lo fijaría y añadiría un slot de GPT sin ganancia real.
 
-El motivo de la mezcla: BTRFS **no soporta `casefold`** (sigue abierto en
-`btrfs-todo#44`; lo tienen ext4, f2fs y bcachefs desde 6.15), y `casefold` es lo
-que evita que Wine/Proton caiga al emulador en userspace al abrir su `drive_c`.
-Así root se queda con compresión zstd, subvolúmenes y snapshots, y los juegos
-viven en ext4. En btrfs **no** existe el subvolumen `/home` (chocaría con el
-montaje de la partición).
-
-Consecuencia: el espacio deja de compartirse; si una partición se llena no puede
-usar el hueco de la otra. Con los datos actuales (`/nix/store` ~56G, sistema
-~5G, `/home` ~160G) el reparto 120G + resto deja margen.
-
-Reinstalar conservando `/home` **no sale gratis**: el `--mode destroy,...` de
-disko borra el GPT entero. Hay que poner `destroy = false` en el disk y borrar
-el FS de root a mano (`wipefs -a /dev/nvme0n1p3`); `_format` de disko salta
-particiones que ya tienen FS (`blkid | grep TYPE=`) y `_create` solo hace
-`sgdisk --clear` si el disco no tiene tabla.
-
-FSck: no hay que tocar nada. NixOS salta `btrfs` **siempre** y `ext4` salvo que
-se active `boot.initrd.checkJournalingFS`, así que el `fsck.mode=skip` global de
-`drives.nix` no cambia el comportamiento de un `/home` ext4.
+Limitación conocida: BTRFS **no soporta `casefold`** (btrfs-todo#44; lo tienen
+ext4, f2fs y bcachefs desde 6.15), así que Wine/Proton cae al emulador de
+mayúsculas en userspace en vez de usar `chattr +F`. Se probó una partición
+`/home` en ext4 para tener casefold nativo y se descartó: no compensa perder el
+espacio compartido. Para juegos en BTRFS sí merece la pena quitar CoW en la
+carpeta de la librería: `chattr +C ~/Games/SteamLibrary` (carpeta vacía; solo
+aplica a archivos nuevos).
 
 
 
