@@ -34,13 +34,20 @@
       zramSwap = {
         enable = true;
         priority = 100; # Mayor que el swap en disco: se usa primero
-        memoryPercent = 50; # ~3.4GB sin comprimir -> ~1GB reales con zstd
+        memoryPercent = 75;
+        # ~5.3GB sin comprimir -> ~1.5GB reales con zstd.
+        # 50% no bastó: durante el build de postilla el
+        # swap estaba 92% lleno y earlyoom entró en acción.
         algorithm = "zstd";
         swapDevices = 1;
       };
 
-      # Swap de disco: último recurso. Ya no hay hibernación configurada,
-      # así que 16GB solo servían para thrashing. 4GB de colchón bastan.
+      # Swap de disco: último recurso (prio 10 < zram 100). En BTRFS NixOS lo
+      # crea con `btrfs filesystem mkswapfile` (nodatacow, sin compresión y
+      # preasignado). Limitación conocida: mientras está activo, su subvolumen
+      # no se puede snapshotear y sus block groups se saltan en `scrub`/`balance`;
+      # con 4 GB el impacto es pequeño (y hay prioridad a la simplicidad: no se
+      # reparticiona para tener una partición swap).
       swapDevices = [
         {
           device = "/swapfile";
